@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="enterprise or personal system or application to register, control/monitor, report the expenses">
+    <meta name="author" content="laercio.serra@gmail.com">
+
+    <link rel="icon" href="../static/fonts/favicon.ico">
+
+    <title>My Expenses Report</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <style>
+        .navbar-login
+        {
+            width: 305px;
+            padding: 10px;
+            padding-bottom: 0px;
+        }
+
+        .navbar-login-session
+        {
+            padding: 10px;
+            padding-bottom: 0px;
+            padding-top: 0px;
+        }
+
+        .icon-size
+        {
+            font-size: 87px;
+        }
+
+        .stepwizard-step p {
+            margin-top: 10px;
+        }
+
+        .stepwizard-row {
+            display: table-row;
+        }
+
+        .stepwizard {
+            display: table;
+            width: 100%;
+            position: relative;
+        }
+
+        .stepwizard-step button[disabled] {
+            opacity: 1 !important;
+            filter: alpha(opacity=100) !important;
+        }
+
+        .stepwizard-row:before {
+            top: 14px;
+            bottom: 0;
+            position: absolute;
+            content: " ";
+            width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            z-order: 0;
+
+        }
+
+        .stepwizard-step {
+            display: table-cell;
+            text-align: center;
+            position: relative;
+        }
+
+        .btn-circle {
+          width: 30px;
+          height: 30px;
+          text-align: center;
+          padding: 6px 0;
+          font-size: 12px;
+          line-height: 1.428571429;
+          border-radius: 15px;
+        }
+
+        #footer {
+          height: 50px;
+          background-color: #eee;
+        }
+    </style>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+
+    <!--Navigation Bar-->
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><em><strong>M3</strong></em></a>
+          <p class="navbar-text">My Expenses Report</p>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <!--Menu Expense  -->
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Expense <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Create</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Aprove</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Pay</a></li>
+              </ul>
+            </li>
+            <!--Menu Report-->
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Report <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Expenses</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Approvals</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Payments</a></li>
+              </ul>
+            </li>
+            <!--Menu Settings  -->
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Customer</a></li>
+                <li><a href="#">Project</a></li>
+                <li><a href="#">Account</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Workflow</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Users</a></li>
+                <li><a href="#">System</a></li>
+              </ul>
+            </li>
+          </ul>
+          <!--Search Form  -->
+          <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search Expense">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+          <!--Menu User-->
+          <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-user"></span>
+                        <strong>User</strong>
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <div class="navbar-login">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <p class="text-center">
+                                            <span class="glyphicon glyphicon-user icon-size"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <p class="text-left"><strong>Laercio Serra</strong></p>
+                                        <p class="text-left small">laercio.serra@gmail.com</p>
+                                        <p class="text-left">
+                                            <a href="#" class="btn btn-primary btn-block btn-sm">Update</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="navbar-login navbar-login-session">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <p>
+                                            <a href="#" data-toggle="modal" data-target="#myModal" class="btn btn-default btn-block">Sign out</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+          </ul>
+          <p class="navbar-text pull-right"><strong>Fri, Aug-08-2014</strong></p>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+
+    <!-- Modal to confirm the logout of the system -->
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><strong>Logout</strong></h4>
+                  </div>
+                  <div class="modal-body">
+                    <p>Do you want exit the system?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>
+                    <button class="btn" onclick="myFunction()">Yes</button>
+                  </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!--Function javascript that redirect the page if the user confirm the logout of the system-->
+    <script>
+        function myFunction() {
+            //redirect to the page 'login.html'
+            location.href="../views/login.html";
+        }
+    </script>
+
+    <div class="container-fluid">
+        <div class="col-md-8 col-md-offset-2">
+            <!--Wells-->
+            <div class="well well-sm">
+                <p>Look, I'm in a small well! </p>
+            </div>
+
+            <!--Workflow Indicators-->
+            <div class="stepwizard">
+                <div class="stepwizard-row">
+                    <div class="stepwizard-step">
+                        <button type="button" class="btn btn-success btn-circle" disabled="disabled">1</button>
+                        <p>Create</p>
+                    </div>
+                    <div class="stepwizard-step">
+                        <button type="button" class="btn btn-success btn-circle" disabled="disabled">2</button>
+                        <p>Submit</p>
+                    </div>
+                    <div class="stepwizard-step">
+                        <button type="button" class="btn btn-danger btn-circle" disabled="disabled">3</button>
+                        <p>Aprove</p>
+                    </div>
+                    <div class="stepwizard-step">
+                        <button type="button" class="btn btn-default btn-circle" disabled="disabled">4</button>
+                        <p>Submit</p>
+                    </div>
+                    <div class="stepwizard-step">
+                        <button type="button" class="btn btn-default btn-circle" disabled="disabled">5</button>
+                        <p>Pay</p>
+                    </div>
+                </div>
+            </div>
+
+            <!--Alert/Messages-->
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                  <strong>Warning!</strong> Better check yourself, you're not looking too good.
+            </div>
+
+            <!--Page header-->
+            <div class="page-header">
+                <h2>
+                    Expenses <small>Subtext for header</small>
+                </h2>
+            </div>
+
+            <!--Form-->
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                     <label class="col-sm-4 control-label" for="exampleInputEmail1">Email address</label>
+                     <div class="col-sm-6">
+                         <input class="form-control" id="exampleInputEmail1" type="email" />
+                     </div>
+                </div>
+                <div class="form-group">
+                     <label class="col-sm-4 control-label" for="exampleInputPassword1">Password</label>
+                     <div class="col-sm-6">
+                         <input class="form-control" id="exampleInputPassword1" type="password" />
+                     </div>
+                </div>
+                <div class="form-group">
+                     <label class="col-sm-4 control-label" for="exampleInputFile">File input</label>
+                     <div class="col-sm-6">
+                        <input id="exampleInputFile" type="file" /><p  class="help-block">Example block-level help text here.</p>
+                     </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-6">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" /> Check me out
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-6">
+                        <button type="submit" class="btn btn-default">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </form>
+            <!--Line-->
+            <hr>
+        </div>
+    </div>
+    <!--Back to top-->
+    <div class="container">
+        <p class="pull-right"><span class="glyphicon glyphicon-chevron-up"></span> <a href="#">Top</a></p>
+    </div>
+    <!--Line break-->
+    <br>
+    <!--Footer-->
+    <footer id="footer">
+      <div class="container">
+        <p class="text-muted pull-right">&copy; 2014-PnF / Programmers.no.Frontiers</p>
+      </div>
+    </footer>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="../static/js/affix.js"></script>-->
+    <!--<script src="../static/js/alert.js"></script>-->
+    <!--<script src="../static/js/bootstrap.js"></script>-->
+    <!--<script src="../static/js/bootstrap.min.js"></script>-->
+    <!--<script src="../static/js/button.js"></script>-->
+    <!--<script src="../static/js/carousel.js"></script>-->
+    <!--<script src="../static/js/collapse.js"></script>-->
+    <!--<script src="../static/js/dropdown.js"></script>-->
+    <!--<script src="../static/js/modal.js"></script>-->
+    <!--<script src="../static/js/popover.js"></script>-->
+    <!--<script src="../static/js/scrollspy.js"></script>-->
+    <!--<script src="../static/js/tab.js"></script>-->
+    <!--<script src="../static/js/tooltip.js"></script>-->
+    <!--<script src="../static/js/transition.js"></script>-->
+  </body>
+</html>
