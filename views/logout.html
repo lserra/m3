@@ -1,0 +1,26 @@
+    <!-- Modal to confirm the logout of the system -->
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><strong>Logout</strong></h4>
+                  </div>
+                  <div class="modal-body">
+                    <p>Do you want exit the system?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">No</button>
+                    <button class="btn" onclick="myFunction()">Yes</button>
+                  </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!--Function javascript that redirect the page if the user confirm the logout of the system-->
+    <script>
+        function myFunction() {
+            //redirect to the page 'login.html'
+            location.href="../views/login.html";
+        }
+    </script>

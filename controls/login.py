@@ -19,15 +19,22 @@ import cgitb  # chama o módulo de rastreamento de erros do CGI
 cgitb.enable()  # ativa o módulo para que os erros possam aparecer no browser
 
 form_data = cgi.FieldStorage()  # obter os dados de login do associado
+s_domain = form_data.getvalue('domain')  # pega o valor do campo email
 s_email = form_data.getvalue('email')  # pega o valor do campo email
-s_senha = form_data.getvalue('pwd')  # pega o valor do campo senha
+s_senha = form_data.getvalue('password')  # pega o valor do campo senha
 
+
+import time  # funções de manipulação de data e hora do sistema
 import mysf  # funções de renderização e output
 import golias  # funções de segurança e regras do negócio
 
 
+s_date = time.localtime() # Captura os dados de data/hora do sistema
+s_date = time.strftime("%A %d, %B %Y", s_date) # Formatação da data: Monday 01, September 2014
+
+
 print (mysf.include_start_response())
-print (mysf.include_header())
+
 
 (is_email) = golias.validate_email(s_email)  # verifica se o endereço de e-mail informado pelo usuario é válido
 if is_email:
@@ -35,21 +42,34 @@ if is_email:
     if is_assoc:
         (is_authenticated) = golias.auth_assoc(s_email, s_senha)  # autentica o associado para acessar o sistema
         if is_authenticated:
-            s_idassoc, s_emailassoc, s_pwdassoc = golias.return_data_assoc()
-            print (mysf.include_user(str.lower(s_emailassoc)))
-            print (mysf.include_messages('2', ' Seja bem-vindo ao CYCLECLUB!'))
+            s_idassoc, s_iddomain, s_nameuser, s_emailassoc, s_pwdassoc = golias.return_data_assoc()
+            print (mysf.include_header())
+            print (mysf.include_user(s_nameuser, str.lower(s_emailassoc), s_date))
+            print (mysf.include_logout())
+            print (mysf.include_div_s())
+            print (mysf.include_messages('2', ' Welcome to My Expenses Report!'))
+            print (mysf.include_pageheader())
+            print (mysf.include_search_form())
+            print (mysf.include_table())
+            print (mysf.include_pagination())
+            print (mysf.include_div_e())
+            print (mysf.include_footer())
         else:
-            print (mysf.include_menu())
-            print (mysf.include_messages('1', ' E-mail ou senha inválida! A senha deve ter no mínimo 8 caracteres.\
-            Por favor, tente novamente.'))
+            print (mysf.include_login())
+            print (mysf.include_messages('1', ' Invalid e-mail or password. The password must have more than 8 characters.\
+            Please, try again!'))
+            print (mysf.include_form_login())
+            print (mysf.include_footer_login())
     else:
-        print (mysf.include_menu())
+        print (mysf.include_login())
         if s_errormsg != '' and s_errormsg is not None:
             print (mysf.include_messages('1', s_errormsg))
         else:
-            print (mysf.include_messages('4', ' Você ainda não é um associado do CYCLECLUB. Faça já o seu cadastro!'))
+            print (mysf.include_messages('4', ' You are not a user valid. Please, create a register!'))
+        print (mysf.include_form_login())
+        print (mysf.include_footer_login())
 else:
-    print (mysf.include_menu())
-    print (mysf.include_messages('3', ' E-mail inválido! Por favor, tente novamente.'))
-
-print (mysf.include_footer())
+    print (mysf.include_login())
+    print (mysf.include_messages('3', ' Invalid e-mail. Please, try again!'))
+    print (mysf.include_form_login())
+    print (mysf.include_footer_login())

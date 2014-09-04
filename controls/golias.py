@@ -22,10 +22,10 @@ def abrir_bd():
     global conn, bd
 
     try:
-        conn = MySQLdb.connect(host="localhost", user="root", passwd="root", db="cycleclub")
+        conn = MySQLdb.connect(host="localhost", user="root", passwd="root", db="mthree")
         bd = conn.cursor()
     except MySQLdb.Error, e:
-        error_msg = "Falha na conexão com o banco de dados. Erro %d: %s" % (e.args[0], e.args[1])
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
         return error_msg
 
 
@@ -43,7 +43,7 @@ s   """
     try:
         conn.commit()
     except MySQLdb.Error, e:
-        error_msg = "Falha na conexão com o banco de dados. Erro %d: %s" % (e.args[0], e.args[1])
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
         return error_msg
 
 
@@ -54,7 +54,7 @@ s   """
     try:
         conn.rollback()
     except MySQLdb.Error, e:
-        error_msg = "Falha na conexão com o banco de dados. Erro %d: %s" % (e.args[0], e.args[1])
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
         return error_msg
 
 
@@ -102,34 +102,66 @@ def get_assoc_from_id(email):
     :param email: 'laercio.serra@gmail.com'
     :return:
     """
-    global idassoc, emailassoc, pwdassoc
+    global idassoc, iddomain, nameuser, emailassoc, pwdassoc
 
     try:
         msg_err = abrir_bd()
         if msg_err != '' and msg_err is not None:
             return False, msg_err
         else:
-            s_sql = "select idassoc, emailassoc, pwdassoc from TB_ASSOC where emailassoc='" + str(email) + "';"
+            s_sql = "SELECT id_user, id_domain, name_user, email_user, password FROM tUser WHERE email_user='" + str(email) + "';"
+
             bd.execute(s_sql)
             # Pega o número de linhas no resultset
             numrows = int(bd.rowcount)
 
             if numrows > 0:
-                (idassoc, emailassoc, pwdassoc) = bd.fetchone()
+                (idassoc, iddomain, nameuser, emailassoc, pwdassoc) = bd.fetchone()
                 return True, msg_err
             else:
                 return False, msg_err
 
     except MySQLdb.Error, e:
-        error_msg = "Falha na conexão com o banco de dados. Erro %d: %s" % (e.args[0], e.args[1])
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
         return False, error_msg
 
     finally:
         fechar_bd()
 
 
+# Funcão que verifica se existe o domínio informado pelo associado
+def verify_domain(s_domain):
+    """
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param s_domain
+    :return: True, iddomain
+    """
+    domain = s_domain
+
+    try:
+        s_sql = "SELECT id_domain, domain FROM tDomain WHERE domain = '" + str(domain) + "';"
+
+        bd.execute(s_sql)
+        # Pega o número de linhas no resultset
+        numrows = int(bd.rowcount)
+
+        if numrows > 0:
+            (iddomain, domain) = bd.fetchone()
+            return True, iddomain
+        else:
+            return False, None
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+
 # Funcão que inclui o associado em nosso banco de dados
-def put_assoc_from_id(email, pwd):
+def put_assoc_from_id(domain, nameuser, email, pwd):
     """
     # 1- estabelece uma conexão com o banco de dados
     # 2- criar um cursor para se comunicar através da conexão com os dados
@@ -140,29 +172,35 @@ def put_assoc_from_id(email, pwd):
     :param pwd: '1234'
     :return:
     """
-    s_email = email
+    s_domain = str.lower(domain)
+    s_nameuser = nameuser
+    s_email = str.lower(email)
     s_pwd = pwd
-    s_status = 'S'
-    s_regra = 'N'
 
     try:
         msg_err = abrir_bd()
         if msg_err != '' and msg_err is not None:
             return False, msg_err
         else:
-            s_sql = "INSERT INTO TB_ASSOC (emailassoc, pwdassoc, status, regra) "
-            s_sql += "VALUES ('" + str(s_email) + "', '" + str(s_pwd) + "', '" + str(s_status) + "', '" + \
-                     str(s_regra) + "');"
-            bd.execute(s_sql)
-            # Confirma a transação de inserção de registros no banco de dados
-            msg_err = commit_bd()
-            if msg_err != '' and msg_err is not None:
-                return False, msg_err
+            (is_domain, s_iddomain) = verify_domain(s_domain)
+            if is_domain:
+                s_sql = "INSERT INTO tUser (id_domain, name_user, email_user, password) "
+                s_sql += "VALUES ('" + str(s_iddomain) + "', '" + str(s_nameuser) + "', '" + str(s_email) + "', '" + \
+                         str(s_pwd) + "');"
+
+                bd.execute(s_sql)
+
+                # Confirma a transação de inserção de registros no banco de dados
+                msg_err = commit_bd()
+                if msg_err != '' and msg_err is not None:
+                    return False, msg_err
+                else:
+                    return True, msg_err
             else:
-                return True, msg_err
+                return False, "The 'Domain' that has been informed does not exist. Please, try again or contact your System Administrator!"
 
     except MySQLdb.Error, e:
-        error_msg = "Falha na conexão com o banco de dados. Erro %d: %s" % (e.args[0], e.args[1])
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
         return False, error_msg
 
     finally:
@@ -199,7 +237,7 @@ def update_status_assoc(s_id, s_regra="S"):
                 return True, msg_err
 
     except MySQLdb.Error, e:
-        error_msg = "Falha na conexão com o banco de dados. Erro %d: %s" % (e.args[0], e.args[1])
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
         return False, error_msg
 
     finally:
@@ -226,9 +264,9 @@ def auth_assoc(email, pwd):
 def return_data_assoc():
     """
     # Função que retorna os dados do associado
-    :return: idassoc, emailassoc, pwdassoc
+    :return: idassoc, iddomain, nameuser, emailassoc, pwdassoc
     """
-    return idassoc, emailassoc, pwdassoc
+    return idassoc, iddomain, nameuser, emailassoc, pwdassoc
 
 
 def assoc_pwd_crypto(s_pwd):
@@ -360,10 +398,10 @@ def validate_newpwd(pwd1, pwd2):
         if pwd1 == pwd2:
             return True, msg_err
         else:
-            msg_err = ' As senhas não conferem. Por favor, tente novamente.'
+            msg_err = ' The password is invalid. Please, try again!'
             return False, msg_err
     else:
-        msg_err = ' A senha deve ter no mínimo 8 caracteres. Por favor, tente novamente.'
+        msg_err = ' The password must have more than 8 characters. Please, try again!'
         return False, msg_err
 
 
@@ -398,7 +436,7 @@ def update_login_assoc(s_email, s_pwd):
                 return True, msg_err
 
     except MySQLdb.Error, e:
-        error_msg = "Falha na conexão com o banco de dados. Erro %d: %s" % (e.args[0], e.args[1])
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
         return False, error_msg
 
     finally:
