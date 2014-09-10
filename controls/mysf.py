@@ -22,35 +22,102 @@ def include_start_response(resp="text/html"):
     return 'Content-type: ' + resp + '\n\n'
 
 
-def include_data_table(rsdatatable):
+def include_data_table_disable(fields, rs_dt_table):
     """
-    # função que apresenta os dados em uma tabela estática contendo um scroll bar vertical
-    # a página em si é armazenada em um arquivo separado em "views/formv.html" e
-    # o elemento <$data_table> é substituído quando necessário
-    # obs1.: válido somente para as páginas view
-    :param rsdatatable:
-    :return: data_table
+    # função que apresenta os dados em uma tabela estática com os botões de comandos (edit/delete) desabilitados
+    # a página em si é armazenada em um arquivo separado em "views/table.html" e
+    # os elementos <$headers, $data_tb> são substituídos quando necessários
+    :param fields:
+    :param rs_dt_table:
+    :return: headers, data_tb
     """
-    s_td = ''
-    s_datatable = ''
-    for each_row in sorted(rsdatatable):
-        rsrow = rsdatatable.get(each_row)
+    s_th = ''
 
-        for each_col in rsrow:
-            s_td += '<td width="20%">' + each_col + '</td>\n'
+    for th in fields:
+        s_hd = '<th>\n'
+        s_hd += '   ' + th + '\n'
+        s_hd += '</th>\n'
+        s_th += s_hd
 
-        s_td += '<td width="20%" style="text-align:center"><a href="#">ALTERAR</a></td>\n'
-        s_td += '<td width="20%" style="text-align:center"><input type="checkbox" id="' + str(each_row) + '" value="' \
-                + str(each_row) + '"></td>\n'
-        s_datatable += '<tr>\n' + s_td + '</tr>\n'
-        s_td = ''
+    s_dtb = ''
+
+    for record in rs_dt_table:
+        s_td = '<tr>\n'
+        for col in record:
+            s_td += '   <td>' + str(col) + '</td>\n'
+        s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
+        s_td += '       <a href="#" class="btn btn-default btn-xs disabled">\n'
+        s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
+        s_td += '       </a>\n'
+        s_td += '       <a href="#" class="btn btn-default btn-xs disabled" data-toggle="modal" data-target="#delete">\n'
+        s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
+        s_td += '       </a>\n'
+        s_td += '   </td>\n'
+        s_td += '</tr>\n'
+        s_dtb += s_td
 
     with open('../views/table.html') as tablef:
-        table_text = tablef.read
+        table_text = tablef.read()
 
     table = Template(table_text)
 
-    return table.substitute(data_table=s_datatable)
+    return table.substitute(headers=s_th, data_tb=s_dtb)
+
+
+def include_data_table_enable(fields, rs_dt_table):
+    """
+    # função que apresenta os dados em uma tabela estática com os botões de comandos (edit/delete) habilitados
+    # a página em si é armazenada em um arquivo separado em "views/table.html" e
+    # os elementos <$headers, $data_tb> são substituídos quando necessários
+    :param fields:
+    :param rs_dt_table:
+    :return: headers, data_tb
+    """
+    s_th = ''
+
+    for th in fields:
+        s_hd = '<th>\n'
+        s_hd += '   ' + th + '\n'
+        s_hd += '</th>\n'
+        s_th += s_hd
+
+    s_dtb = ''
+
+    for record in rs_dt_table:
+        s_td = '<tr>\n'
+        for col in record:
+            s_td += '   <td>' + str(col) + '</td>\n'
+        s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
+        s_td += '       <a href="../controls/edit.py?num=' + str(record[0]) + '" class="btn btn-default btn-xs">\n'
+        s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
+        s_td += '       </a>\n'
+        s_td += '       <a href="../controls/delete.py?num=' + str(record[0]) + '" class="btn btn-default btn-xs" data-toggle="modal" data-target="#delete">\n'
+        s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
+        s_td += '       </a>\n'
+        s_td += '   </td>\n'
+        s_td += '</tr>\n'
+        s_dtb += s_td
+
+    with open('../views/table.html') as tablef:
+        table_text = tablef.read()
+
+    table = Template(table_text)
+
+    return table.substitute(headers=s_th, data_tb=s_dtb)
+
+
+def include_delete():
+    """
+    # função que cria a janela modal para confirmação da exclusão de um registro.
+    # a página em si é armazenada em um arquivo separado em "views/delete.html"
+    :return:
+    """
+    with open('../views/delete.html') as delf:
+        del_text = delf.read()
+
+    delete = Template(del_text)
+
+    return delete.substitute()
 
 
 def include_div_e():
@@ -81,6 +148,7 @@ def include_div_s():
     divs = Template(div_text)
 
     return divs.substitute()
+
 
 def include_footer():
     """
@@ -246,18 +314,19 @@ def include_messages(s_type, s_msg):
     return msg.substitute(classe=s_classe, tipo=s_desc, mensagem=s_msg)
 
 
-def include_pageheader():
+def include_pageheader(s_header):
     """
     # função que cria o cabeçaho do formulário da tela de cadastro ou de pesquisa
     # a página em si é armazenada em um arquivo separado em "views/pageheader.html"
-    :return:
+    :param s_header:
+    :return: header
     """
     with open('../views/pageheader.html') as pagehf:
         pageh_text = pagehf.read()
 
     pageheader = Template(pageh_text)
 
-    return pageheader.substitute()
+    return pageheader.substitute(header=s_header)
 
 
 def include_pagination():
@@ -274,7 +343,7 @@ def include_pagination():
     return pagination.substitute()
 
 
-def include_search_form():
+def include_search_form():  # TODO: corrigir o problema ao pressionar a tecla 'ENTER' para confirmar a busca.
     """
     # função que cria o formulário de pesquisa para filtrar as expenses listadas na tabela
     # a página em si é armazenada em um arquivo separado em "views/searchform.html"

@@ -29,8 +29,8 @@ import mysf  # funções de renderização e output
 import golias  # funções de segurança e regras do negócio
 
 
-s_date = time.localtime() # Captura os dados de data/hora do sistema
-s_date = time.strftime("%A %d, %B %Y", s_date) # Formatação da data: Monday 01, September 2014
+s_date = time.localtime()  # Captura os dados de data/hora do sistema
+s_date = time.strftime("%A %d, %B %Y", s_date)  # Formatação da data: Monday 01, September 2014
 
 
 print (mysf.include_start_response())
@@ -43,29 +43,33 @@ if is_email:
         (is_authenticated) = golias.auth_assoc(s_email, s_senha)  # autentica o associado para acessar o sistema
         if is_authenticated:
             s_idassoc, s_iddomain, s_nameuser, s_emailassoc, s_pwdassoc = golias.return_data_assoc()
+            (s_fields, s_dt_tb, s_errormsg) = golias.list_expenses_payments_accepted(s_idassoc)
             print (mysf.include_header())
             print (mysf.include_user(s_nameuser, str.lower(s_emailassoc), s_date))
             print (mysf.include_logout())
             print (mysf.include_div_s())
             print (mysf.include_messages('2', ' Welcome to My Expenses Report!'))
-            print (mysf.include_pageheader())
+            print (mysf.include_pageheader('Last payments'))
             print (mysf.include_search_form())
-            print (mysf.include_table())
+            print (mysf.include_data_table_disable(s_fields, s_dt_tb))
             print (mysf.include_pagination())
+            print (mysf.include_delete())
             print (mysf.include_div_e())
             print (mysf.include_footer())
         else:
             print (mysf.include_login())
-            print (mysf.include_messages('1', ' Invalid e-mail or password. The password must have more than 8 characters.\
-            Please, try again!'))
+            print (mysf.include_messages('1', ' Invalid e-mail or password. The password must have more than 8 '
+                                              'characters. Please, try again!'))
             print (mysf.include_form_login())
             print (mysf.include_footer_login())
     else:
         print (mysf.include_login())
+
         if s_errormsg != '' and s_errormsg is not None:
             print (mysf.include_messages('1', s_errormsg))
         else:
             print (mysf.include_messages('4', ' You are not a user valid. Please, create a register!'))
+
         print (mysf.include_form_login())
         print (mysf.include_footer_login())
 else:
