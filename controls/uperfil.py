@@ -19,13 +19,7 @@ import cgitb  # chama o módulo de rastreamento de erros do CGI
 cgitb.enable()  # ativa o módulo para que os erros possam aparecer no browser
 
 form_data = cgi.FieldStorage()  # obter os dados de login do associado
-
-s_fname = form_data.getvalue('first_name')  # pega o valor do campo first_name
-s_lname = form_data.getvalue('last_name')  # pega o valor do campo last_name
-s_domain = form_data.getvalue('domain')  # pega o valor do campo domain
-s_email = form_data.getvalue('email')  # pega o valor do campo email
-s_pwd1 = form_data.getvalue('password')  # pega o valor do campo password
-s_pwd2 = form_data.getvalue('password_confirmation')  # pega o valor do campo password_confirmation
+s_email = form_data.getvalue('u')  # pega o valor do campo email
 
 
 import time  # funções de manipulação de data e hora do sistema
@@ -33,37 +27,32 @@ import mysf  # funções de renderização e output
 import golias  # funções de segurança e regras do negócio
 
 
-s_nameuser = str(s_fname) + ' ' + str(s_lname)
-
 s_date = time.localtime()  # Captura os dados de data/hora do sistema
 s_date = time.strftime("%A %d, %B %Y", s_date)  # Formatação da data: Monday 01, September 2014
 
 
-# valida a nova senha
-(is_valid, s_errmsg) = golias.validate_newpwd(s_pwd1, s_pwd2)
+# retorna os dados do associado
+golias.get_assoc_from_id(s_email)
+s_idassoc, s_iddomain, s_nameuser, s_emailassoc, s_pwdassoc = golias.return_data_assoc()
 
 
-if is_valid:
-    s_type = '2'
-    s_msg = ' Password changed successfully!'
-else:
-    s_type = '1'
-    s_msg = s_errmsg
+# pega o nome do usuário e divide em nome e sobrenome
+name = str.split(s_nameuser, ' ')
+first_name = name[0]
+last_name = name[1]
 
 
-# renderiza a página principal 'mthree.html'
+# retorna o nome do domínio
+domain = golias.return_domain_name(s_iddomain)
+
+
+# renderiza a página 'profile.html' para atualizar os seus dados cadastrais
 print mysf.include_start_response()
 print (mysf.include_header())
-print (mysf.include_user(s_nameuser, s_email, s_date))
+print (mysf.include_user(s_nameuser, str.lower(s_emailassoc), s_date))
 print (mysf.include_logout())
 print (mysf.include_div_s())
-
-if is_valid:
-    print (mysf.include_messages(s_type, s_msg))
-else:
-    print (mysf.include_messages(s_type, s_msg))
-    print (mysf.include_pageheader('Profile ', ' Update login/password'))
-    print (mysf.include_profile(s_fname, s_lname, s_domain, s_email))
-
+print (mysf.include_pageheader('Profile ', ' Update login/password'))
+print (mysf.include_profile(first_name, last_name, domain, str.lower(s_emailassoc)))
 print (mysf.include_div_e())
 print (mysf.include_footer())

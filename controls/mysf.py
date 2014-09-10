@@ -314,11 +314,12 @@ def include_messages(s_type, s_msg):
     return msg.substitute(classe=s_classe, tipo=s_desc, mensagem=s_msg)
 
 
-def include_pageheader(s_header):
+def include_pageheader(s_title, s_subtitle):
     """
     # função que cria o cabeçaho do formulário da tela de cadastro ou de pesquisa
     # a página em si é armazenada em um arquivo separado em "views/pageheader.html"
-    :param s_header:
+    :param s_title:
+    :param s_subtitle:
     :return: header
     """
     with open('../views/pageheader.html') as pagehf:
@@ -326,7 +327,7 @@ def include_pageheader(s_header):
 
     pageheader = Template(pageh_text)
 
-    return pageheader.substitute(header=s_header)
+    return pageheader.substitute(title=s_title, subtitle=s_subtitle)
 
 
 def include_pagination():
@@ -341,6 +342,20 @@ def include_pagination():
     pagination = Template(page_text)
 
     return pagination.substitute()
+
+
+def include_profile(s_fname, s_lname, s_domain, s_email):
+    """
+    # função que cria o formulário para atualização do perfil do usuário
+    # a página em si é armazenada em um arquivo separado em "views/profile.html"
+    :return:
+    """
+    with open('../views/profile.html') as prof:
+        prof_text = prof.read()
+
+    profile = Template(prof_text)
+
+    return profile.substitute(first_name=s_fname, last_name=s_lname, domain=s_domain, email=s_email)
 
 
 def include_search_form():  # TODO: corrigir o problema ao pressionar a tecla 'ENTER' para confirmar a busca.
@@ -373,12 +388,12 @@ def include_table():
 
 def include_user(s_user, s_email, s_date):
     """
-        # função que cria a barra de menu/navegação com o nome do usuário que está acessando o sistema
-        # a página em si é armazenada em um arquivo separado em "views/navbar.html"
-        # e o elemento <$user> é substituído quando necessário
-        :param s_user: "laercio.serra@gmail.com"
-        :return: "laercio.serra@gmail.com"
-        """
+    # função que cria a barra de menu/navegação com o nome do usuário que está acessando o sistema
+    # a página em si é armazenada em um arquivo separado em "views/navbar.html"
+    # e o elemento <$user> é substituído quando necessário
+    :param s_user: "laercio.serra@gmail.com"
+    :return: "laercio.serra@gmail.com"
+    """
     with open('../views/navbar.html') as menuf:
         menu_text = menuf.read()
 

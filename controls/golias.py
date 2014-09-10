@@ -226,6 +226,44 @@ def return_data_assoc():
     return idassoc, iddomain, nameuser, emailassoc, pwdassoc
 
 
+def return_domain_name(iddomain):
+    """
+    # Função que retorna o nome do domínio a partir do id
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param iddomain:'asparona'
+    :return: domain_name
+    """
+    dname = ''
+    s_sql = "SELECT id_domain, domain FROM tDomain WHERE id_domain = '" + str(iddomain) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                (iddomain, dname) = bd.fetchone()
+                return dname
+            else:
+                return None
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn:
+            fechar_bd()
+
+
 def rollback_bd():
     """
     # Esta função utiliza o módulo Mysqldb que contem a API de comunicação com o Mysql.
@@ -486,16 +524,24 @@ def verify_domain(s_domain):
     s_sql = "SELECT id_domain, domain FROM tDomain WHERE domain = '" + str(domain) + "';"
 
     try:
-        bd.execute(s_sql)
-        # Pega o número de linhas no resultset
-        numrows = int(bd.rowcount)
-
-        if numrows > 0:
-            (iddomain, domain) = bd.fetchone()
-            return True, iddomain
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
         else:
-            return False, None
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                (iddomain, domain) = bd.fetchone()
+                return True, iddomain
+            else:
+                return False, None
 
     except MySQLdb.Error, e:
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
         return False, error_msg
+
+    finally:
+        if conn:
+            fechar_bd()
