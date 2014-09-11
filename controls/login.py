@@ -50,7 +50,7 @@ if is_email:
             print (mysf.include_div_s())
             print (mysf.include_messages('2', ' Welcome to My Expenses Report!'))
             print (mysf.include_pageheader('Expenses ',' Last payments'))
-            print (mysf.include_search_form())  # TODO: criar a função de exportar os dados da tabela para o excel
+            print (mysf.include_search_form())
             print (mysf.include_data_table_disable(s_fields, s_dt_tb))
             print (mysf.include_pagination())  # TODO: criar a função de paginação para resultados com mais de 20 linhas
             print (mysf.include_delete())

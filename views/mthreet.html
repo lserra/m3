@@ -17,6 +17,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="../static/js/search_table.js"></script>
+    <script src="../static/js/export_data.js"></script>
 
     <style>
         .navbar-login
@@ -293,11 +294,11 @@
             </form>
 
             <!-- Standard button -->
-            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> Export to Excel</button>
+            <a href="#" id ="export" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> Export to Excel</a>
 
             <!--Line-->
             <hr>
-
+            <div id="dvData">
             <!--Table-->
             <table class="table table-hover table-condensed table-list-search">
                 <thead>
@@ -345,7 +346,7 @@
                     </tr>
                 </tbody>
             </table>
-
+            </div>
             <!--Line-->
             <hr>
 
