@@ -39,7 +39,7 @@ s_date = time.localtime()  # Captura os dados de data/hora do sistema
 s_date = time.strftime("%A %d, %B %Y", s_date)  # Formatação da data: Monday 01, September 2014
 
 
-# valida a nova senha
+# valida a nova senha  # TODO: criar a função de atualização da nova senha no banco de dados
 (is_valid, s_errmsg) = golias.validate_newpwd(s_pwd1, s_pwd2)
 
 
@@ -54,7 +54,7 @@ else:
 # renderiza a página principal 'mthree.html'
 print mysf.include_start_response()
 print (mysf.include_header())
-print (mysf.include_user(s_nameuser, s_email, s_date))
+print (mysf.include_user(s_domain, s_nameuser, s_email, s_date))
 print (mysf.include_logout())
 print (mysf.include_div_s())
 

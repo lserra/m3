@@ -5,7 +5,6 @@
 Created on 22/05/2014
 @author: Laércio Serra (laercio.serra@gmail.com)
 """
-
 # O módulo CGI pega todos os dados do formulário e coloca-os em um dicionário
 import cgi
 
@@ -19,6 +18,7 @@ import cgitb  # chama o módulo de rastreamento de erros do CGI
 cgitb.enable()  # ativa o módulo para que os erros possam aparecer no browser
 
 form_data = cgi.FieldStorage()  # obter os dados de login do associado
+
 s_domain = form_data.getvalue('domain')  # pega o valor do campo email
 s_email = form_data.getvalue('email')  # pega o valor do campo email
 s_senha = form_data.getvalue('password')  # pega o valor do campo senha
@@ -39,20 +39,20 @@ print (mysf.include_start_response())
 (is_email) = golias.validate_email(s_email)  # verifica se o endereço de e-mail informado pelo usuario é válido
 if is_email:
     (is_assoc, s_errormsg) = golias.get_assoc_from_id(s_email)  # verifica se o usuário já é um associado
-    if is_assoc:
+    if is_assoc:  # TODO: validar o dominio e verificar se o usuário está associado a este domínio
         (is_authenticated) = golias.auth_assoc(s_email, s_senha)  # autentica o associado para acessar o sistema
-        if is_authenticated:
+        if is_authenticated:  # TODO: criar uma função que verifica o número de tentativas e bloqueia o acesso após +3 tentativas
             s_idassoc, s_iddomain, s_nameuser, s_emailassoc, s_pwdassoc = golias.return_data_assoc()
             (s_fields, s_dt_tb, s_errormsg) = golias.list_expenses_payments_accepted(s_idassoc)
             print (mysf.include_header())
-            print (mysf.include_user(s_nameuser, str.lower(s_emailassoc), s_date))
+            print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
             print (mysf.include_logout())
             print (mysf.include_div_s())
             print (mysf.include_messages('2', ' Welcome to My Expenses Report!'))
-            print (mysf.include_pageheader('Expenses ',' Last payments'))
+            print (mysf.include_pageheader('Expenses ', ' Last payments'))
             print (mysf.include_search_form())
             print (mysf.include_data_table_disable(s_fields, s_dt_tb))
-            print (mysf.include_pagination())  # TODO: criar a função de paginação para resultados com mais de 20 linhas
+            print (mysf.include_pagination())
             print (mysf.include_delete())
             print (mysf.include_div_e())
             print (mysf.include_footer())  # TODO: fixar o rodapé

@@ -24,7 +24,7 @@ def include_start_response(resp="text/html"):
 
 def include_data_table_disable(fields, rs_dt_table):
     """
-    # função que apresenta os dados em uma tabela estática com os botões de comandos (edit/delete) desabilitados
+    # função que apresenta os dados em uma tabela estática sem os botões de comandos (edit/delete)
     # a página em si é armazenada em um arquivo separado em "views/table.html" e
     # os elementos <$headers, $data_tb> são substituídos quando necessários
     :param fields:
@@ -45,14 +45,14 @@ def include_data_table_disable(fields, rs_dt_table):
         s_td = '<tr>\n'
         for col in record:
             s_td += '   <td>' + str(col) + '</td>\n'
-        s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
-        s_td += '       <a href="#" class="btn btn-default btn-xs disabled">\n'
-        s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
-        s_td += '       </a>\n'
-        s_td += '       <a href="#" class="btn btn-default btn-xs disabled" data-toggle="modal" data-target="#delete">\n'
-        s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
-        s_td += '       </a>\n'
-        s_td += '   </td>\n'
+        # s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
+        # s_td += '       <a href="#" class="btn btn-default btn-xs disabled">\n'
+        # s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
+        # s_td += '       </a>\n'
+        # s_td += '       <a href="#" class="btn btn-default btn-xs disabled" data-toggle="modal" data-target="#delete">\n'
+        # s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
+        # s_td += '       </a>\n'
+        # s_td += '   </td>\n'
         s_td += '</tr>\n'
         s_dtb += s_td
 
@@ -80,6 +80,9 @@ def include_data_table_enable(fields, rs_dt_table):
         s_hd += '   ' + th + '\n'
         s_hd += '</th>\n'
         s_th += s_hd
+
+    s_th += '<!--Fixed Colunm -->\n'
+    s_th += '<th class="text-center">Action</th>\n'
 
     s_dtb = ''
 
@@ -195,6 +198,44 @@ def include_footer_reg():
     return footer_r.substitute()
 
 
+def include_form_ss():
+    """
+    # função que cria o formulaŕio: settings system
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ss
+    :return:
+    """
+    form_ss = '            <form class="form-horizontal" role="form">\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                 <label class="col-sm-4 control-label" for="DtReport">Closing date of the Report</label>\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input class="form-control" id="DateReport" type="text" value="$dtrep"/>\n'
+    form_ss += '                 </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ss += '                    <div class="checkbox">\n'
+    form_ss += '                        <label>Alert users to the closing report\n'
+    form_ss += '                            <input type="checkbox" value="$alertrep"/> Check me out\n'
+    form_ss += '                        </label>\n'
+    form_ss += '                    </div>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ss += '                    <button type="submit" class="btn btn-primary">Update</button>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ss)
+
+
 def include_form_login():
     """
     # função que cria o form de login do usuário para acesso ao sistema
@@ -230,12 +271,17 @@ def include_header():
     # a página em si é armazenada em um arquivo separado em "views/header.html"
     :return:
     """
+    s_js = "$(document).ready(function() {\n"
+    s_js +="    $('#dt_table').dataTable( {\n"
+    s_js +="            } );\n"
+    s_js +="    } );\n"
+
     with open('../views/header.html') as headf:
         head_text = headf.read()
 
     header = Template(head_text)
 
-    return header.substitute()
+    return header.substitute(js=s_js)
 
 
 def include_header_reg():
@@ -358,7 +404,7 @@ def include_profile(s_fname, s_lname, s_domain, s_email):
     return profile.substitute(first_name=s_fname, last_name=s_lname, domain=s_domain, email=s_email)
 
 
-def include_search_form():  # TODO: corrigir o problema ao pressionar a tecla 'ENTER' para confirmar a busca.
+def include_search_form():
     """
     # função que cria o formulário de pesquisa para filtrar as expenses listadas na tabela
     # a página em si é armazenada em um arquivo separado em "views/searchform.html"
@@ -386,7 +432,7 @@ def include_table():
     return table.substitute()
 
 
-def include_user(s_user, s_email, s_date):
+def include_user(s_domain, s_user, s_email, s_date):
     """
     # função que cria a barra de menu/navegação com o nome do usuário que está acessando o sistema
     # a página em si é armazenada em um arquivo separado em "views/navbar.html"
@@ -399,7 +445,7 @@ def include_user(s_user, s_email, s_date):
 
     navbar = Template(menu_text)
 
-    return navbar.substitute(user=s_user, email=s_email, date=s_date)
+    return navbar.substitute(domain=s_domain, user=s_user, email=s_email, date=s_date)
 
 
 # def include_h_regras():
@@ -432,25 +478,6 @@ def include_user(s_user, s_email, s_date):
 #     s_formc = '<!-- início do form de crud -->\n'
 #     s_formc += '<div id="crud">\n'
 #     s_formc += '<form class="form-horizontal" action="' + s_url + '" method="' + form_type + '">'
-#
-#     return s_formc
-
-
-# def include_end_formc():
-#     """
-#     # função que retorna a marcação html de fim do formulário,
-#     # a página em si é armazenada em um arquivo separado em "views/form.html" e o
-#     # elemento <$fim_form> é substituído quando necessário
-#     :return:
-#     """
-#     s_formc = '<!-- barra com os comandos gravar/cancelar -->\n'
-#     s_formc += '<div class="form-actions" align="center">\n'
-#     s_formc += '<button type="submit" class="btn btn-small btn-primary">GRAVAR</button>\n'
-#     s_formc += '<button type="button" class="btn btn-small">CANCELAR</button>\n'
-#     s_formc += '</div>\n'
-#     s_formc += '</form>'
-#     s_formc += '</div>'
-#     s_formc += '<!-- fim do form de crud -->'
 #
 #     return s_formc
 

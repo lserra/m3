@@ -30,7 +30,7 @@ import calendar
 # renderiza a página 'perfil.html' para completar os seus dados cadastrais
 print mysf.include_start_response()
 print mysf.include_header()
-print mysf.include_user(str.lower('laercio.serra@gmail.com'))
+# print mysf.include_user(str.lower('laercio.serra@gmail.com'))
 print mysf.include_messages('2', ' Seja bem-vindo ao CYCLECLUB!')
 
 lista = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom']

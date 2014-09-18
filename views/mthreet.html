@@ -14,10 +14,24 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="http://cdn.datatables.net/plug-ins/725b2a2115b/integration/bootstrap/3/dataTables.bootstrap.css">
+
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script src="../static/js/search_table.js"></script>
+    <script src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+    <script src="http://cdn.datatables.net/plug-ins/725b2a2115b/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+    <!--<script src="../static/js/search_table.js"></script>-->
     <script src="../static/js/export_data.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('#dt_table').dataTable( {
+
+            } );
+        } );
+
+    </script>
 
     <style>
         .navbar-login
@@ -156,12 +170,12 @@
             </li>
           </ul>
           <!--Search Form  -->
-          <form class="navbar-form navbar-left" role="search">
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Search Expense">
-            </div>
-            <button type="submit" class="btn btn-default">Submit</button>
-          </form>
+          <!--<form class="navbar-form navbar-left" role="search">-->
+            <!--<div class="form-group">-->
+              <!--<input type="text" class="form-control" placeholder="Search Expense">-->
+            <!--</div>-->
+            <!--<button type="submit" class="btn btn-default">Submit</button>-->
+          <!--</form>-->
           <!--Menu User-->
           <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
@@ -283,24 +297,28 @@
             </div>
 
             <!--Search form-->
-            <form class="col-md-9" action="#" method="get">
-                <div class="input-group">
-                    <!-- USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH -->
-                    <input class="form-control" id="system-search" name="q" placeholder="Search for..." required>
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" disabled="disabled"><i class="glyphicon glyphicon-search"></i></button>
-                    </span>
-                </div>
-            </form>
+            <!--<form class="col-md-9" action="#" method="get">-->
+                <!--<div class="input-group">-->
+                    <!--&lt;!&ndash; USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH &ndash;&gt;-->
+                    <!--<input class="form-control" id="system-search" name="q" placeholder="Search for...">-->
+                    <!--<span class="input-group-btn">-->
+                        <!--<button type="button" class="btn btn-default" disabled="disabled"><i class="glyphicon glyphicon-search"></i></button>-->
+                    <!--</span>-->
+                <!--</div>-->
+            <!--</form>-->
 
             <!-- Standard button -->
-            <a href="#" id ="export" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> Export to Excel</a>
+            <div class="row">
+              <div class="col-md-3 col-md-offset-9">
+                  <a href="#" id ="export" role="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> Export to Excel</a>
+              </div>
+            </div>
 
             <!--Line-->
             <hr>
             <div id="dvData">
             <!--Table-->
-            <table class="table table-hover table-condensed table-list-search">
+            <table id="dt_table" class="table table-hover table-condensed table-list-search">
                 <thead>
                     <tr>
                         <th>Entry</th>
@@ -348,13 +366,13 @@
             </table>
             </div>
             <!--Line-->
-            <hr>
+            <!--<hr>-->
 
             <!--Pagination-->
-            <ul class="pager">
-                  <li class="previous"><a href="#">&larr; Previous</a></li>
-                  <li class="next"><a href="#">Next &rarr;</a></li>
-            </ul>
+            <!--<ul class="pager">-->
+                  <!--<li class="previous"><a href="#">&larr; Previous</a></li>-->
+                  <!--<li class="next"><a href="#">Next &rarr;</a></li>-->
+            <!--</ul>-->
         </div>
     </div>
 

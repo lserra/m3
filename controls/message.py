@@ -22,7 +22,7 @@ form_data = cgi.FieldStorage()  # obter os dados de login do associado
 s_nome = form_data.getvalue('nome')  # pega o valor do campo nome
 s_email = form_data.getvalue('email')  # pega o valor do campo email
 s_motivo = form_data.getvalue('motivo')  # pega o valor do campo motivo
-s_descmotivo = form_data.getvalue('descmotivo')  # pega o valor do campo pwd2
+s_descmotivo = form_data.getvalue('descmotivo')  # pega o valor do campo descmotivo
 
 import mysf  # funções de renderização e output
 import golias  # funções de segurança e regras do negócio
