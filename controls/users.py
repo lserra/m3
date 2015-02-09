@@ -20,8 +20,8 @@ cgitb.enable()  # ativa o módulo para que os erros possam aparecer no browser
 form_data = cgi.FieldStorage()  # obter os dados de login do associado
 
 s_domain = form_data.getvalue('d')  # pega o valor do campo domain
-s_user = form_data.getvalue('u')  # pega o valor do campo user
-s_email = form_data.getvalue('e')  # pega o valor do campo email
+s_user = form_data.getvalue('u')  # pega o valor do campo nameuser
+s_email = form_data.getvalue('e')  # pega o valor do campo emailassoc
 
 import time  # funções de manipulação de data e hora do sistema
 import mysf  # funções de renderização e output
@@ -53,37 +53,30 @@ s_profile = golias.get_profile_assoc(s_emailassoc)
 
 # verifica se o usuário possui a permissão de acesso ao módulo	
 if s_profile != 'S':  # somente supervisor (S) possui acesso a este módulo
-    s_alrep = None
-    s_dtrep = None
-
-    # renderiza a página 'system.html' com a mensagem de que o usuário não possui permissão
+    # renderiza a página 'users.html' com a mensagem de que o usuário não possui permissão
     print mysf.include_start_response()
     print (mysf.include_header())
     print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
     print (mysf.include_logout())
     print (mysf.include_div_s())
     print (mysf.include_messages('4', ' Permission denied!'))
-    # print (mysf.include_pageheader('Expenses ', ' Update settings system'))
-    # print (mysf.include_form_ss(s_domain, s_nameuser, str.lower(s_emailassoc), s_dtrep, s_alrep))
     print (mysf.include_div_e())
     print (mysf.include_footer())
 else:
-    # retorna os dados do sistema no banco de dados
-    (s_iddomain, s_dtrep, s_alrep) = golias.get_setsys(s_iddomain)
+    # retorna os dados dos usuários cadastrados
+    (s_fields, s_dt_tb, s_errormsg) = golias.get_all_assoc(s_domain)
 
-    if s_alrep is None:
-        s_alrep = 'FALSE'
-
-    if s_dtrep is None:
-        s_dtrep = '0000-00-00'
-
-    # renderiza a página 'system.html' para atualizar os dados do sistema
+    # renderiza a página 'users.html' para visualizar os usuários cadastrados no sistema
     print mysf.include_start_response()
     print (mysf.include_header())
     print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
     print (mysf.include_logout())
     print (mysf.include_div_s())
-    print (mysf.include_pageheader('Expenses ', ' Update settings system'))
-    print (mysf.include_form_ss(s_domain, s_nameuser, str.lower(s_emailassoc), s_dtrep, s_alrep))
+    print (mysf.include_pageheader('Users ', ' Create, update and delete users'))
+    print (mysf.include_search_form())
+    print (mysf.include_button_createnewuser(s_domain, s_nameuser, str.lower(s_emailassoc)))
+    print (mysf.include_data_table_disable(s_fields, s_dt_tb))
+    print (mysf.include_pagination())
+    print (mysf.include_delete())
     print (mysf.include_div_e())
     print (mysf.include_footer())

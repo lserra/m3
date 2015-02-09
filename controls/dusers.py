@@ -2,10 +2,9 @@
 # -*- coding: UTF-8 -*-
 
 """
-Created on 05/06/2014
+Created on 14/06/2014
 @author: Laércio Serra (laercio.serra@gmail.com)
 """
-
 # O módulo CGI pega todos os dados do formulário e coloca-os em um dicionário
 import cgi
 
@@ -19,7 +18,10 @@ import cgitb  # chama o módulo de rastreamento de erros do CGI
 cgitb.enable()  # ativa o módulo para que os erros possam aparecer no browser
 
 form_data = cgi.FieldStorage()  # obter os dados de login do associado
-s_email = form_data.getvalue('u')  # pega o valor do campo email
+
+s_domain = form_data.getvalue('d')  # pega o valor do campo domain
+s_user = form_data.getvalue('u')  # pega o valor do campo user
+s_email = form_data.getvalue('e')  # pega o valor do campo email
 
 
 import time  # funções de manipulação de data e hora do sistema
@@ -43,16 +45,25 @@ last_name = name[1]
 
 
 # retorna o nome do domínio
-s_domain = golias.return_domain_name(s_iddomain)
+# s_domain = golias.return_domain_name(s_iddomain)
 
 
-# renderiza a página 'profile.html' para atualizar os seus dados cadastrais
+# TODO: criar a rotina de exclusão de um usuário existente
+
+
+# renderiza a página 'users.html' para visualizar os usuários do sistema
 print mysf.include_start_response()
 print (mysf.include_header())
 print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
 print (mysf.include_logout())
 print (mysf.include_div_s())
-print (mysf.include_pageheader('Profile ', ' Update login/password'))
-print (mysf.include_profile(first_name, last_name, s_domain, str.lower(s_emailassoc)))
+print (mysf.include_pageheader('Users ', ' Create, update and delete users'))
+print (mysf.include_search_form())
+
+# TODO: criar a rotina que renderiza o botão "Create New User"
+
+print (mysf.include_data_table_disable(s_fields, s_dt_tb))
+print (mysf.include_pagination())
+print (mysf.include_delete())
 print (mysf.include_div_e())
 print (mysf.include_footer())

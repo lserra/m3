@@ -1,60 +1,28 @@
 #!/usr/bin/python2.7
-# -*- coding: utf-8 -*-
+# -*- coding: UTF-8 -*-
+
 """
-Created on 28/07/2013
-
-@author: Samsung
+Created on 18/01/2015
+@author: Laércio Serra (laercio.serra@gmail.com)
 """
-# import urllib
-# import urllib2
+# Este módulo faz parte da biblioteca padrão do Python e faz um ratreamento CGI
+# que, quando ativado, organiza as mensagens de erros detalhadas que aparecem
+# no navegador
+import cgitb  # chama o módulo de rastreamento de erros do CGI
 
-# query_args = { 'q':'query string', 'foo':'bar' } # you have to pass in a dictionary
-#
-# encoded_args = urllib.urlencode(query_args)
-#
-# print 'Encoded:', encoded_args
 
-# s_url = 'http://python.org/?' + encoded_args
-# s_url = 'http://localhost/cycleclub/views/regras.html'
-# print s_url
+cgitb.enable()  # ativa o módulo para que os erros possam aparecer no browser
 
-# def include_redir_page(s_url):
-#     print urllib2.urlopen(s_url).read()
-#
-# include_redir_page(s_url)
-#
-# formulario = cgi.FieldStorage()
 
-# Verifica se o campo foi preenchido
-# if formulario.has_key("nome"):
-#   print "O campo foi preenchido"
-# else:
-#   print "O campo não foi preenchido"
+import mysf  # funções de renderização e output
 
-# print urllib2.urlopen(s_url)
 
-# req = urllib2.Request(s_url)
+# renderiza a página 'usystem.html' depois de ter os dados do sistema atualizados
+print mysf.include_start_response()
+print (mysf.include_header())
+print (mysf.include_logout())
+print (mysf.include_div_s())
+print (mysf.include_pageheader('Expenses ', ' Update settings system'))
+print (mysf.include_div_e())
+print (mysf.include_footer())
 
-# try:
-#     print urllib2.urlopen(req).read()
-#
-# except urllib2.URLError, e:
-#     print e.code
-#     print e.read()
-
-# import re
-
-# address = 'calchp12c@gmail.com'
-# address = 'laercio.serra@gmail.com'
-# address = 'lsinform@netfly.com.br'
-# address = "-@-"
-
-# def email_validate_re(address):
-#     """ from http://www.regular-expressions.info/email.html """
-#     pattern = r"\b[a-zA-Z0-9._%+-]*[a-zA-Z0-9_%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b"
-#     if re.match(pattern, address):
-#         print 'OK'
-#     else:
-#         print 'NOK'
-#
-# email_validate_re(address)

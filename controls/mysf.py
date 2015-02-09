@@ -12,6 +12,36 @@ Created on 22/05/2014
 from string import Template
 
 
+# TODO:  revisar esta rotina e fazer os ajustes se for necessário
+def include_button_createnewuser(domain, nameuser, emailassoc):
+    """
+    # função que cria um formulário com controles ocultos para uma simples passagem de parâmetros
+    # quando o botão de comando "Create New User" for acionado
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :return:
+    """
+    s_button = '            <!-- button Create New User -->\n'
+    s_button += '            <form class="form-horizontal" role="form" method="post" action="../controls/cusers.py">\n'
+    s_button += '            <div class="form-group">\n'
+    s_button += '                 <div class="col-sm-6">\n'
+    s_button += '                     <input id="domain" name="domain" type="hidden" value="' + domain + '"/>\n'
+    s_button += '                     <input id="nameuser" name="nameuser" type="hidden" value="' + nameuser + '"/>\n'
+    s_button += '                     <input id="emailassoc" name="emailassoc" type="hidden" value="' + \
+                emailassoc + '"/>\n'
+    s_button += '                 </div>\n'
+    s_button += '            </div>\n'
+    s_button += '            <div class="form-group">\n'
+    s_button += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    s_button += '                    <button type="submit" class="btn btn-primary">Create New User</button>\n'
+    s_button += '                </div>\n'
+    s_button += '            </div>\n'
+    s_button += '        </form>\n'
+
+    return s_button
+
+
 def include_start_response(resp="text/html"):
     """
     # função que aceita uma string (opcional) como seu único argumento e a usa
@@ -27,7 +57,7 @@ def include_data_table_disable(fields, rs_dt_table):
     # função que apresenta os dados em uma tabela estática sem os botões de comandos (edit/delete)
     # a página em si é armazenada em um arquivo separado em "views/table.html" e
     # os elementos <$headers, $data_tb> são substituídos quando necessários
-    :param fields:
+    :param fields: {field1, field2, field3, field4, field5}
     :param rs_dt_table:
     :return: headers, data_tb
     """
@@ -45,14 +75,14 @@ def include_data_table_disable(fields, rs_dt_table):
         s_td = '<tr>\n'
         for col in record:
             s_td += '   <td>' + str(col) + '</td>\n'
-        # s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
-        # s_td += '       <a href="#" class="btn btn-default btn-xs disabled">\n'
-        # s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
-        # s_td += '       </a>\n'
-        # s_td += '       <a href="#" class="btn btn-default btn-xs disabled" data-toggle="modal" data-target="#delete">\n'
-        # s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
-        # s_td += '       </a>\n'
-        # s_td += '   </td>\n'
+    # s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
+    # s_td += '       <a href="#" class="btn btn-default btn-xs disabled">\n'
+    # s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
+    # s_td += '       </a>\n'
+    # s_td += '       <a href="#" class="btn btn-default btn-xs disabled" data-toggle="modal" data-target="#delete">\n'
+    # s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
+    # s_td += '       </a>\n'
+    # s_td += '   </td>\n'
         s_td += '</tr>\n'
         s_dtb += s_td
 
@@ -69,8 +99,8 @@ def include_data_table_enable(fields, rs_dt_table):
     # função que apresenta os dados em uma tabela estática com os botões de comandos (edit/delete) habilitados
     # a página em si é armazenada em um arquivo separado em "views/table.html" e
     # os elementos <$headers, $data_tb> são substituídos quando necessários
-    :param fields:
-    :param rs_dt_table:
+    :param fields: {field1, field2, field3, field4, field5}
+    :param rs_dt_table: rows
     :return: headers, data_tb
     """
     s_th = ''
@@ -94,7 +124,10 @@ def include_data_table_enable(fields, rs_dt_table):
         s_td += '       <a href="../controls/edit.py?num=' + str(record[0]) + '" class="btn btn-default btn-xs">\n'
         s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
         s_td += '       </a>\n'
-        s_td += '       <a href="../controls/delete.py?num=' + str(record[0]) + '" class="btn btn-default btn-xs" data-toggle="modal" data-target="#delete">\n'
+        s_td += '       <a href="../controls/delete.py?num=' + str(record[0]) + '" ' \
+                                                                                'class="btn btn-default btn-xs" ' \
+                                                                                'data-toggle="modal" ' \
+                                                                                'data-target="#delete">\n'
         s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
         s_td += '       </a>\n'
         s_td += '   </td>\n'
@@ -198,28 +231,317 @@ def include_footer_reg():
     return footer_r.substitute()
 
 
-def include_form_ss():
+# TODO: revisar esta rotina e fazer os devidos ajustes se for necessário
+def include_form_cu(domain, nameuser, emailassoc):
     """
-    # função que cria o formulaŕio: settings system
+    # função que cria o formulário: create new user
     # a página em si é armazenada em um arquivo separado em "views/form.html" e o
-    # elemento $form é substituído quando necessário por form_ss
+    # elemento $form é substituído quando necessário por form_cu
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
     :return:
     """
-    form_ss = '            <form class="form-horizontal" role="form">\n'
+    form_cu = '            <form class="form-horizontal" role="form" method="post" action="../controls/iusers.py">\n'
+    form_cu += '            <div class="form-group">\n'
+    form_cu += '                 <label class="col-sm-4 control-label" for="domain_nu">Domain Name</label>\n'
+    form_cu += '                 <div class="col-sm-6">\n'
+    form_cu += '                     <input class="form-control" id="domain_nu" name="domain_nu" type="text" ' \
+               'value=""/>\n'
+    form_cu += '                 </div>\n'
+    form_cu += '            </div>\n'
+    form_cu += '            <div class="form-group">\n'
+    form_cu += '                <label class="col-sm-4 control-label" for="fname">First Name User</label>\n'
+    form_cu += '                <div class="col-sm-6">\n'
+    form_cu += '                      <input class="form-control" id="fname" name= "fname" type="text" value=""/>\n'
+    form_cu += '                </div>\n'
+    form_cu += '            </div>\n'
+    form_cu += '            <div class="form-group">\n'
+    form_cu += '                <label class="col-sm-4 control-label" for="lname">Last Name User</label>\n'
+    form_cu += '                <div class="col-sm-6">\n'
+    form_cu += '                      <input class="form-control" id="lname" name= "lname" type="text" value=""/>\n'
+    form_cu += '                </div>\n'
+    form_cu += '            </div>\n'
+    form_cu += '            <div class="form-group">\n'
+    form_cu += '                <label class="col-sm-4 control-label" for="email">E-mail User</label>\n'
+    form_cu += '                <div class="col-sm-6">\n'
+    form_cu += '                      <input class="form-control" id="email" name= "email" type="text" value=""/>\n'
+    form_cu += '                </div>\n'
+    form_cu += '            </div>\n'
+    form_cu += '            <div class="form-group">\n'
+    form_cu += '                <label class="col-sm-4 control-label" for="pwd">Password User</label>\n'
+    form_cu += '                <div class="col-sm-6">\n'
+    form_cu += '                      <input class="form-control" id="pwd" name= "pwd" type="text" value=""/>\n'
+    form_cu += '                </div>\n'
+    form_cu += '            </div>\n'
+    form_cu += '            <div class="form-group">\n'
+    form_cu += '                <label class="col-sm-4 control-label" for="profile">Profile User</label>\n'
+    form_cu += '                <div class="col-sm-6">\n'
+    form_cu += '                      <select class="form-control" id="profile" name="profile">\n'
+    form_cu += '                      	<option value="S">Supervisor </option>\n'
+    form_cu += '                      	<option value="U">User </option>\n'
+    form_cu += '                      </select>\n'
+    form_cu += '                </div>\n'
+    form_cu += '            </div>\n'
+    form_cu += '            <div class="form-group">\n'
+    form_cu += '                <label class="col-sm-4 control-label" for="task">Task User</label>\n'
+    form_cu += '                <div class="col-sm-6">\n'
+    form_cu += '                      <select class="form-control" id="task" name="task">\n'
+    form_cu += '                      	<option value="C">User </option>\n'
+    form_cu += '                      	<option value="A">Approver </option>\n'
+    form_cu += '                      	<option value="P">Payer </option>\n'
+    form_cu += '                      </select>\n'
+    form_cu += '                </div>\n'
+    form_cu += '            </div>\n'
+    form_cu += '            <div class="form-group">\n'
+    form_cu += '                 <div class="col-sm-6">\n'
+    form_cu += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_cu += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_cu += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+               emailassoc + '"/>\n'
+    form_cu += '                 </div>\n'
+    form_cu += '            </div>\n'
+    form_cu += '            <div class="form-group">\n'
+    form_cu += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_cu += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_cu += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_cu += '                    <input type="cancel" name="cancel" value="Cancel" class="btn btn-default">\n'
+    form_cu += '                </div>\n'
+    form_cu += '            </div>\n'
+    form_cu += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_cu)
+
+
+# TODO: revisar esta rotina e fazer os devidos ajustes se for necessário
+def include_form_eu(domain, nameuser, emailassoc, password, profile):
+    """
+    # função que cria o formulário: edit user
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_eu
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :return:
+    """
+    form_eu = '            <form class="form-horizontal" role="form" method="post" action="../controls/iusers.py">\n'
+    form_eu += '            <div class="form-group">\n'
+    form_eu += '                 <label class="col-sm-4 control-label" for="domain_nu">Domain Name</label>\n'
+    form_eu += '                 <div class="col-sm-6">\n'
+    form_eu += '                     <input class="form-control" id="domain_nu" name="domain_nu" type="text" ' \
+               'value=""/>\n'
+    form_eu += '                 </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '            <div class="form-group">\n'
+    form_eu += '                <label class="col-sm-4 control-label" for="fname">First Name User</label>\n'
+    form_eu += '                <div class="col-sm-6">\n'
+    form_eu += '                      <input class="form-control" id="fname" name= "fname" type="text" value=""/>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '            <div class="form-group">\n'
+    form_eu += '                <label class="col-sm-4 control-label" for="lname">Last Name User</label>\n'
+    form_eu += '                <div class="col-sm-6">\n'
+    form_eu += '                      <input class="form-control" id="lname" name= "lname" type="text" value=""/>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '            <div class="form-group">\n'
+    form_eu += '                <label class="col-sm-4 control-label" for="email">E-mail User</label>\n'
+    form_eu += '                <div class="col-sm-6">\n'
+    form_eu += '                      <input class="form-control" id="email" name= "email" type="text" value=""/>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '            <div class="form-group">\n'
+    form_eu += '                <label class="col-sm-4 control-label" for="pwd">Password User</label>\n'
+    form_eu += '                <div class="col-sm-6">\n'
+    form_eu += '                      <input class="form-control" id="pwd" name= "pwd" type="text" value=""/>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '            <div class="form-group">\n'
+    form_eu += '                <label class="col-sm-4 control-label" for="profile">Profile User</label>\n'
+    form_eu += '                <div class="col-sm-6">\n'
+    form_eu += '                      <select class="form-control" id="profile" name="profile">\n'
+    form_eu += '                      	<option value="S">Supervisor </option>\n'
+    form_eu += '                      	<option value="U">User </option>\n'
+    form_eu += '                      </select>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '            <div class="form-group">\n'
+    form_eu += '                <label class="col-sm-4 control-label" for="task">Task User</label>\n'
+    form_eu += '                <div class="col-sm-6">\n'
+    form_eu += '                      <select class="form-control" id="task" name="task">\n'
+    form_eu += '                      	<option value="C">User </option>\n'
+    form_eu += '                      	<option value="A">Approver </option>\n'
+    form_eu += '                      	<option value="P">Payer </option>\n'
+    form_eu += '                      </select>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '            <div class="form-group">\n'
+    form_eu += '                 <div class="col-sm-6">\n'
+    form_eu += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_eu += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_eu += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+               emailassoc + '"/>\n'
+    form_eu += '                 </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '            <div class="form-group">\n'
+    form_eu += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_eu += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_eu += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_eu += '                    <input type="cancel" name="cancel" value="Cancel" class="btn btn-default">\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_eu)
+
+
+def include_form_ss(domain, nameuser, emailassoc, dtrep, alrep):
+    """
+    # função que cria o formulário: settings system
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ss
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param dtrep: '2015-01-26'
+    :param alrep: 'TRUE'
+    :return:
+    """
+    form_ss = '            <form class="form-horizontal" role="form" method="post" action="../controls/usystem.py">\n'
     form_ss += '            <div class="form-group">\n'
-    form_ss += '                 <label class="col-sm-4 control-label" for="DtReport">Closing date of the Report</label>\n'
+    form_ss += '                 <label class="col-sm-4 control-label" for="dtrep">Closing date of the report</label>\n'
     form_ss += '                 <div class="col-sm-6">\n'
-    form_ss += '                     <input class="form-control" id="DateReport" type="text" value="$dtrep"/>\n'
+    form_ss += '                     <input class="form-control" id="dtrep" name="dtrep" type="text" ' \
+               'value="' + str(dtrep) + '"/>\n'
+    form_ss += '                 </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="alrep">' \
+               'Alert users to the closing report</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <input class="form-control" id="alrep" name= "alrep" ' \
+               'type="text" value="' + alrep + '"/>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input id="domain" name="domain" type="hidden" value="' + domain + '"/>\n'
+    form_ss += '                     <input id="nameuser" name="nameuser" type="hidden" value="' + nameuser + '"/>\n'
+    form_ss += '                     <input id="emailassoc" name="emailassoc" type="hidden" ' \
+               'value="' + emailassoc + '"/>\n'
     form_ss += '                 </div>\n'
     form_ss += '            </div>\n'
     form_ss += '            <div class="form-group">\n'
     form_ss += '                <div class="col-sm-offset-4 col-sm-6">\n'
-    form_ss += '                    <div class="checkbox">\n'
-    form_ss += '                        <label>Alert users to the closing report\n'
-    form_ss += '                            <input type="checkbox" value="$alertrep"/> Check me out\n'
-    form_ss += '                        </label>\n'
-    form_ss += '                    </div>\n'
+    form_ss += '                    <button type="submit" class="btn btn-primary">Update</button>\n'
     form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ss)
+
+
+def include_form_ss_erra(domain, nameuser, emailassoc, dtrep, alrep):
+    """
+    # função que cria o formulário: settings system com foco no campo alerta (validation state)
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ss
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param dtrep: '2015-01-26'
+    :param alrep: 'TRUE'
+    :return:
+    """
+    form_ss = '            <form class="form-horizontal" role="form" method="post" action="../controls/usystem.py">\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                 <label class="col-sm-4 control-label" for="dtrep">Closing date of the report</label>\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input class="form-control" id="dtrep" name="dtrep" type="text" ' \
+               'value="' + str(dtrep) + '"/>\n'
+    form_ss += '                 </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group has-error">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="alrep">' \
+               'Alert users to the closing report</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <input class="form-control" id="alrep" name= "alrep" type="text" ' \
+               'value="' + alrep + '"/>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input id="domain" name="domain" type="hidden" value="' + domain + '"/>\n'
+    form_ss += '                     <input id="nameuser" name="nameuser" type="hidden" value="' + nameuser + '"/>\n'
+    form_ss += '                     <input id="emailassoc" name="emailassoc" type="hidden" ' \
+               'value="' + emailassoc + '"/>\n'
+    form_ss += '                 </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ss += '                    <button type="submit" class="btn btn-primary">Update</button>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ss)
+
+
+def include_form_ss_errd(domain, nameuser, emailassoc, dtrep, alrep):
+    """
+    # função que cria o formulário: settings system com foco no campo data (validation state)
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ss
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param dtrep: '2015-01-26'
+    :param alrep: 'TRUE'
+    :return:
+    """
+    form_ss = '            <form class="form-horizontal" role="form" method="post" action="../controls/usystem.py">\n'
+    form_ss += '            <div class="form-group has-error">\n'
+    form_ss += '                 <label class="col-sm-4 control-label" for="dtrep">Closing date of the report</label>\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input class="form-control" id="dtrep" name="dtrep" type="text" ' \
+               'value="' + str(dtrep) + '"/>\n'
+    form_ss += '                 </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="alrep">' \
+               'Alert users to the closing report</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <input class="form-control" id="alrep" name= "alrep" type="text" ' \
+               'value="' + alrep + '"/>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input id="domain" name="domain" type="hidden" value="' + domain + '"/>\n'
+    form_ss += '                     <input id="nameuser" name="nameuser" type="hidden" value="' + nameuser + '"/>\n'
+    form_ss += '                     <input id="emailassoc" name="emailassoc" type="hidden" ' \
+               'value="' + emailassoc + '"/>\n'
+    form_ss += '                 </div>\n'
     form_ss += '            </div>\n'
     form_ss += '            <div class="form-group">\n'
     form_ss += '                <div class="col-sm-offset-4 col-sm-6">\n'
@@ -272,9 +594,9 @@ def include_header():
     :return:
     """
     s_js = "$(document).ready(function() {\n"
-    s_js +="    $('#dt_table').dataTable( {\n"
-    s_js +="            } );\n"
-    s_js +="    } );\n"
+    s_js += "    $('#dt_table').dataTable( {\n"
+    s_js += "            } );\n"
+    s_js += "    } );\n"
 
     with open('../views/header.html') as headf:
         head_text = headf.read()
@@ -449,7 +771,7 @@ def include_user(s_domain, s_user, s_email, s_date):
 
 
 # def include_h_regras():
-#     """
+# """
 #     # função que cria o cabeçalho da página de regras do cycleclub
 #     # esta função usa a sua única string como seu argumento para criar o cabeçalho da página HTML,
 #     # a página em si é armazenada em um arquivo separado em "views/header_r.html"

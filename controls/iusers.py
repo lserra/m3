@@ -19,9 +19,17 @@ cgitb.enable()  # ativa o módulo para que os erros possam aparecer no browser
 
 form_data = cgi.FieldStorage()  # obter os dados de login do associado
 
-s_domain = form_data.getvalue('d')  # pega o valor do campo domain
-s_user = form_data.getvalue('u')  # pega o valor do campo user
-s_email = form_data.getvalue('e')  # pega o valor do campo email
+s_domain_newuser = form_data.getvalue('domain_nu')  # pega o valor do campo domain
+s_fname_newuser = form_data.getvalue('fname')  # pega o valor do campo fname
+s_lname_newuser = form_data.getvalue('lname')  # pega o valor do campo lname
+s_email_newuser = form_data.getvalue('email')  # pega o valor do campo email
+s_pwd_newuser = form_data.getvalue('pwd')  # pega o valor do campo pwd
+s_profile_newuser = form_data.getvalue('profile')  # pega o valor do campo profile
+s_task_newuser = form_data.getvalue('task')  # pega o valor do campo task
+
+s_domain = form_data.getvalue('domain')  # pega o valor do campo domain
+s_user = form_data.getvalue('nameuser')  # pega o valor do campo nameuser
+s_email = form_data.getvalue('emailassoc')  # pega o valor do campo emailassoc
 
 import time  # funções de manipulação de data e hora do sistema
 import mysf  # funções de renderização e output
@@ -46,44 +54,35 @@ last_name = name[1]
 # retorna o nome do domínio
 # s_domain = golias.return_domain_name(s_iddomain)
 
-
-# pega o perfil do usuário
-s_profile = golias.get_profile_assoc(s_emailassoc)
+# TODO: criar rotina de validação do input dos dados
 
 
-# verifica se o usuário possui a permissão de acesso ao módulo	
-if s_profile != 'S':  # somente supervisor (S) possui acesso a este módulo
-    s_alrep = None
-    s_dtrep = None
+# TODO: revisar esta rotina de inclusão de um novo usuário e fazer os ajustes se for necessário
+s_newuser = str.strip(s_fname_newuser) + ' ' + str.strip(s_lname_newuser)
+(user_added, s_erromsg) = golias.add_newuser(s_domain_newuser, s_newuser, s_email_newuser, s_pwd_newuser,
+                                             s_profile_newuser, s_task_newuser)
 
-    # renderiza a página 'system.html' com a mensagem de que o usuário não possui permissão
+if user_added:
+    # renderiza a página 'cusers.html' para continuar com o cadastramento de um novo usuário no sistema
     print mysf.include_start_response()
     print (mysf.include_header())
     print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
     print (mysf.include_logout())
     print (mysf.include_div_s())
-    print (mysf.include_messages('4', ' Permission denied!'))
-    # print (mysf.include_pageheader('Expenses ', ' Update settings system'))
-    # print (mysf.include_form_ss(s_domain, s_nameuser, str.lower(s_emailassoc), s_dtrep, s_alrep))
+    print (mysf.include_messages('2', ' New user created!'))
+    print (mysf.include_pageheader('Users ', ' Create new user'))
+    print (mysf.include_form_cu(s_domain, s_nameuser, str.lower(s_emailassoc)))
     print (mysf.include_div_e())
     print (mysf.include_footer())
 else:
-    # retorna os dados do sistema no banco de dados
-    (s_iddomain, s_dtrep, s_alrep) = golias.get_setsys(s_iddomain)
-
-    if s_alrep is None:
-        s_alrep = 'FALSE'
-
-    if s_dtrep is None:
-        s_dtrep = '0000-00-00'
-
-    # renderiza a página 'system.html' para atualizar os dados do sistema
+    # renderiza a página 'cusers.html' para continuar com o cadastramento de um novo usuário no sistema
     print mysf.include_start_response()
     print (mysf.include_header())
     print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
     print (mysf.include_logout())
     print (mysf.include_div_s())
-    print (mysf.include_pageheader('Expenses ', ' Update settings system'))
-    print (mysf.include_form_ss(s_domain, s_nameuser, str.lower(s_emailassoc), s_dtrep, s_alrep))
+    print (mysf.include_messages('1', s_erromsg))
+    print (mysf.include_pageheader('Users ', ' Create new user'))
+    print (mysf.include_form_cu(s_domain, s_nameuser, str.lower(s_emailassoc)))
     print (mysf.include_div_e())
     print (mysf.include_footer())
