@@ -44,6 +44,7 @@ if is_email:
         if is_authenticated:  # TODO: criar uma função que verifica o número de tentativas e bloqueia o acesso após +3 tentativas
             s_idassoc, s_iddomain, s_nameuser, s_emailassoc, s_pwdassoc = golias.return_data_assoc()
             (s_fields, s_dt_tb, s_errormsg) = golias.list_expenses_payments_accepted(s_idassoc)
+            # TODO: criar rotina de tratamento, caso o retorno seja 'None'
             print (mysf.include_header())
             print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
             print (mysf.include_logout())

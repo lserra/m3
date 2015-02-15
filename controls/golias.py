@@ -31,6 +31,56 @@ def abrir_bd():
         return error_msg
 
 
+def add_newuser(domain, name, email, pwd, profile):
+    """
+    # Função que retorna se os dados do novo usuário foi gravado  na base de dados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain: 'asparona'
+    :param name: 'Laercio Serra'
+    :param email: 'laercio.serra@asparona.com'
+    :param pwd: 'q12we34!' (criptografada)
+    :param profile: 'U'
+    :return user_added: 'True/False'
+    :return erro_msg: 'Usuário já existe na base de dados'
+    """
+    try:
+        # 1- criptografar a senha
+        pwd_newuser = assoc_pwd_crypto(pwd)
+
+        # 2- INSERT VALUES na tbUser
+        (user_added, error_msg) = put_assoc_from_id(domain, name, email, pwd_newuser)
+
+        # verifica se o bd não retornou algum erro, então INSERT VALUES na tbMatrix
+        if user_added is True:
+            # 3- INSERT VALUES na tbMatrix
+            (matrix_added, error_msg) = put_assoc_matrix(name, profile)
+
+            # verifica se o bd não retornou algum erro
+            if matrix_added is True:
+                user_added = matrix_added
+                return user_added, error_msg
+            else:
+                user_added = matrix_added
+                return user_added, error_msg
+        else:
+            return user_added, error_msg
+
+    except MySQLdb.Error, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn:
+            fechar_bd()
+
+
 def assoc_pwd_crypto(s_pwd):
     """
     # codifica a senha do associado
@@ -88,6 +138,48 @@ def fechar_bd():
     conn.close()
 
 
+def get_all_assoc(domain_name):
+    """
+    # Função que retorna os associados cadastrados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain_name: 'asparona'
+    :return: {fields, rs_dt_table}
+    """
+    s_sql = "SELECT u.name_user, u.email_user, m.profile_user " + \
+            "FROM tDomain d, tUser u, tMatrix m WHERE d.id_domain = u.id_domain AND m.id_user = u.id_user AND " + \
+            "d.domain='" + str(domain_name) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                (fields) = ('Name', 'Email', 'Profile')
+                (rs_dt_table) = bd.fetchall()
+                return fields, rs_dt_table, msg_err
+            else:
+                (fields) = ('Name', 'Email', 'Profile')
+                (rs_dt_table) = None
+                return fields, rs_dt_table, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn:
+            fechar_bd()
+
+
 def get_assoc_from_id(email):
     """
     # Função que verifica se o associado existe e retorna os seus dados a partir do email
@@ -118,6 +210,44 @@ def get_assoc_from_id(email):
                 return True, msg_err
             else:
                 return False, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn:
+            fechar_bd()
+
+
+def get_profile_assoc(email):
+    """
+    # Função que verifica e retorna o perfil do associado
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param email: 'laercio.serra@gmail.com'
+    :return: 'S' (supervisor)
+    """
+    s_sql = "SELECT m.profile_user FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user" + \
+            " WHERE u.email_user='" + str(email) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                profile = bd.fetchone()
+                return profile[0]
+            else:
+                return None
 
     except MySQLdb.Error, e:
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
@@ -231,9 +361,55 @@ def put_assoc_from_id(domain, name_user, email, pwd):
         else:
             (is_domain, id_domain) = verify_domain(s_domain)  # verifica a existência do domínio informado
             if is_domain:
-                s_sql = "INSERT INTO tUser (id_domain, name_user, email_user, password) " \
+                s_sql = "INSERT INTO tUser (id_domain, name_user, email_user, password, new_user) " \
                         "VALUES ('" + str(id_domain) + "', '" + str(name_user) + "', '" + str(s_email) + "', '" + \
-                        str(pwd) + "');"
+                        str(pwd) + "', 'S');"
+
+                bd.execute(s_sql)
+
+                # Confirma a transação de inserção de registro no banco de dados
+                msg_err = commit_bd()
+                if msg_err != '' and msg_err is not None:
+                    return False, msg_err
+                else:
+                    return True, msg_err
+            else:
+                return False, 'The \'Domain\' that has been informed does not exist. Please, try again or contact ' \
+                              'your System Administrator!'
+
+    except MySQLdb.Error, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn:
+            fechar_bd()
+
+
+def put_assoc_matrix(name_user, profile):
+    """
+    # Funcão que inclui o novo associado para ter acesso ao sistema
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - confirma a transação de insert no banco de dados
+    # 4- fechar a conexão com o banco de dados
+    :param name_user: 'Laercio Serra'
+    :param profile: 'S'
+    :return:is_domain, s_iddomain
+    """
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            (is_assoc, id_assoc) = verify_assoc_id(name_user)  # verifica a existência do associado informado
+            if is_assoc:
+                s_sql = "INSERT INTO tMatrix (id_user, profile_user, task_user) " + \
+                        "VALUES ('" + str(id_assoc) + "', '" + profile + "', 'NULL');"
 
                 bd.execute(s_sql)
 
@@ -265,6 +441,43 @@ def return_data_assoc():
     :return: idassoc, iddomain, nameuser, emailassoc, pwdassoc
     """
     return idassoc, iddomain, nameuser, emailassoc, pwdassoc
+
+
+def return_domain_id(domain_name):
+    """
+    # Função que retorna o ID do domínio a partir do nome
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain_name:'asparona'
+    :return: id_domain
+    """
+    s_sql = "SELECT id_domain FROM tDomain WHERE domain = '" + domain_name + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                (id_domain) = bd.fetchone()
+                return id_domain
+            else:
+                return None
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn:
+            fechar_bd()
 
 
 def return_domain_name(id_domain):
@@ -625,19 +838,19 @@ def verify_domain(s_domain):
             fechar_bd()
 
 
-def get_profile_assoc(email):
+def verify_assoc_id(name_user):
     """
-    # Função que verifica e retorna o perfil do associado
+    # Função que verifica se existe o associado informado pelo nome e retorna o id
     # 1- estabelece uma conexão com o banco de dados
     # 2- criar um cursor para se comunicar através da conexão com os dados
     # 3- usando o cursor, manipula os dados usando o sql
     # 3.1 - pega o resultset como uma tupla
     # 4- fechar a conexão com o banco de dados
-    :param email: 'laercio.serra@gmail.com'
-    :return: 'S' (supervisor)
+    :param name_user:'Laercio Serra'
+    :return: True, idassoc
     """
-    s_sql = "SELECT m.profile_user FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user" + \
-            " WHERE u.email_user='" + str(email) + "';"
+    assoc = name_user
+    s_sql = "SELECT id_user FROM tUser WHERE name_user = '" + assoc + "';"
 
     try:
         msg_err = abrir_bd()
@@ -649,10 +862,10 @@ def get_profile_assoc(email):
             numrows = int(bd.rowcount)
 
             if numrows > 0:
-                profile = bd.fetchone()
-                return profile[0]
+                (id_assoc) = bd.fetchone()
+                return True, id_assoc
             else:
-                return None
+                return False, None
 
     except MySQLdb.Error, e:
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
@@ -661,64 +874,3 @@ def get_profile_assoc(email):
     finally:
         if conn:
             fechar_bd()
-
-
-# TODO: corrigir esta rotina que retorna os associados cadastrados
-def get_all_assoc(domain_name):
-    """
-    # Função que retorna os associados cadastrados
-    # 1- estabelece uma conexão com o banco de dados
-    # 2- criar um cursor para se comunicar através da conexão com os dados
-    # 3- usando o cursor, manipula os dados usando o sql
-    # 3.1 - pega o resultset como uma tupla
-    # 4- fechar a conexão com o banco de dados
-    :param domain_name: 'asparona'
-    :return: {fields, rs_dt_table}
-    """
-    s_sql = "SELECT d.domain, u.name_user, u.email_user, m.profile_user, m.task_user " + \
-            "FROM tDomain d, tUser u, tMatrix m WHERE d.id_domain = u.id_domain AND m.id_user = u.id_user AND " + \
-            "d.domain='" + str(domain_name) + "';"
-
-    try:
-        msg_err = abrir_bd()
-        if msg_err != '' and msg_err is not None:
-            return False, msg_err
-        else:
-            bd.execute(s_sql)
-            # Pega o número de linhas no resultset
-            numrows = int(bd.rowcount)
-
-            if numrows > 0:
-                (fields) = ('Domain', 'Name', 'Email', 'Profile', 'Task')
-                (rs_dt_table) = bd.fetchall()
-                return fields, rs_dt_table, msg_err
-            else:
-                return None, None, msg_err
-
-    except MySQLdb.Error, e:
-        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
-        return False, error_msg
-
-    finally:
-        if conn:
-            fechar_bd()
-
-
-# TODO: criar a rotina de inclusão de um novo usuário no sistema
-def add_newuser(domain_newuser, newuser, email_newuser, pwd_newuser, profile_newuser, task_newuser):
-    """
-    # Função que retorna se os dados do novo usuário foi gravado  na base de dados
-    # 1- estabelece uma conexão com o banco de dados
-    # 2- criar um cursor para se comunicar através da conexão com os dados
-    # 3- usando o cursor, manipula os dados usando o sql
-    # 3.1 - pega o resultset como uma tupla
-    # 4- fechar a conexão com o banco de dados
-    :param domain_newuser: 'asparona'
-    :param newuser: 'Laercio Serra'
-    :param email_newuser: 'laercio.serra@asparona.com'
-    :param pwd_newuser: 'q12we34!' (criptografada)
-    :param profile_newuser: 'U'
-    :param task_newuser: 'C'
-    :return user_added: 'True/False'
-    :return erro_msg: 'Usuário já existe na base de dados'
-    """

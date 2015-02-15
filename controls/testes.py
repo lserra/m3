@@ -1,28 +1,44 @@
-#!/usr/bin/python2.7
-# -*- coding: UTF-8 -*-
+def put_assoc_matrix(name_user, profile):
+    """
+    # Funcão que inclui o novo associado para ter acesso ao sistema
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - confirma a transação de insert no banco de dados
+    # 4- fechar a conexão com o banco de dados
+    :param name_user: 'Laercio Serra'
+    :param profile: 'S'
+    :return:is_domain, s_iddomain
+    """
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            (is_assoc, id_assoc) = verify_assoc_id(name_user)  # verifica a existência do associado informado
+            if is_assoc:
+                s_sql = "INSERT INTO tMatrix (id_user, profile_user, task_user) " + \
+                        "VALUES ('" + str(id_assoc) + "', '" + name_user + "', '" + profile + "');"
 
-"""
-Created on 18/01/2015
-@author: Laércio Serra (laercio.serra@gmail.com)
-"""
-# Este módulo faz parte da biblioteca padrão do Python e faz um ratreamento CGI
-# que, quando ativado, organiza as mensagens de erros detalhadas que aparecem
-# no navegador
-import cgitb  # chama o módulo de rastreamento de erros do CGI
+                bd.execute(s_sql)
 
+                # Confirma a transação de inserção de registro no banco de dados
+                msg_err = commit_bd()
+                if msg_err != '' and msg_err is not None:
+                    return False, msg_err
+                else:
+                    return True, msg_err
+            else:
+                return False, 'The \'Domain\' that has been informed does not exist. Please, try again or contact ' \
+                              'your System Administrator!'
 
-cgitb.enable()  # ativa o módulo para que os erros possam aparecer no browser
+    except MySQLdb.Error, e:
+        if conn:
+            rollback_bd()
 
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
 
-import mysf  # funções de renderização e output
-
-
-# renderiza a página 'usystem.html' depois de ter os dados do sistema atualizados
-print mysf.include_start_response()
-print (mysf.include_header())
-print (mysf.include_logout())
-print (mysf.include_div_s())
-print (mysf.include_pageheader('Expenses ', ' Update settings system'))
-print (mysf.include_div_e())
-print (mysf.include_footer())
-
+    finally:
+        if conn:
+            fechar_bd()

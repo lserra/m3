@@ -73,11 +73,11 @@ def output_page_c():
     """
     print (mysf.include_start_response())
     print (mysf.include_header())
-    print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
+    print (mysf.include_user(s_domain, s_nameuser, str.lower(s_email), s_date))
     print (mysf.include_logout())
     print (mysf.include_div_s())
     print (mysf.include_messages('2', ' Welcome to My Expenses Report!'))
-    print (mysf.include_pageheader())
+    print (mysf.include_pageheader('Expenses ', ' Last payments'))
     print (mysf.include_search_form())
     print (mysf.include_table())
     print (mysf.include_pagination())

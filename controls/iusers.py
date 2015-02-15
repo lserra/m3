@@ -25,7 +25,6 @@ s_lname_newuser = form_data.getvalue('lname')  # pega o valor do campo lname
 s_email_newuser = form_data.getvalue('email')  # pega o valor do campo email
 s_pwd_newuser = form_data.getvalue('pwd')  # pega o valor do campo pwd
 s_profile_newuser = form_data.getvalue('profile')  # pega o valor do campo profile
-s_task_newuser = form_data.getvalue('task')  # pega o valor do campo task
 
 s_domain = form_data.getvalue('domain')  # pega o valor do campo domain
 s_user = form_data.getvalue('nameuser')  # pega o valor do campo nameuser
@@ -54,35 +53,85 @@ last_name = name[1]
 # retorna o nome do domínio
 # s_domain = golias.return_domain_name(s_iddomain)
 
-# TODO: criar rotina de validação do input dos dados
+s_field = 1
+n_field = None
+s_f_msg = None
+
+# valida se o campo dominio foi informado pelo usuário
+if s_domain_newuser is None:
+    s_field = 0
+    n_field = 'D'
+    s_f_msg = 'Data field required!'
+# valida se o campo first name foi informado pelo usuário
+if s_fname_newuser is None:
+    s_field = 0
+    n_field = 'F'
+    s_f_msg = 'Data field required!'
+# valida se o campo last name foi informado pelo usuário
+if s_lname_newuser is None:
+    s_field = 0
+    n_field = 'L'
+    s_f_msg = 'Data field required!'
+# valida se o campo email foi informado pelo usuário
+if s_email_newuser is None:
+    s_field = 0
+    n_field = 'E'
+    s_f_msg = 'Data field required!'
+# valida se o campo password foi informado pelo usuário
+if s_pwd_newuser is None:
+    s_field = 0
+    n_field = 'W'
+    s_f_msg = 'Data field required!'
+# valida se o campo profile foi informado pelo usuário
+if s_profile_newuser is None:
+    s_field = 0
+    n_field = 'P'
+    s_f_msg = 'Data field required!'
 
 
-# TODO: revisar esta rotina de inclusão de um novo usuário e fazer os ajustes se for necessário
-s_newuser = str.strip(s_fname_newuser) + ' ' + str.strip(s_lname_newuser)
-(user_added, s_erromsg) = golias.add_newuser(s_domain_newuser, s_newuser, s_email_newuser, s_pwd_newuser,
-                                             s_profile_newuser, s_task_newuser)
+# se todos os campos foram preenchidos, então realiza a inclusão de um novo usuário no sistema
+if s_field != 0:
+    s_newuser = str.strip(s_fname_newuser) + ' ' + str.strip(s_lname_newuser)
 
-if user_added:
-    # renderiza a página 'cusers.html' para continuar com o cadastramento de um novo usuário no sistema
-    print mysf.include_start_response()
-    print (mysf.include_header())
-    print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
-    print (mysf.include_logout())
-    print (mysf.include_div_s())
-    print (mysf.include_messages('2', ' New user created!'))
-    print (mysf.include_pageheader('Users ', ' Create new user'))
-    print (mysf.include_form_cu(s_domain, s_nameuser, str.lower(s_emailassoc)))
-    print (mysf.include_div_e())
-    print (mysf.include_footer())
+    (user_added, s_erromsg) = golias.add_newuser(s_domain_newuser, s_newuser, s_email_newuser, s_pwd_newuser,
+                                                 s_profile_newuser)
+
+    # se o usuário foi adicionado ao sistema, então renderiza a tela para cadastrar um novo usuário
+    if user_added is True:
+        # renderiza a página 'cusers.html' para continuar com o cadastramento de um novo usuário no sistema
+        print mysf.include_start_response()
+        print (mysf.include_header())
+        print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
+        print (mysf.include_logout())
+        print (mysf.include_div_s())
+        print (mysf.include_messages('2', ' New user created!'))
+        print (mysf.include_pageheader('Users ', ' Create new user'))
+        print (mysf.include_form_cu(s_domain, s_nameuser, str.lower(s_emailassoc)))
+        print (mysf.include_div_e())
+        print (mysf.include_footer())
+    else:
+        # renderiza a página 'cusers.html' com a mensagem do erro para verificação e tratamento
+        print mysf.include_start_response()
+        print (mysf.include_header())
+        print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
+        print (mysf.include_logout())
+        print (mysf.include_div_s())
+        print (mysf.include_messages('1', s_erromsg))
+        print (mysf.include_pageheader('Users ', ' Create new user'))
+        print (mysf.include_form_cu(s_domain, s_nameuser, str.lower(s_emailassoc)))
+        print (mysf.include_div_e())
+        print (mysf.include_footer())
 else:
-    # renderiza a página 'cusers.html' para continuar com o cadastramento de um novo usuário no sistema
+    # renderiza a página 'cusers.html' com a mensagem do erro para verificação e tratamento
     print mysf.include_start_response()
     print (mysf.include_header())
     print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
     print (mysf.include_logout())
     print (mysf.include_div_s())
-    print (mysf.include_messages('1', s_erromsg))
+    print (mysf.include_messages('3', s_f_msg))
     print (mysf.include_pageheader('Users ', ' Create new user'))
-    print (mysf.include_form_cu(s_domain, s_nameuser, str.lower(s_emailassoc)))
+    print (mysf.include_form_cu_err(s_domain_newuser, s_fname_newuser, s_lname_newuser, s_email_newuser,
+                                    s_pwd_newuser, s_profile_newuser, s_domain, s_nameuser, str.lower(s_emailassoc),
+                                    s_field))
     print (mysf.include_div_e())
     print (mysf.include_footer())
