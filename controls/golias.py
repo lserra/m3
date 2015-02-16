@@ -47,38 +47,25 @@ def add_newuser(domain, name, email, pwd, profile):
     :return user_added: 'True/False'
     :return erro_msg: 'Usuário já existe na base de dados'
     """
-    try:
-        # 1- criptografar a senha
-        pwd_newuser = assoc_pwd_crypto(pwd)
+    # 1- criptografar a senha
+    pwd_newuser = assoc_pwd_crypto(pwd)
 
-        # 2- INSERT VALUES na tbUser
-        (user_added, error_msg) = put_assoc_from_id(domain, name, email, pwd_newuser)
+    # 2- INSERT VALUES na tbUser
+    (user_added, error_msg) = put_assoc_from_id(domain, name, email, pwd_newuser)
 
-        # verifica se o bd não retornou algum erro, então INSERT VALUES na tbMatrix
-        if user_added is True:
-            # 3- INSERT VALUES na tbMatrix
-            (matrix_added, error_msg) = put_assoc_matrix(name, profile)
-
-            # verifica se o bd não retornou algum erro
-            if matrix_added is True:
-                user_added = matrix_added
-                return user_added, error_msg
-            else:
-                user_added = matrix_added
-                return user_added, error_msg
-        else:
+    # verifica se o bd não retornou algum erro, então INSERT VALUES na tbMatrix
+    if user_added is True:
+        # 3- INSERT VALUES na tbMatrix
+        (matrix_added, error_msg) = put_assoc_matrix(name, profile)
+        # verifica se o bd não retornou algum erro
+        if matrix_added is True:
+            user_added = matrix_added
             return user_added, error_msg
-
-    except MySQLdb.Error, e:
-        if conn:
-            rollback_bd()
-
-        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
-        return False, error_msg
-
-    finally:
-        if conn:
-            fechar_bd()
+        else:
+            user_added = matrix_added
+            return user_added, error_msg
+    else:
+        return user_added, error_msg
 
 
 def assoc_pwd_crypto(s_pwd):
@@ -349,22 +336,22 @@ def put_assoc_from_id(domain, name_user, email, pwd):
     :param name_user: 'Laercio Serra'
     :param email: 'laercio.serra@gmail.com'
     :param pwd: '1234'
-    :return:is_domain, s_iddomain
+    :return:False, msg_error
     """
     s_domain = str.lower(domain)
     s_email = str.lower(email)
 
     try:
-        msg_err = abrir_bd()
-        if msg_err != '' and msg_err is not None:
-            return False, msg_err
-        else:
-            (is_domain, id_domain) = verify_domain(s_domain)  # verifica a existência do domínio informado
-            if is_domain:
-                s_sql = "INSERT INTO tUser (id_domain, name_user, email_user, password, new_user) " \
-                        "VALUES ('" + str(id_domain) + "', '" + str(name_user) + "', '" + str(s_email) + "', '" + \
-                        str(pwd) + "', 'S');"
+        (is_domain, id_domain) = verify_domain(s_domain)  # verifica a existência do domínio informado
+        if is_domain:
+            s_sql = "INSERT INTO tUser (id_domain, name_user, email_user, password, new_user) " + \
+                    "VALUES ('" + str(id_domain) + "', '" + name_user + "', '" + s_email + "', '" + \
+                    pwd + "', 'S');"
 
+            msg_err = abrir_bd()
+            if msg_err != '' and msg_err is not None:
+                return False, msg_err
+            else:
                 bd.execute(s_sql)
 
                 # Confirma a transação de inserção de registro no banco de dados
@@ -373,9 +360,16 @@ def put_assoc_from_id(domain, name_user, email, pwd):
                     return False, msg_err
                 else:
                     return True, msg_err
-            else:
-                return False, 'The \'Domain\' that has been informed does not exist. Please, try again or contact ' \
-                              'your System Administrator!'
+        else:
+            return False, 'The \'Domain\' that has been informed does not exist. Please, try again or contact ' \
+                          'your System Administrator!'
+
+    except MySQLdb.IntegrityError, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = " %d - %s" % (e.args[0], e.args[1])
+        return False, error_msg
 
     except MySQLdb.Error, e:
         if conn:
@@ -385,7 +379,7 @@ def put_assoc_from_id(domain, name_user, email, pwd):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()
 
 
@@ -399,18 +393,18 @@ def put_assoc_matrix(name_user, profile):
     # 4- fechar a conexão com o banco de dados
     :param name_user: 'Laercio Serra'
     :param profile: 'S'
-    :return:is_domain, s_iddomain
+    :return:False, msg_error
     """
     try:
-        msg_err = abrir_bd()
-        if msg_err != '' and msg_err is not None:
-            return False, msg_err
-        else:
-            (is_assoc, id_assoc) = verify_assoc_id(name_user)  # verifica a existência do associado informado
-            if is_assoc:
-                s_sql = "INSERT INTO tMatrix (id_user, profile_user, task_user) " + \
-                        "VALUES ('" + str(id_assoc) + "', '" + profile + "', 'NULL');"
+        (is_assoc, id_assoc) = verify_assoc_id(name_user)  # verifica a existência do associado informado
+        if is_assoc:
+            s_sql = "INSERT INTO tMatrix (id_user, profile_user) " + \
+                    "VALUES ('" + str(id_assoc) + "', '" + profile + "');"
 
+            msg_err = abrir_bd()
+            if msg_err != '' and msg_err is not None:
+                return False, msg_err
+            else:
                 bd.execute(s_sql)
 
                 # Confirma a transação de inserção de registro no banco de dados
@@ -419,9 +413,16 @@ def put_assoc_matrix(name_user, profile):
                     return False, msg_err
                 else:
                     return True, msg_err
-            else:
-                return False, 'The \'Domain\' that has been informed does not exist. Please, try again or contact ' \
-                              'your System Administrator!'
+        else:
+            return False, 'The \'Domain\' that has been informed does not exist. Please, try again or contact ' \
+                          'your System Administrator!'
+
+    except MySQLdb.IntegrityError, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = " %d - %s" % (e.args[0], e.args[1])
+        return False, error_msg
 
     except MySQLdb.Error, e:
         if conn:
@@ -431,7 +432,7 @@ def put_assoc_matrix(name_user, profile):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()
 
 
@@ -800,6 +801,20 @@ def validate_newpwd(pwd1, pwd2):
         return False, msg_err
 
 
+def validate_pwd(pwd):
+    """
+    # Função que valida a senha do associado
+    # verifica se os valores informados possuem mais do que 8 caracteres,
+    # senão envia uma mensagem para o usuário
+    :param pwd:'teste1234'
+    :return:True
+    """
+    if len(pwd) >= 8:
+        return True
+    else:
+        return False
+
+
 def verify_domain(s_domain):
     """
     # Função que verifica se existe o domínio informado pelo associado e retorna o id
@@ -863,7 +878,7 @@ def verify_assoc_id(name_user):
 
             if numrows > 0:
                 (id_assoc) = bd.fetchone()
-                return True, id_assoc
+                return True, id_assoc[0]
             else:
                 return False, None
 

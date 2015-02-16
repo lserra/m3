@@ -54,39 +54,69 @@ last_name = name[1]
 # s_domain = golias.return_domain_name(s_iddomain)
 
 s_field = 1
-n_field = None
+n_field = []
 s_f_msg = None
 
 # valida se o campo dominio foi informado pelo usuário
 if s_domain_newuser is None:
     s_field = 0
-    n_field = 'D'
-    s_f_msg = 'Data field required!'
+    n_field.append('D')
+    s_f_msg = ' Data field required!'
+    s_domain_newuser = s_domain
+else:
+    s_domain_newuser = str.lower(s_domain_newuser)
+
 # valida se o campo first name foi informado pelo usuário
 if s_fname_newuser is None:
     s_field = 0
-    n_field = 'F'
-    s_f_msg = 'Data field required!'
+    n_field.append('F')
+    s_f_msg = ' Data field required!'
+    s_fname_newuser = 'required'
+else:
+    s_fname_newuser = str.capitalize(s_fname_newuser)
+
 # valida se o campo last name foi informado pelo usuário
 if s_lname_newuser is None:
     s_field = 0
-    n_field = 'L'
-    s_f_msg = 'Data field required!'
+    n_field.append('L')
+    s_f_msg = ' Data field required!'
+    s_lname_newuser = 'required'
+else:
+    s_lname_newuser = str.capitalize(s_lname_newuser)
+
 # valida se o campo email foi informado pelo usuário
 if s_email_newuser is None:
     s_field = 0
-    n_field = 'E'
-    s_f_msg = 'Data field required!'
+    n_field.append('E')
+    s_f_msg = ' Data field required!'
+    s_email_newuser = 'required'
+else:
+    (is_email) = golias.validate_email(s_email_newuser) # verifica se o endereço de e-mail informado pelo usuario é válido
+    if is_email is False:
+        s_field = 0
+        n_field.append('E')
+        s_f_msg = ' Invalid e-mail. Please, try again!'
+        s_email_newuser = 'name@domain.com'
+
 # valida se o campo password foi informado pelo usuário
 if s_pwd_newuser is None:
     s_field = 0
-    n_field = 'W'
-    s_f_msg = 'Data field required!'
+    n_field.append('W')
+    s_f_msg = ' Data field required!'
+    s_pwd_newuser = '12345678'
+else:
+    (is_pwd) = golias.validate_pwd(s_pwd_newuser)
+    if is_pwd is False:
+        s_field = 0
+        n_field.append('W')
+        s_f_msg = ' The password must have more than 8 characters. Please, try again!'
+        s_pwd_newuser = '12345678'
+
 # valida se o campo profile foi informado pelo usuário
 if s_profile_newuser is None:
     s_field = 0
-    n_field = 'P'
-    s_f_msg = 'Data field required!'
+    n_field.append('P')
+    s_f_msg = ' Data field required!'
 
 
 # se todos os campos foram preenchidos, então realiza a inclusão de um novo usuário no sistema
@@ -132,6 +162,6 @@ else:
     print (mysf.include_pageheader('Users ', ' Create new user'))
     print (mysf.include_form_cu_err(s_domain_newuser, s_fname_newuser, s_lname_newuser, s_email_newuser,
                                     s_pwd_newuser, s_profile_newuser, s_domain, s_nameuser, str.lower(s_emailassoc),
-                                    s_field))
+                                    n_field))
     print (mysf.include_div_e())
     print (mysf.include_footer())

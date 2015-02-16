@@ -309,8 +309,8 @@ def include_form_cu(domain, nameuser, emailassoc):
     form_cu += '                <div class="col-sm-offset-4 col-sm-6">\n'
     form_cu += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
     form_cu += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
-    form_cu += '                    <a class="btn btn-default" href="../controls/users.py?d=$' + domain + \
-               '&u=$' + nameuser + '&e=$' + emailassoc + '" role="button">Cancel</a>\n'
+    form_cu += '                    <a class="btn btn-default" href="../controls/users.py?d=' + domain + \
+               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
     form_cu += '        </form>\n'
@@ -343,7 +343,7 @@ def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newu
     """
     form_cu = '            <form class="form-horizontal" role="form" method="post" action="../controls/iusers.py">\n'
 
-    if field == 'D':
+    if field.count('D') != 0:
         form_cu += '            <div class="form-group has-error">\n'
     else:
         form_cu += '            <div class="form-group">\n'
@@ -355,7 +355,7 @@ def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newu
     form_cu += '                 </div>\n'
     form_cu += '            </div>\n'
 
-    if field == 'F':
+    if field.count('F') != 0:
         form_cu += '            <div class="form-group has-error">\n'
     else:
         form_cu += '            <div class="form-group">\n'
@@ -367,7 +367,7 @@ def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newu
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
 
-    if field == 'L':
+    if field.count('L') != 0:
         form_cu += '            <div class="form-group has-error">\n'
     else:
         form_cu += '            <div class="form-group">\n'
@@ -379,7 +379,7 @@ def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newu
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
 
-    if field == 'E':
+    if field.count('E') != 0:
         form_cu += '            <div class="form-group has-error">\n'
     else:
         form_cu += '            <div class="form-group">\n'
@@ -391,7 +391,7 @@ def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newu
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
 
-    if field == 'W':
+    if field.count('W') != 0:
         form_cu += '            <div class="form-group has-error">\n'
     else:
         form_cu += '            <div class="form-group">\n'
@@ -403,7 +403,7 @@ def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newu
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
 
-    if field == 'P':
+    if field.count('P') != 0:
         form_cu += '            <div class="form-group has-error">\n'
     else:
         form_cu += '            <div class="form-group">\n'
