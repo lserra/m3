@@ -44,7 +44,6 @@ if is_email:
         if is_authenticated:  # TODO: criar uma função que verifica o número de tentativas e bloqueia o acesso após +3 tentativas
             s_idassoc, s_iddomain, s_nameuser, s_emailassoc, s_pwdassoc = golias.return_data_assoc()
             (s_fields, s_dt_tb, s_errormsg) = golias.list_expenses_payments_accepted(s_idassoc)
-            # TODO: criar rotina de tratamento, caso o retorno seja 'None'
             print (mysf.include_header())
             print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
             print (mysf.include_logout())
@@ -52,7 +51,10 @@ if is_email:
             print (mysf.include_messages('2', ' Welcome to My Expenses Report!'))
             print (mysf.include_pageheader('Expenses ', ' Last payments'))
             print (mysf.include_search_form())
-            print (mysf.include_data_table_disable(s_fields, s_dt_tb))
+            if s_dt_tb is None:
+                print (mysf.include_data_table(s_fields))
+            else:
+                print (mysf.include_data_table_enable(s_domain, s_fields, s_dt_tb))
             print (mysf.include_pagination())
             print (mysf.include_delete())
             print (mysf.include_div_e())

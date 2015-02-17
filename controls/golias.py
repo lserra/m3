@@ -140,6 +140,8 @@ def get_all_assoc(domain_name):
             "FROM tDomain d, tUser u, tMatrix m WHERE d.id_domain = u.id_domain AND m.id_user = u.id_user AND " + \
             "d.domain='" + str(domain_name) + "';"
 
+    fields = ('Name', 'Email', 'Profile')
+
     try:
         msg_err = abrir_bd()
         if msg_err != '' and msg_err is not None:
@@ -150,12 +152,10 @@ def get_all_assoc(domain_name):
             numrows = int(bd.rowcount)
 
             if numrows > 0:
-                (fields) = ('Name', 'Email', 'Profile')
-                (rs_dt_table) = bd.fetchall()
+                rs_dt_table = bd.fetchall()
                 return fields, rs_dt_table, msg_err
             else:
-                (fields) = ('Name', 'Email', 'Profile')
-                (rs_dt_table) = None
+                rs_dt_table = None
                 return fields, rs_dt_table, msg_err
 
     except MySQLdb.Error, e:
@@ -361,7 +361,7 @@ def list_expenses_payments_accepted(id_assoc):
                 rs_dt_table = bd.fetchmany(12)
                 return fields, rs_dt_table, msg_err
             else:
-                return None, None, msg_err
+                return fields, None, msg_err
 
     except MySQLdb.Error, e:
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])

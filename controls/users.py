@@ -77,7 +77,7 @@ else:
     if s_dt_tb is None:
         print (mysf.include_data_table(s_fields))
     else:
-        print (mysf.include_data_table_enable(s_fields, s_dt_tb))
+        print (mysf.include_dt_tb_enable_users(s_domain, s_fields, s_dt_tb))
     print (mysf.include_pagination())
     print (mysf.include_delete())
     print (mysf.include_div_e())
