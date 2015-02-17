@@ -163,7 +163,7 @@ def get_all_assoc(domain_name):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()
 
 
@@ -203,7 +203,55 @@ def get_assoc_from_id(email):
         return False, error_msg
 
     finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def get_assoc_supervisor(domain):
+    """
+    # Funcão que verifica se já existe um associado com o perfil de Supervisor
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - confirma a transação de insert no banco de dados
+    # 4- fechar a conexão com o banco de dados
+    :param domain: 'asparona'
+    :return:False
+    """
+    s_domain = str.lower(domain)
+
+    s_sql = "SELECT d.domain, u.name_user, u.email_user, m.profile_user, m.task_user " + \
+            "FROM " + \
+            "tDomain d, tUser u, tMatrix m " + \
+            "WHERE " + \
+            "d.id_domain = u.id_domain AND " + \
+            "m.id_user = u.id_user AND " + \
+            "d.domain='" + s_domain + "' AND " + \
+            "m.profile_user = 'S';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                return True
+            else:
+                return False
+
+    except MySQLdb.Error, e:
         if conn:
+            rollback_bd()
+
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
             fechar_bd()
 
 
@@ -241,7 +289,7 @@ def get_profile_assoc(email):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()
 
 
@@ -280,7 +328,7 @@ def get_setsys(id_domain):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()
 
 
@@ -320,7 +368,7 @@ def list_expenses_payments_accepted(id_assoc):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()
 
 
@@ -477,7 +525,7 @@ def return_domain_id(domain_name):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()
 
 
@@ -514,7 +562,7 @@ def return_domain_name(id_domain):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()
 
 
@@ -659,7 +707,7 @@ def update_login_assoc(s_email, s_pwd):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()
 
 
@@ -700,7 +748,7 @@ def update_setsys(id_domain, alrep, dtrep):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()
 
 
@@ -741,7 +789,7 @@ def update_status_assoc(s_id, s_regra="S"):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()
 
 
@@ -849,7 +897,7 @@ def verify_domain(s_domain):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()
 
 
@@ -887,5 +935,5 @@ def verify_assoc_id(name_user):
         return False, error_msg
 
     finally:
-        if conn:
+        if conn is not None:
             fechar_bd()

@@ -91,7 +91,8 @@ if s_email_newuser is None:
     s_f_msg = ' Data field required!'
     s_email_newuser = 'required'
 else:
-    (is_email) = golias.validate_email(s_email_newuser) # verifica se o endereço de e-mail informado pelo usuario é válido
+    # verifica se o endereço de e-mail informado pelo usuario é válido
+    (is_email) = golias.validate_email(s_email_newuser)
     if is_email is False:
         s_field = 0
         n_field.append('E')
@@ -123,8 +124,17 @@ if s_profile_newuser is None:
 if s_field != 0:
     s_newuser = str.strip(s_fname_newuser) + ' ' + str.strip(s_lname_newuser)
 
-    (user_added, s_erromsg) = golias.add_newuser(s_domain_newuser, s_newuser, s_email_newuser, s_pwd_newuser,
-                                                 s_profile_newuser)
+    if s_profile_newuser == 'S':
+        exist_sup = golias.get_assoc_supervisor(s_domain_newuser)
+        if exist_sup is True:
+            user_added = False
+            s_erromsg = ' The \'Supervisor User\' was found. Please, try again or contact your System Administrator!'
+        else:
+            (user_added, s_erromsg) = golias.add_newuser(s_domain_newuser, s_newuser, s_email_newuser, s_pwd_newuser,
+                                                         s_profile_newuser)
+    else:
+        (user_added, s_erromsg) = golias.add_newuser(s_domain_newuser, s_newuser, s_email_newuser, s_pwd_newuser,
+                                                     s_profile_newuser)
 
     # se o usuário foi adicionado ao sistema, então renderiza a tela para cadastrar um novo usuário
     if user_added is True:
