@@ -191,7 +191,7 @@ def include_div_s():
     return divs.substitute()
 
 
-def include_dt_tb_enable_users(domain, fields, rs_dt_table):
+def include_dt_tb_enable_users(domain, nameuser, emailassoc, fields, rs_dt_table):
     """
     # função que apresenta os dados em uma tabela estática com os botões de comandos (edit/delete) habilitados
     # a página em si é armazenada em um arquivo separado em "views/table.html" e
@@ -217,12 +217,12 @@ def include_dt_tb_enable_users(domain, fields, rs_dt_table):
         for col in record:
             s_td += '   <td>' + str(col) + '</td>\n'
         s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
-        s_td += '       <a href="../controls/eusers.py?d=' + domain + '&e=' + str(record[1]) + \
-                '" class="btn btn-default btn-xs">\n'
+        s_td += '       <a href="../controls/eusers.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+                '&ue=' + record[1] + '" class="btn btn-default btn-xs">\n'
         s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
         s_td += '       </a>\n'
-        s_td += '       <a href="../controls/dusers.py?d=' + domain + '&e=' + str(record[1]) + \
-                '" class="btn btn-default btn-xs" data-toggle="modal" data-target="#delete">\n'
+        s_td += '       <a href="../controls/dusers.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+                '&ud=' + record[1] + '" class="btn btn-default btn-xs" data-toggle="modal" data-target="#delete">\n'
         s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
         s_td += '       </a>\n'
         s_td += '   </td>\n'
@@ -512,8 +512,7 @@ def include_form_ct():
     return formct.substitute()
 
 
-# TODO: revisar esta rotina e fazer os devidos ajustes se for necessário
-def include_form_eu(domain, nameuser, emailassoc, password, profile):
+def include_form_eu(domain, nameuser, emailassoc, d_ue, fn_ue, ln_ue, e_ue, p_ue):
     """
     # função que cria o formulário: edit user
     # a página em si é armazenada em um arquivo separado em "views/form.html" e o
@@ -523,54 +522,45 @@ def include_form_eu(domain, nameuser, emailassoc, password, profile):
     :param emailassoc: 'laercio.serra@asparona.com'
     :return:
     """
-    form_eu = '            <form class="form-horizontal" role="form" method="post" action="../controls/iusers.py">\n'
+    form_eu = '            <form class="form-horizontal" role="form" method="post" action="../controls/uusers.py">\n'
     form_eu += '            <div class="form-group">\n'
-    form_eu += '                 <label class="col-sm-4 control-label" for="domain_nu">Domain Name</label>\n'
+    form_eu += '                 <label class="col-sm-4 control-label" for="domain_eu">Domain Name</label>\n'
     form_eu += '                 <div class="col-sm-6">\n'
-    form_eu += '                     <input class="form-control" id="domain_nu" name="domain_nu" type="text" ' \
-               'value=""/>\n'
+    form_eu += '                     <input class="form-control" id="domain_eu" name="domain_eu" type="text" ' \
+               'value="' + d_ue + '"/>\n'
     form_eu += '                 </div>\n'
     form_eu += '            </div>\n'
     form_eu += '            <div class="form-group">\n'
     form_eu += '                <label class="col-sm-4 control-label" for="fname">First Name User</label>\n'
     form_eu += '                <div class="col-sm-6">\n'
-    form_eu += '                      <input class="form-control" id="fname" name= "fname" type="text" value=""/>\n'
+    form_eu += '                      <input class="form-control" id="fname" name= "fname" type="text" ' \
+               'value="' + fn_ue + '"/>\n'
     form_eu += '                </div>\n'
     form_eu += '            </div>\n'
     form_eu += '            <div class="form-group">\n'
     form_eu += '                <label class="col-sm-4 control-label" for="lname">Last Name User</label>\n'
     form_eu += '                <div class="col-sm-6">\n'
-    form_eu += '                      <input class="form-control" id="lname" name= "lname" type="text" value=""/>\n'
+    form_eu += '                      <input class="form-control" id="lname" name= "lname" type="text" ' \
+               'value="' + ln_ue + '"/>\n'
     form_eu += '                </div>\n'
     form_eu += '            </div>\n'
     form_eu += '            <div class="form-group">\n'
     form_eu += '                <label class="col-sm-4 control-label" for="email">E-mail User</label>\n'
     form_eu += '                <div class="col-sm-6">\n'
-    form_eu += '                      <input class="form-control" id="email" name= "email" type="text" value=""/>\n'
-    form_eu += '                </div>\n'
-    form_eu += '            </div>\n'
-    form_eu += '            <div class="form-group">\n'
-    form_eu += '                <label class="col-sm-4 control-label" for="pwd">Password User</label>\n'
-    form_eu += '                <div class="col-sm-6">\n'
-    form_eu += '                      <input class="form-control" id="pwd" name= "pwd" type="password" value=""/>\n'
+    form_eu += '                      <input class="form-control" id="email" name= "email" type="text" ' \
+               'value="' + e_ue + '"/>\n'
     form_eu += '                </div>\n'
     form_eu += '            </div>\n'
     form_eu += '            <div class="form-group">\n'
     form_eu += '                <label class="col-sm-4 control-label" for="profile">Profile User</label>\n'
     form_eu += '                <div class="col-sm-6">\n'
     form_eu += '                      <select class="form-control" id="profile" name="profile">\n'
-    form_eu += '                      	<option value="S">Supervisor </option>\n'
-    form_eu += '                      	<option value="U">User </option>\n'
-    form_eu += '                      </select>\n'
-    form_eu += '                </div>\n'
-    form_eu += '            </div>\n'
-    form_eu += '            <div class="form-group">\n'
-    form_eu += '                <label class="col-sm-4 control-label" for="task">Task User</label>\n'
-    form_eu += '                <div class="col-sm-6">\n'
-    form_eu += '                      <select class="form-control" id="task" name="task">\n'
-    form_eu += '                      	<option value="C">User </option>\n'
-    form_eu += '                      	<option value="A">Approver </option>\n'
-    form_eu += '                      	<option value="P">Payer </option>\n'
+    if p_ue == 'S':
+        form_eu += '                      	<option selected value="S">Supervisor </option>\n'
+        form_eu += '                      	<option value="U">User </option>\n'
+    else:
+        form_eu += '                      	<option value="S">Supervisor </option>\n'
+        form_eu += '                      	<option selected value="U">User </option>\n'
     form_eu += '                      </select>\n'
     form_eu += '                </div>\n'
     form_eu += '            </div>\n'
@@ -584,9 +574,9 @@ def include_form_eu(domain, nameuser, emailassoc, password, profile):
     form_eu += '            </div>\n'
     form_eu += '            <div class="form-group">\n'
     form_eu += '                <div class="col-sm-offset-4 col-sm-6">\n'
-    form_eu += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
-    form_eu += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
-    form_eu += '                    <input type="cancel" name="cancel" value="Cancel" class="btn btn-default">\n'
+    form_eu += '                    <input type="submit" name="save" value="Update" class="btn btn-primary">\n'
+    form_eu += '                    <a class="btn btn-default" href="../controls/users.py?d=' + domain + \
+               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
     form_eu += '                </div>\n'
     form_eu += '            </div>\n'
     form_eu += '        </form>\n'

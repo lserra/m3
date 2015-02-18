@@ -118,6 +118,48 @@ def commit_bd():
         return error_msg
 
 
+def edit_user(domain_ue, email_ue):
+    """
+    # Função que retorna os dados do associado cadastrado para edição
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain_ue: 'asparona'
+    :param email_ue: 'name@domain.com'
+    :return: s_domain_ue, s_name_ue, s_email_ue, s_profile_ue
+    """
+    s_sql = "SELECT d.domain, u.name_user, u.email_user, m.profile_user " + \
+            "FROM tDomain d, tUser u, tMatrix m WHERE d.id_domain = u.id_domain AND " + \
+            "m.id_user = u.id_user AND " + \
+            "d.domain='" + domain_ue + "' AND " + \
+            "u.email_user = '" + email_ue + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                d_ue, n_ue, e_ue, p_ue = bd.fetchone()
+                return d_ue, n_ue, e_ue, p_ue
+            else:
+                return None, None, None, None
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
 def fechar_bd():
     """
     # Esta função utiliza o módulo Mysqldb que contem a API de comunicação com o Mysql.
