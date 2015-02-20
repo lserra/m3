@@ -43,7 +43,9 @@ s_idassoc, s_iddomain, s_nameuser, s_emailassoc, s_pwdassoc = golias.return_data
 # s_domain = golias.return_domain_name(s_iddomain)
 
 
-(s_domain_ue, s_name_ue, s_email_ue, s_profile_ue) = golias.edit_user(s_domain, s_uedit)
+# retorna os dados do associado a ser editado
+(s_domain_ue, s_name_ue, s_email_ue, s_profile_ue, s_task_user) = golias.edit_user(s_domain, s_uedit)
+
 # pega o nome do usuário e divide em nome e sobrenome
 name = str.split(s_name_ue, ' ')
 first_name = name[0]
@@ -57,6 +59,7 @@ print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
 print (mysf.include_logout())
 print (mysf.include_div_s())
 print (mysf.include_pageheader('Users ', ' Edit user'))
-print (mysf.include_form_eu(s_domain, s_user, s_email, s_domain_ue, first_name, last_name, s_email_ue, s_profile_ue))
+print (mysf.include_form_eu(s_domain, s_user, s_email, s_domain_ue, first_name, last_name, s_email_ue, s_profile_ue,
+                            s_task_user))
 print (mysf.include_div_e())
 print (mysf.include_footer())

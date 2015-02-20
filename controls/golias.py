@@ -31,7 +31,7 @@ def abrir_bd():
         return error_msg
 
 
-def add_newuser(domain, name, email, pwd, profile):
+def add_newuser(domain, name, email, pwd, profile, task):
     """
     # Função que retorna se os dados do novo usuário foi gravado  na base de dados
     # 1- estabelece uma conexão com o banco de dados
@@ -44,6 +44,7 @@ def add_newuser(domain, name, email, pwd, profile):
     :param email: 'laercio.serra@asparona.com'
     :param pwd: 'q12we34!' (criptografada)
     :param profile: 'U'
+    :param profile: 'A'
     :return user_added: 'True/False'
     :return erro_msg: 'Usuário já existe na base de dados'
     """
@@ -56,7 +57,7 @@ def add_newuser(domain, name, email, pwd, profile):
     # verifica se o bd não retornou algum erro, então INSERT VALUES na tbMatrix
     if user_added is True:
         # 3- INSERT VALUES na tbMatrix
-        (matrix_added, error_msg) = put_assoc_matrix(name, profile)
+        (matrix_added, error_msg) = put_assoc_matrix(name, profile, task)
         # verifica se o bd não retornou algum erro
         if matrix_added is True:
             user_added = matrix_added
@@ -128,9 +129,9 @@ def edit_user(domain_ue, email_ue):
     # 4- fechar a conexão com o banco de dados
     :param domain_ue: 'asparona'
     :param email_ue: 'name@domain.com'
-    :return: s_domain_ue, s_name_ue, s_email_ue, s_profile_ue
+    :return: s_domain_ue, s_name_ue, s_email_ue, s_profile_ue, s_task_user
     """
-    s_sql = "SELECT d.domain, u.name_user, u.email_user, m.profile_user " + \
+    s_sql = "SELECT d.domain, u.name_user, u.email_user, m.profile_user, m.task_user " + \
             "FROM tDomain d, tUser u, tMatrix m WHERE d.id_domain = u.id_domain AND " + \
             "m.id_user = u.id_user AND " + \
             "d.domain='" + domain_ue + "' AND " + \
@@ -146,10 +147,10 @@ def edit_user(domain_ue, email_ue):
             numrows = int(bd.rowcount)
 
             if numrows > 0:
-                d_ue, n_ue, e_ue, p_ue = bd.fetchone()
-                return d_ue, n_ue, e_ue, p_ue
+                d_ue, n_ue, e_ue, p_ue, t_ue = bd.fetchone()
+                return d_ue, n_ue, e_ue, p_ue, t_ue
             else:
-                return None, None, None, None
+                return None, None, None, None, None
 
     except MySQLdb.Error, e:
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
@@ -178,11 +179,11 @@ def get_all_assoc(domain_name):
     :param domain_name: 'asparona'
     :return: {fields, rs_dt_table}
     """
-    s_sql = "SELECT u.name_user, u.email_user, m.profile_user " + \
+    s_sql = "SELECT u.name_user, u.email_user, m.profile_user, m.task_user " + \
             "FROM tDomain d, tUser u, tMatrix m WHERE d.id_domain = u.id_domain AND m.id_user = u.id_user AND " + \
             "d.domain='" + str(domain_name) + "';"
 
-    fields = ('Name', 'Email', 'Profile')
+    fields = ('Name', 'Email', 'Profile', 'Task')
 
     try:
         msg_err = abrir_bd()
@@ -473,7 +474,7 @@ def put_assoc_from_id(domain, name_user, email, pwd):
             fechar_bd()
 
 
-def put_assoc_matrix(name_user, profile):
+def put_assoc_matrix(name_user, profile, task):
     """
     # Funcão que inclui o novo associado para ter acesso ao sistema
     # 1- estabelece uma conexão com o banco de dados
@@ -483,13 +484,14 @@ def put_assoc_matrix(name_user, profile):
     # 4- fechar a conexão com o banco de dados
     :param name_user: 'Laercio Serra'
     :param profile: 'S'
+    :param task: 'A'
     :return:False, msg_error
     """
     try:
         (is_assoc, id_assoc) = verify_assoc_id(name_user)  # verifica a existência do associado informado
         if is_assoc:
-            s_sql = "INSERT INTO tMatrix (id_user, profile_user) " + \
-                    "VALUES ('" + str(id_assoc) + "', '" + profile + "');"
+            s_sql = "INSERT INTO tMatrix (id_user, profile_user, task_user) " + \
+                    "VALUES ('" + str(id_assoc) + "', '" + profile + "', '" + task + "');"
 
             msg_err = abrir_bd()
             if msg_err != '' and msg_err is not None:
@@ -740,6 +742,59 @@ def update_login_assoc(s_email, s_pwd):
                 return False, msg_err
             else:
                 return True, msg_err
+
+    except MySQLdb.Error, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def update_profile_assoc(d_eduser, id_eduser, n_eduser, e_eduser, p_eduser, t_eduser):
+    """
+    # Função que atualiza os dados do associado na base de dados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - confirma a transação de update no banco de dados
+    # 4- fechar a conexão com o banco de dados
+    :param d_eduser: 'asparona'
+    :param n_eduser: 'Laercio Serra'
+    :param e_eduser: 'laercio.serra@asparona.com'
+    :param p_eduser: 'S'
+    :param t_eduser: 'S'
+    :return:True, msg_err
+    """
+    # instrução de UPDATE na tabela USERS
+    s_sql_u = "UPDATE tUsers SET name_user = '" + n_eduser + "', email_user = '" + e_eduser + "' " + \
+              "WHERE id_user = '" + str(id_eduser) + "' AND id_domain = '" + str(d_eduser) + "';"
+    # instrução de UPDATE na tabela MATRIX
+    s_sql_m = "UPDATE tMatrix SET profile_user = '" + p_eduser + "', task_user = '" + t_eduser + "' " + \
+              "WHERE id_user = '" + str(id_eduser) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql_u)
+            # Confirma a transação de update do registro no banco de dados
+            msg_err = commit_bd()
+            if msg_err != '' and msg_err is not None:
+                return False, msg_err
+            else:
+                bd.execute(s_sql_m)
+                # Confirma a transação de update do registro no banco de dados
+                msg_err = commit_bd()
+                if msg_err != '' and msg_err is not None:
+                    return False, msg_err
+                else:
+                    return True, msg_err
 
     except MySQLdb.Error, e:
         if conn:

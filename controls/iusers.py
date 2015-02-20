@@ -25,6 +25,7 @@ s_lname_newuser = form_data.getvalue('lname')  # pega o valor do campo lname
 s_email_newuser = form_data.getvalue('email')  # pega o valor do campo email
 s_pwd_newuser = form_data.getvalue('pwd')  # pega o valor do campo pwd
 s_profile_newuser = form_data.getvalue('profile')  # pega o valor do campo profile
+s_task_newuser = form_data.getvalue('task')  # pega o valor do campo task
 
 s_domain = form_data.getvalue('domain')  # pega o valor do campo domain
 s_user = form_data.getvalue('nameuser')  # pega o valor do campo nameuser
@@ -119,6 +120,12 @@ if s_profile_newuser is None:
     n_field.append('P')
     s_f_msg = ' Data field required!'
 
+# valida se o campo task foi informado pelo usuário
+if s_task_newuser is None:
+    s_field = 0
+    n_field.append('T')
+    s_f_msg = ' Data field required!'
+
 
 # se todos os campos foram preenchidos, então realiza a inclusão de um novo usuário no sistema
 if s_field != 0:
@@ -131,10 +138,10 @@ if s_field != 0:
             s_erromsg = ' The \'Supervisor User\' was found. Please, try again or contact your System Administrator!'
         else:
             (user_added, s_erromsg) = golias.add_newuser(s_domain_newuser, s_newuser, s_email_newuser, s_pwd_newuser,
-                                                         s_profile_newuser)
+                                                         s_profile_newuser, s_task_newuser)
     else:
         (user_added, s_erromsg) = golias.add_newuser(s_domain_newuser, s_newuser, s_email_newuser, s_pwd_newuser,
-                                                     s_profile_newuser)
+                                                     s_profile_newuser, s_task_newuser)
 
     # se o usuário foi adicionado ao sistema, então renderiza a tela para cadastrar um novo usuário
     if user_added is True:
@@ -171,7 +178,7 @@ else:
     print (mysf.include_messages('3', s_f_msg))
     print (mysf.include_pageheader('Users ', ' Create new user'))
     print (mysf.include_form_cu_err(s_domain_newuser, s_fname_newuser, s_lname_newuser, s_email_newuser,
-                                    s_pwd_newuser, s_profile_newuser, s_domain, s_nameuser, str.lower(s_emailassoc),
-                                    n_field))
+                                    s_pwd_newuser, s_profile_newuser, s_task_newuser, s_domain, s_nameuser,
+                                    str.lower(s_emailassoc), n_field))
     print (mysf.include_div_e())
     print (mysf.include_footer())

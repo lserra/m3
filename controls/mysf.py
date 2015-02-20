@@ -297,7 +297,7 @@ def include_form_cu(domain, nameuser, emailassoc):
     form_cu += '                 <label class="col-sm-4 control-label" for="domain_nu">Domain Name</label>\n'
     form_cu += '                 <div class="col-sm-6">\n'
     form_cu += '                     <input class="form-control" id="domain_nu" name="domain_nu" type="text" ' \
-               'value="' + domain + '"/>\n'
+               'value="' + domain + '" readonly/>\n'
     form_cu += '                 </div>\n'
     form_cu += '            </div>\n'
     form_cu += '            <div class="form-group">\n'
@@ -334,6 +334,16 @@ def include_form_cu(domain, nameuser, emailassoc):
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
     form_cu += '            <div class="form-group">\n'
+    form_cu += '                <label class="col-sm-4 control-label" for="task">Task User</label>\n'
+    form_cu += '                <div class="col-sm-6">\n'
+    form_cu += '                      <select class="form-control" id="task" name="task">\n'
+    form_cu += '                      	<option value="A">Approve expense </option>\n'
+    form_cu += '                      	<option value="C">Create expense </option>\n'
+    form_cu += '                      	<option value="P">Pay expense </option>\n'
+    form_cu += '                      </select>\n'
+    form_cu += '                </div>\n'
+    form_cu += '            </div>\n'
+    form_cu += '            <div class="form-group">\n'
     form_cu += '                 <div class="col-sm-6">\n'
     form_cu += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
     form_cu += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
@@ -360,7 +370,7 @@ def include_form_cu(domain, nameuser, emailassoc):
 
 
 def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newuser,
-                        pwd_newuser, profile_newuser, domain, nameuser, emailassoc, field):
+                        pwd_newuser, profile_newuser, task_newuser, domain, nameuser, emailassoc, field):
     """
     # função que cria o formulário: create new user para tratamento dos erros encontrados
     # a página em si é armazenada em um arquivo separado em "views/form.html" e o
@@ -371,90 +381,99 @@ def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newu
     :param email_newuser: 'laercio.serra@asparona.com'
     :param pwd_newuser: 'qwertyu#$@'
     :param profile_newuser: 'U'
+    :param task_newuser: 'U'
     :param domain: 'asparona'
     :param nameuser: 'Laercio Serra'
     :param emailassoc: 'laercio.serra@asparona.com'
-    :param field: 'D'
+    :param field: ['D', 'P', 'T']
     :return:
     """
     form_cu = '            <form class="form-horizontal" role="form" method="post" action="../controls/iusers.py">\n'
-
     if field.count('D') != 0:
         form_cu += '            <div class="form-group has-error">\n'
     else:
         form_cu += '            <div class="form-group">\n'
-
     form_cu += '                 <label class="col-sm-4 control-label" for="domain_nu">Domain Name</label>\n'
     form_cu += '                 <div class="col-sm-6">\n'
     form_cu += '                     <input class="form-control" id="domain_nu" name="domain_nu" type="text" ' \
-               'value="' + domain_newuser + '"/>\n'
+               'value="' + domain_newuser + '" readonly/>\n'
     form_cu += '                 </div>\n'
     form_cu += '            </div>\n'
-
     if field.count('F') != 0:
         form_cu += '            <div class="form-group has-error">\n'
     else:
         form_cu += '            <div class="form-group">\n'
-
     form_cu += '                <label class="col-sm-4 control-label" for="fname">First Name User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
     form_cu += '                      <input class="form-control" id="fname" name= "fname" type="text" value="' + \
                fname_newuser + '"/>\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
-
     if field.count('L') != 0:
         form_cu += '            <div class="form-group has-error">\n'
     else:
         form_cu += '            <div class="form-group">\n'
-
     form_cu += '                <label class="col-sm-4 control-label" for="lname">Last Name User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
     form_cu += '                      <input class="form-control" id="lname" name= "lname" type="text" value="' + \
                lname_newuser + '"/>\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
-
     if field.count('E') != 0:
         form_cu += '            <div class="form-group has-error">\n'
     else:
         form_cu += '            <div class="form-group">\n'
-
     form_cu += '                <label class="col-sm-4 control-label" for="email">E-mail User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
     form_cu += '                      <input class="form-control" id="email" name= "email" type="text" value="' + \
                email_newuser + '"/>\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
-
     if field.count('W') != 0:
         form_cu += '            <div class="form-group has-error">\n'
     else:
         form_cu += '            <div class="form-group">\n'
-
     form_cu += '                <label class="col-sm-4 control-label" for="pwd">Password User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
     form_cu += '                      <input class="form-control" id="pwd" name= "pwd" type="password" value="' + \
                pwd_newuser + '"/>\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
-
     if field.count('P') != 0:
         form_cu += '            <div class="form-group has-error">\n'
     else:
         form_cu += '            <div class="form-group">\n'
-
     form_cu += '                <label class="col-sm-4 control-label" for="profile">Profile User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
     form_cu += '                      <select class="form-control" id="profile" name="profile">\n'
-
     if profile_newuser == 'S':
         form_cu += '                      	<option selected value="S">Supervisor </option>\n'
         form_cu += '                      	<option value="U">User </option>\n'
     else:
         form_cu += '                      	<option value="S">Supervisor </option>\n'
         form_cu += '                      	<option selected value="U">User </option>\n'
-
+    form_cu += '                      </select>\n'
+    form_cu += '                </div>\n'
+    form_cu += '            </div>\n'
+    if field.count('T') != 0:
+        form_cu += '            <div class="form-group has-error">\n'
+    else:
+        form_cu += '            <div class="form-group">\n'
+    form_cu += '                <label class="col-sm-4 control-label" for="task">Task User</label>\n'
+    form_cu += '                <div class="col-sm-6">\n'
+    form_cu += '                      <select class="form-control" id="task" name="task">\n'
+    if task_newuser == 'A':
+        form_cu += '                      	<option selected value="A">Approve expense </option>\n'
+        form_cu += '                      	<option value="C">Create expense </option>\n'
+        form_cu += '                      	<option value="P">Pay expense </option>\n'
+    elif task_newuser == 'C':
+        form_cu += '                      	<option value="A">Approve expense </option>\n'
+        form_cu += '                      	<option selected value="C">Create expense </option>\n'
+        form_cu += '                      	<option value="P">Pay expense </option>\n'
+    else:
+        form_cu += '                      	<option value="A">Approve expense </option>\n'
+        form_cu += '                      	<option value="C">Create expense </option>\n'
+        form_cu += '                      	<option selected value="P">Pay expense </option>\n'
     form_cu += '                      </select>\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
@@ -512,7 +531,7 @@ def include_form_ct():
     return formct.substitute()
 
 
-def include_form_eu(domain, nameuser, emailassoc, d_ue, fn_ue, ln_ue, e_ue, p_ue):
+def include_form_eu(domain, nameuser, emailassoc, d_ue, fn_ue, ln_ue, e_ue, p_ue, t_ue):
     """
     # função que cria o formulário: edit user
     # a página em si é armazenada em um arquivo separado em "views/form.html" e o
@@ -561,6 +580,147 @@ def include_form_eu(domain, nameuser, emailassoc, d_ue, fn_ue, ln_ue, e_ue, p_ue
     else:
         form_eu += '                      	<option value="S">Supervisor </option>\n'
         form_eu += '                      	<option selected value="U">User </option>\n'
+    form_eu += '                      </select>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '            <div class="form-group">\n'
+    form_eu += '                <label class="col-sm-4 control-label" for="task">Task User</label>\n'
+    form_eu += '                <div class="col-sm-6">\n'
+    form_eu += '                      <select class="form-control" id="task" name="task">\n'
+    if t_ue == 'A':
+        form_eu += '                      	<option selected value="A">Approve expense </option>\n'
+        form_eu += '                      	<option value="C">Create expense </option>\n'
+        form_eu += '                      	<option value="P">Pay expense </option>\n'
+    elif t_ue == 'C':
+        form_eu += '                      	<option value="A">Approve expense </option>\n'
+        form_eu += '                      	<option selected value="C">Create expense </option>\n'
+        form_eu += '                      	<option value="P">Pay expense </option>\n'
+    else:
+        form_eu += '                      	<option value="A">Approve expense </option>\n'
+        form_eu += '                      	<option value="C">Create expense </option>\n'
+        form_eu += '                      	<option selected value="P">Pay expense </option>\n'
+    form_eu += '                      </select>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '            <div class="form-group">\n'
+    form_eu += '                 <div class="col-sm-6">\n'
+    form_eu += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_eu += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_eu += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+               emailassoc + '"/>\n'
+    form_eu += '                 </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '            <div class="form-group">\n'
+    form_eu += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_eu += '                    <input type="submit" name="save" value="Update" class="btn btn-primary">\n'
+    form_eu += '                    <a class="btn btn-default" href="../controls/users.py?d=' + domain + \
+               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    form_eu += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_eu)
+
+
+def include_form_eu_err(domain_eduser, fname_eduser, lname_eduser, email_eduser,
+                        profile_eduser, task_eduser, domain, nameuser, emailassoc, field):
+    """
+    # função que cria o formulário: edit user para tratamento dos erros encontrados
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_eu
+    :param domain_eduser:'asparona'
+    :param fname_eduser: 'Laercio'
+    :param lname_eduser: 'Serra'
+    :param email_eduser: 'laercio.serra@asparona.com'
+    :param profile_eduser: 'U'
+    :param task_eduser: 'U'
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param field: ['D', 'P', 'T']
+    :return:
+    """
+    form_eu = '            <form class="form-horizontal" role="form" method="post" action="../controls/uusers.py">\n'
+    if field.count('D') != 0:
+        form_eu += '            <div class="form-group has-error">\n'
+    else:
+        form_eu += '            <div class="form-group">\n'
+    form_eu += '                 <label class="col-sm-4 control-label" for="domain_nu">Domain Name</label>\n'
+    form_eu += '                 <div class="col-sm-6">\n'
+    form_eu += '                     <input class="form-control" id="domain_nu" name="domain_nu" type="text" ' \
+               'value="' + domain_eduser + '" readonly/>\n'
+    form_eu += '                 </div>\n'
+    form_eu += '            </div>\n'
+    if field.count('F') != 0:
+        form_eu += '            <div class="form-group has-error">\n'
+    else:
+        form_eu += '            <div class="form-group">\n'
+    form_eu += '                <label class="col-sm-4 control-label" for="fname">First Name User</label>\n'
+    form_eu += '                <div class="col-sm-6">\n'
+    form_eu += '                      <input class="form-control" id="fname" name= "fname" type="text" value="' + \
+               fname_eduser + '"/>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    if field.count('L') != 0:
+        form_eu += '            <div class="form-group has-error">\n'
+    else:
+        form_eu += '            <div class="form-group">\n'
+    form_eu += '                <label class="col-sm-4 control-label" for="lname">Last Name User</label>\n'
+    form_eu += '                <div class="col-sm-6">\n'
+    form_eu += '                      <input class="form-control" id="lname" name= "lname" type="text" value="' + \
+               lname_eduser + '"/>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    if field.count('E') != 0:
+        form_eu += '            <div class="form-group has-error">\n'
+    else:
+        form_eu += '            <div class="form-group">\n'
+    form_eu += '                <label class="col-sm-4 control-label" for="email">E-mail User</label>\n'
+    form_eu += '                <div class="col-sm-6">\n'
+    form_eu += '                      <input class="form-control" id="email" name= "email" type="text" value="' + \
+               email_eduser + '"/>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    if field.count('P') != 0:
+        form_eu += '            <div class="form-group has-error">\n'
+    else:
+        form_eu += '            <div class="form-group">\n'
+    form_eu += '                <label class="col-sm-4 control-label" for="profile">Profile User</label>\n'
+    form_eu += '                <div class="col-sm-6">\n'
+    form_eu += '                      <select class="form-control" id="profile" name="profile">\n'
+    if profile_eduser == 'S':
+        form_eu += '                        <option selected value="S">Supervisor </option>\n'
+        form_eu += '                        <option value="U">User </option>\n'
+    else:
+        form_eu += '                        <option value="S">Supervisor </option>\n'
+        form_eu += '                        <option selected value="U">User </option>\n'
+    form_eu += '                      </select>\n'
+    form_eu += '                </div>\n'
+    form_eu += '            </div>\n'
+    if field.count('T') != 0:
+        form_eu += '            <div class="form-group has-error">\n'
+    else:
+        form_eu += '            <div class="form-group">\n'
+    form_eu += '                <label class="col-sm-4 control-label" for="task">Task User</label>\n'
+    form_eu += '                <div class="col-sm-6">\n'
+    form_eu += '                      <select class="form-control" id="task" name="task">\n'
+    if task_eduser == 'A':
+        form_eu += '                        <option selected value="A">Approve expense </option>\n'
+        form_eu += '                        <option value="C">Create expense </option>\n'
+        form_eu += '                        <option value="P">Pay expense </option>\n'
+    elif task_eduser == 'C':
+        form_eu += '                        <option value="A">Approve expense </option>\n'
+        form_eu += '                        <option selected value="C">Create expense </option>\n'
+        form_eu += '                        <option value="P">Pay expense </option>\n'
+    else:
+        form_eu += '                        <option value="A">Approve expense </option>\n'
+        form_eu += '                        <option value="C">Create expense </option>\n'
+        form_eu += '                        <option selected value="P">Pay expense </option>\n'
     form_eu += '                      </select>\n'
     form_eu += '                </div>\n'
     form_eu += '            </div>\n'
