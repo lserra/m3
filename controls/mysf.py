@@ -527,7 +527,7 @@ def include_form_eu(domain, nameuser, emailassoc, d_ue, fn_ue, ln_ue, e_ue, p_ue
     form_eu += '                 <label class="col-sm-4 control-label" for="domain_eu">Domain Name</label>\n'
     form_eu += '                 <div class="col-sm-6">\n'
     form_eu += '                     <input class="form-control" id="domain_eu" name="domain_eu" type="text" ' \
-               'value="' + d_ue + '"/>\n'
+               'value="' + d_ue + '" readonly/>\n'
     form_eu += '                 </div>\n'
     form_eu += '            </div>\n'
     form_eu += '            <div class="form-group">\n'
