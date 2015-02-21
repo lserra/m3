@@ -38,13 +38,14 @@ def include_data_table(fields):
     :return: headers, data_tb
     """
     s_th = ''
+    s_itens = len(fields)
 
     for th in fields:
         s_hd = '<th>' + th + '</th>\n'
         s_th += s_hd
-    # TODO: mesclar as células da tabela
+
     s_dtb = '   <tr class="warning">\n' + \
-            '       <td>\n' + \
+            '       <td colspan="' + str(s_itens) + '">\n' + \
             '           <p class="text-center">\n' + \
             '           <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"> ' \
             'No records found . . .</span>\n' + \
