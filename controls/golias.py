@@ -771,7 +771,7 @@ def update_profile_assoc(d_eduser, id_eduser, n_eduser, e_eduser, p_eduser, t_ed
     :return:True, msg_err
     """
     # instrução de UPDATE na tabela USERS
-    s_sql_u = "UPDATE tUsers SET name_user = '" + n_eduser + "', email_user = '" + e_eduser + "' " + \
+    s_sql_u = "UPDATE tUser SET name_user = '" + n_eduser + "', email_user = '" + e_eduser + "' " + \
               "WHERE id_user = '" + str(id_eduser) + "' AND id_domain = '" + str(d_eduser) + "';"
     # instrução de UPDATE na tabela MATRIX
     s_sql_m = "UPDATE tMatrix SET profile_user = '" + p_eduser + "', task_user = '" + t_eduser + "' " + \
