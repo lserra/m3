@@ -779,6 +779,66 @@ def include_form_login():
     return form_l.substitute()
 
 
+def include_form_login_err(field):
+    """
+    # função que cria o form de login para acesso ao sistema com os erros
+    # para serem verificados e tratados pelo usuário
+    # a página em si é armazenada em um arquivo separado em "views/form_l_err.html" e o
+    # elemento $form é substituído quando necessário por form_l_err
+    :param field: ['D', 'P', 'T']
+    :return:
+    """
+    form_l_err = '                        <h2>Please Sign In</h2>\n'
+    form_l_err += '                        <hr class="colorgraph">\n'
+    if field.count('D') != 0:
+        form_l_err += '                        <div class="form-group has-error">\n'
+    else:
+        form_l_err += '                        <div class="form-group">\n'
+    form_l_err += '                            <input type="text" name="domain" id="domain" ' \
+                  'class="form-control input-lg" placeholder="Domain" required>\n'
+    form_l_err += '                        </div>\n'
+    if field.count('E') != 0:
+        form_l_err += '                        <div class="form-group has-error">\n'
+    else:
+        form_l_err += '                        <div class="form-group">\n'
+    form_l_err += '                            <input type="email" name="email" id="email" ' \
+                  'class="form-control input-lg" placeholder="Email Address" required>\n'
+    form_l_err += '                        </div>\n'
+    if field.count('P') != 0:
+        form_l_err += '                        <div class="form-group has-error">\n'
+    else:
+        form_l_err += '                        <div class="form-group">\n'
+    form_l_err += '                            <input type="password" name="password" id="password" ' \
+                  'class="form-control input-lg" placeholder="Password" required>\n'
+    form_l_err += '                        </div>\n'
+    form_l_err += '                        <span class="button-checkbox">\n'
+    form_l_err += '                            <div class="checkbox">\n'
+    form_l_err += '                                <label>\n'
+    form_l_err += '                                  <input type="checkbox"> Remember me\n'
+    form_l_err += '                                </label>\n'
+    form_l_err += '                                <a href="" class="btn btn-link pull-right">Forgot Password?</a>\n'
+    form_l_err += '                            </div>\n'
+    form_l_err += '                        </span>\n'
+    form_l_err += '                        <hr class="colorgraph">\n'
+    form_l_err += '                        <div class="row">\n'
+    form_l_err += '                            <div class="col-xs-6 col-sm-6 col-md-6">\n'
+    form_l_err += '                                <input type="submit" class="btn btn-lg btn-success btn-block" ' \
+                  'value="Sign In">\n'
+    form_l_err += '                            </div>\n'
+    form_l_err += '                            <div class="col-xs-6 col-sm-6 col-md-6">\n'
+    form_l_err += '                                <a href="../views/register.html" ' \
+                  'class="btn btn-lg btn-primary btn-block">Register</a>\n'
+    form_l_err += '                            </div>\n'
+    form_l_err += '                        </div>\n'
+
+    with open('../views/form_l_err.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_l_err)
+
+
 def include_form_ss(domain, nameuser, emailassoc, dtrep, alrep):
     """
     # função que cria o formulário: settings system
