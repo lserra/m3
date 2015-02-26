@@ -118,6 +118,47 @@ def commit_bd():
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
         return error_msg
 
+# TODO: revisar a instrução sql
+def delete_user(domain_ue, email_ue):
+    """
+    # Função que exclui os dados do associado no sistema
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain_ue: 'asparona'
+    :param email_ue: 'name@domain.com'
+    :return: True, msg_err
+    """
+    s_sql = "DELETE " + \
+            "FROM tDomain d, tUser u, tMatrix m WHERE d.id_domain = u.id_domain AND " + \
+            "m.id_user = u.id_user AND " + \
+            "d.domain='" + domain_ue + "' AND " + \
+            "u.email_user = '" + email_ue + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                return True, None
+            else:
+                return False, None
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
 
 def edit_user(domain_ue, email_ue):
     """
@@ -188,7 +229,7 @@ def get_all_assoc(domain_name):
     try:
         msg_err = abrir_bd()
         if msg_err != '' and msg_err is not None:
-            return False, msg_err
+            return fields, None, msg_err
         else:
             bd.execute(s_sql)
             # Pega o número de linhas no resultset
@@ -203,7 +244,7 @@ def get_all_assoc(domain_name):
 
     except MySQLdb.Error, e:
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
-        return False, error_msg
+        return fields, None, error_msg
 
     finally:
         if conn is not None:

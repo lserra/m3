@@ -298,31 +298,35 @@ def include_form_cu(domain, nameuser, emailassoc):
     form_cu += '                 <label class="col-sm-4 control-label" for="domain_nu">Domain Name</label>\n'
     form_cu += '                 <div class="col-sm-6">\n'
     form_cu += '                     <input class="form-control" id="domain_nu" name="domain_nu" type="text" ' \
-               'value="' + domain + '" readonly/>\n'
+               'value="' + domain + '" readonly />\n'
     form_cu += '                 </div>\n'
     form_cu += '            </div>\n'
     form_cu += '            <div class="form-group">\n'
     form_cu += '                <label class="col-sm-4 control-label" for="fname">First Name User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
-    form_cu += '                      <input class="form-control" id="fname" name= "fname" type="text" value=""/>\n'
+    form_cu += '                      <input class="form-control" id="fname" name= "fname" type="text" ' \
+               'value="" required />\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
     form_cu += '            <div class="form-group">\n'
     form_cu += '                <label class="col-sm-4 control-label" for="lname">Last Name User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
-    form_cu += '                      <input class="form-control" id="lname" name= "lname" type="text" value=""/>\n'
+    form_cu += '                      <input class="form-control" id="lname" name= "lname" type="text" ' \
+               'value="" required />\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
     form_cu += '            <div class="form-group">\n'
     form_cu += '                <label class="col-sm-4 control-label" for="email">E-mail User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
-    form_cu += '                      <input class="form-control" id="email" name= "email" type="text" value=""/>\n'
+    form_cu += '                      <input class="form-control" id="email" name= "email" type="text" ' \
+               'value="" required />\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
     form_cu += '            <div class="form-group">\n'
     form_cu += '                <label class="col-sm-4 control-label" for="pwd">Password User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
-    form_cu += '                      <input class="form-control" id="pwd" name= "pwd" type="password" value=""/>\n'
+    form_cu += '                      <input class="form-control" id="pwd" name= "pwd" type="password" ' \
+               'value="" required />\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
     form_cu += '            <div class="form-group">\n'
@@ -407,7 +411,7 @@ def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newu
     form_cu += '                <label class="col-sm-4 control-label" for="fname">First Name User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
     form_cu += '                      <input class="form-control" id="fname" name= "fname" type="text" value="' + \
-               fname_newuser + '"/>\n'
+               fname_newuser + '" required />\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
     if field.count('L') != 0:
@@ -417,7 +421,7 @@ def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newu
     form_cu += '                <label class="col-sm-4 control-label" for="lname">Last Name User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
     form_cu += '                      <input class="form-control" id="lname" name= "lname" type="text" value="' + \
-               lname_newuser + '"/>\n'
+               lname_newuser + '" required />\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
     if field.count('E') != 0:
@@ -427,7 +431,7 @@ def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newu
     form_cu += '                <label class="col-sm-4 control-label" for="email">E-mail User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
     form_cu += '                      <input class="form-control" id="email" name= "email" type="text" value="' + \
-               email_newuser + '"/>\n'
+               email_newuser + '" required />\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
     if field.count('W') != 0:
@@ -437,7 +441,7 @@ def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newu
     form_cu += '                <label class="col-sm-4 control-label" for="pwd">Password User</label>\n'
     form_cu += '                <div class="col-sm-6">\n'
     form_cu += '                      <input class="form-control" id="pwd" name= "pwd" type="password" value="' + \
-               pwd_newuser + '"/>\n'
+               pwd_newuser + '" required />\n'
     form_cu += '                </div>\n'
     form_cu += '            </div>\n'
     if field.count('P') != 0:
@@ -554,21 +558,21 @@ def include_form_eu(domain, nameuser, emailassoc, d_ue, fn_ue, ln_ue, e_ue, p_ue
     form_eu += '                <label class="col-sm-4 control-label" for="fname">First Name User</label>\n'
     form_eu += '                <div class="col-sm-6">\n'
     form_eu += '                      <input class="form-control" id="fname" name= "fname" type="text" ' \
-               'value="' + fn_ue + '"/>\n'
+               'value="' + fn_ue + '" required />\n'
     form_eu += '                </div>\n'
     form_eu += '            </div>\n'
     form_eu += '            <div class="form-group">\n'
     form_eu += '                <label class="col-sm-4 control-label" for="lname">Last Name User</label>\n'
     form_eu += '                <div class="col-sm-6">\n'
     form_eu += '                      <input class="form-control" id="lname" name= "lname" type="text" ' \
-               'value="' + ln_ue + '"/>\n'
+               'value="' + ln_ue + '" required />\n'
     form_eu += '                </div>\n'
     form_eu += '            </div>\n'
     form_eu += '            <div class="form-group">\n'
     form_eu += '                <label class="col-sm-4 control-label" for="email">E-mail User</label>\n'
     form_eu += '                <div class="col-sm-6">\n'
     form_eu += '                      <input class="form-control" id="email" name= "email" type="text" ' \
-               'value="' + e_ue + '"/>\n'
+               'value="' + e_ue + '" required />\n'
     form_eu += '                </div>\n'
     form_eu += '            </div>\n'
     form_eu += '            <div class="form-group">\n'
@@ -664,7 +668,7 @@ def include_form_eu_err(domain_eduser, fname_eduser, lname_eduser, email_eduser,
     form_eu += '                <label class="col-sm-4 control-label" for="fname">First Name User</label>\n'
     form_eu += '                <div class="col-sm-6">\n'
     form_eu += '                      <input class="form-control" id="fname" name= "fname" type="text" value="' + \
-               fname_eduser + '"/>\n'
+               fname_eduser + '" required />\n'
     form_eu += '                </div>\n'
     form_eu += '            </div>\n'
     if field.count('L') != 0:
@@ -674,7 +678,7 @@ def include_form_eu_err(domain_eduser, fname_eduser, lname_eduser, email_eduser,
     form_eu += '                <label class="col-sm-4 control-label" for="lname">Last Name User</label>\n'
     form_eu += '                <div class="col-sm-6">\n'
     form_eu += '                      <input class="form-control" id="lname" name= "lname" type="text" value="' + \
-               lname_eduser + '"/>\n'
+               lname_eduser + '" required />\n'
     form_eu += '                </div>\n'
     form_eu += '            </div>\n'
     if field.count('E') != 0:
@@ -684,7 +688,7 @@ def include_form_eu_err(domain_eduser, fname_eduser, lname_eduser, email_eduser,
     form_eu += '                <label class="col-sm-4 control-label" for="email">E-mail User</label>\n'
     form_eu += '                <div class="col-sm-6">\n'
     form_eu += '                      <input class="form-control" id="email" name= "email" type="text" value="' + \
-               email_eduser + '"/>\n'
+               email_eduser + '" required />\n'
     form_eu += '                </div>\n'
     form_eu += '            </div>\n'
     if field.count('P') != 0:
@@ -856,7 +860,7 @@ def include_form_ss(domain, nameuser, emailassoc, dtrep, alrep):
     form_ss += '                 <label class="col-sm-4 control-label" for="dtrep">Closing date of the report</label>\n'
     form_ss += '                 <div class="col-sm-6">\n'
     form_ss += '                     <input class="form-control" id="dtrep" name="dtrep" type="text" ' \
-               'value="' + str(dtrep) + '"/>\n'
+               'value="' + str(dtrep) + '" required />\n'
     form_ss += '                 </div>\n'
     form_ss += '            </div>\n'
     form_ss += '            <div class="form-group">\n'
@@ -916,7 +920,7 @@ def include_form_ss_erra(domain, nameuser, emailassoc, dtrep, alrep):
     form_ss += '                 <label class="col-sm-4 control-label" for="dtrep">Closing date of the report</label>\n'
     form_ss += '                 <div class="col-sm-6">\n'
     form_ss += '                     <input class="form-control" id="dtrep" name="dtrep" type="text" ' \
-               'value="' + str(dtrep) + '"/>\n'
+               'value="' + str(dtrep) + '" required />\n'
     form_ss += '                 </div>\n'
     form_ss += '            </div>\n'
     form_ss += '            <div class="form-group has-error">\n'
@@ -976,7 +980,7 @@ def include_form_ss_errd(domain, nameuser, emailassoc, dtrep, alrep):
     form_ss += '                 <label class="col-sm-4 control-label" for="dtrep">Closing date of the report</label>\n'
     form_ss += '                 <div class="col-sm-6">\n'
     form_ss += '                     <input class="form-control" id="dtrep" name="dtrep" type="text" ' \
-               'value="' + str(dtrep) + '"/>\n'
+               'value="' + str(dtrep) + '" required />\n'
     form_ss += '                 </div>\n'
     form_ss += '            </div>\n'
     form_ss += '            <div class="form-group">\n'

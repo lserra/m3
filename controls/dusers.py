@@ -22,6 +22,7 @@ form_data = cgi.FieldStorage()  # obter os dados de login do associado
 s_domain = form_data.getvalue('d')  # pega o valor do campo domain
 s_user = form_data.getvalue('u')  # pega o valor do campo user
 s_email = form_data.getvalue('e')  # pega o valor do campo email
+s_udel = form_data.getvalue('ud')  # pega o valor do campo email do user a ser apagado
 
 
 import time  # funções de manipulação de data e hora do sistema
@@ -48,7 +49,12 @@ last_name = name[1]
 # s_domain = golias.return_domain_name(s_iddomain)
 
 
-# TODO: criar a rotina de exclusão de um usuário existente
+# exclui o associado do sistema
+(user_deleted, s_errormsg_d) = golias.delete_user(s_domain, s_udel)
+
+
+# retorna os dados dos usuários cadastrados
+(s_fields, s_dt_tb, s_errormsg_g) = golias.get_all_assoc(s_domain)
 
 
 # renderiza a página 'users.html' para visualizar os usuários do sistema
@@ -57,12 +63,23 @@ print (mysf.include_header())
 print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
 print (mysf.include_logout())
 print (mysf.include_div_s())
+if user_deleted is True:
+    print (mysf.include_messages('2', ' User deleted with success!'))
+else:
+    if s_errormsg_d is not None:
+        print (mysf.include_messages('1', s_errormsg_d))
+    elif s_errormsg_d is not None:
+        print (mysf.include_messages('1', s_errormsg_g))
+    else:
+        s_errormsg = s_errormsg_d + '\n' + s_errormsg_g
+        print (mysf.include_messages('1', s_errormsg))
 print (mysf.include_pageheader('Users ', ' Create, update and delete users'))
 print (mysf.include_search_form())
-
-# TODO: criar a rotina que renderiza o botão "Create New User"
-
-print (mysf.include_data_table_disable(s_fields, s_dt_tb))
+print (mysf.include_button_createnewuser(s_domain, s_nameuser, s_emailassoc))
+if s_dt_tb is None:
+    print (mysf.include_data_table(s_fields))
+else:
+    print (mysf.include_dt_tb_enable_users(s_domain, s_nameuser, str.lower(s_emailassoc), s_fields, s_dt_tb))
 print (mysf.include_pagination())
 print (mysf.include_delete())
 print (mysf.include_div_e())
