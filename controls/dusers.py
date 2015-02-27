@@ -50,7 +50,7 @@ last_name = name[1]
 
 
 # exclui o associado do sistema
-(user_deleted, s_errormsg_d) = golias.delete_user(s_domain, s_udel)
+(user_deleted, s_errormsg_d) = golias.delete_user(s_iddomain, s_udel)
 
 
 # retorna os dados dos usuários cadastrados
@@ -74,7 +74,6 @@ else:
         s_errormsg = s_errormsg_d + '\n' + s_errormsg_g
         print (mysf.include_messages('1', s_errormsg))
 print (mysf.include_pageheader('Users ', ' Create, update and delete users'))
-print (mysf.include_search_form())
 print (mysf.include_button_createnewuser(s_domain, s_nameuser, s_emailassoc))
 if s_dt_tb is None:
     print (mysf.include_data_table(s_fields))

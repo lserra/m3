@@ -222,8 +222,10 @@ def include_dt_tb_enable_users(domain, nameuser, emailassoc, fields, rs_dt_table
                 '&ue=' + record[1] + '" class="btn btn-default btn-xs">\n'
         s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
         s_td += '       </a>\n'
-        s_td += '       <a href="../controls/dusers.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
-                '&ud=' + record[1] + '" class="btn btn-default btn-xs" data-toggle="modal" data-target="#delete">\n'
+        # s_td += '       <a href="../controls/dusers.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+        #         '&ud=' + record[1] + '" class="btn btn-default btn-xs" data-toggle="modal" data-target="#delete">\n'
+        s_td += '       <a href="javascript:funcDelUser(\'' + domain + '\', \'' + nameuser + '\', \'' + emailassoc + \
+                '\', \'' + record[1] + '\')" class="btn btn-default btn-xs">\n'
         s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
         s_td += '       </a>\n'
         s_td += '   </td>\n'

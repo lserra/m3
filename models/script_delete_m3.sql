@@ -1,0 +1,19 @@
+USE mthree;
+
+-- APAGAR OS DADOS DAS TABELAS
+DELETE FROM tAccount;
+DELETE FROM tCategory;
+DELETE FROM tCurrency;
+DELETE FROM tCustomerProject;
+DELETE FROM tCustomer;
+DELETE FROM tProject;
+DELETE FROM tExpenseDetail;
+DELETE FROM tExpense;
+DELETE FROM tMatrix;
+DELETE FROM tSystem;
+DELETE FROM tUser;
+DELETE FROM tWkflUserExp;
+DELETE FROM tWorkflow;
+DELETE FROM tDomain;
+DELETE FROM tUserDomain;
+COMMIT;

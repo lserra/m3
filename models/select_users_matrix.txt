@@ -1,0 +1,5 @@
+SELECT m.id_user, m.profile_user, m.task_user 
+FROM mthree.tMatrix m
+INNER JOIN mthree.tUser u
+ON m.id_user = u.id_user
+WHERE u.email_user = 'laercio.serra@asparona.com'
