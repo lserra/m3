@@ -105,7 +105,7 @@ if s_field != 0:
             else:
                 print (mysf.include_data_table_enable(s_domain, s_fields, s_dt_tb))
             print (mysf.include_pagination())
-            print (mysf.include_delete())
+            # print (mysf.include_delete())
             print (mysf.include_div_e())
             print (mysf.include_footer())  # TODO: fixar o rodapé
         else:

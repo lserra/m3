@@ -12,7 +12,7 @@ Created on 22/05/2014
 from string import Template
 
 
-def include_button_createnewuser(s_domain, s_nameuser, s_emailassoc):
+def include_button_create_new_user(s_domain, s_nameuser, s_emailassoc):
     """
     # função que cria um formulário com controles ocultos para uma simples passagem de parâmetros
     # quando o botão de comando "Create New User" for acionado
@@ -22,6 +22,23 @@ def include_button_createnewuser(s_domain, s_nameuser, s_emailassoc):
     :return:
     """
     with open('../views/buttonnewuser.html') as sformb:
+        sform_text = sformb.read()
+
+    buttonform = Template(sform_text)
+
+    return buttonform.substitute(domain=s_domain, nameuser=s_nameuser, emailassoc=s_emailassoc)
+
+
+def include_button_create_new_wkflw(s_domain, s_nameuser, s_emailassoc):
+    """
+    # função que cria um formulário com controles ocultos para uma simples passagem de parâmetros
+    # quando o botão de comando "Create New Workflow" for acionado
+    :param s_domain: 'asparona'
+    :param s_nameuser: 'Laercio Serra'
+    :param s_emailassoc: 'laercio.serra@asparona.com'
+    :return:
+    """
+    with open('../views/buttonnewwkflw.html') as sformb:
         sform_text = sformb.read()
 
     buttonform = Template(sform_text)
@@ -148,13 +165,27 @@ def include_data_table_enable(domain, fields, rs_dt_table):
     return table.substitute(headers=s_th, data_tb=s_dtb)
 
 
-def include_delete():
+def include_delete_user():
     """
     # função que cria a janela modal para confirmação da exclusão de um registro.
     # a página em si é armazenada em um arquivo separado em "views/delete.html"
     :return:
     """
-    with open('../views/delete.html') as delf:
+    with open('../views/delete_user.html') as delf:
+        del_text = delf.read()
+
+    delete = Template(del_text)
+
+    return delete.substitute()
+
+
+def include_delete_matrix():
+    """
+    # função que cria a janela modal para confirmação da exclusão de um registro.
+    # a página em si é armazenada em um arquivo separado em "views/delete.html"
+    :return:
+    """
+    with open('../views/delete_matrix.html') as delf:
         del_text = delf.read()
 
     delete = Template(del_text)
@@ -223,6 +254,54 @@ def include_dt_tb_enable_users(domain, nameuser, emailassoc, fields, rs_dt_table
         s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
         s_td += '       </a>\n'
         # s_td += '       <a href="../controls/dusers.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+        #         '&ud=' + record[1] + '" class="btn btn-default btn-xs" data-toggle="modal" data-target="#delete">\n'
+        s_td += '       <a href="javascript:funcDelUser(\'' + domain + '\', \'' + nameuser + '\', \'' + emailassoc + \
+                '\', \'' + record[1] + '\')" class="btn btn-default btn-xs">\n'
+        s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
+        s_td += '       </a>\n'
+        s_td += '   </td>\n'
+        s_td += '</tr>\n'
+        s_dtb += s_td
+
+    with open('../views/table.html') as tablef:
+        table_text = tablef.read()
+
+    table = Template(table_text)
+
+    return table.substitute(headers=s_th, data_tb=s_dtb)
+
+
+def include_dt_tb_enable_matrix(domain, nameuser, emailassoc, fields, rs_dt_table):
+    """
+    # função que apresenta os dados em uma tabela estática com os botões de comandos (edit/delete) habilitados
+    # a página em si é armazenada em um arquivo separado em "views/table.html" e
+    # os elementos <$headers, $data_tb> são substituídos quando necessários
+    :param domain: 'asparona'
+    :param fields: {field1, field2, field3, field4, field5}
+    :param rs_dt_table: rows
+    :return: headers, data_tb
+    """
+    s_th = ''
+
+    for th in fields:
+        s_hd = '<th>' + th + '</th>\n'
+        s_th += s_hd
+
+    s_th += '<!--Fixed Colunm -->\n'
+    s_th += '<th class="text-center">Action</th>\n'
+
+    s_dtb = ''
+
+    for record in rs_dt_table:
+        s_td = '<tr>\n'
+        for col in record:
+            s_td += '   <td>' + str(col) + '</td>\n'
+        s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
+        s_td += '       <a href="../controls/ewkflw.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+                '&ue=' + record[1] + '" class="btn btn-default btn-xs">\n'
+        s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
+        s_td += '       </a>\n'
+        # s_td += '       <a href="../controls/dwkflw.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
         #         '&ud=' + record[1] + '" class="btn btn-default btn-xs" data-toggle="modal" data-target="#delete">\n'
         s_td += '       <a href="javascript:funcDelUser(\'' + domain + '\', \'' + nameuser + '\', \'' + emailassoc + \
                 '\', \'' + record[1] + '\')" class="btn btn-default btn-xs">\n'

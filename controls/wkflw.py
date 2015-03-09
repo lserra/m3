@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 """
-Created on 14/06/2014
+Created on 03/03/2015
 @author: Laércio Serra (laercio.serra@gmail.com)
 """
 # O módulo CGI pega todos os dados do formulário e coloca-os em um dicionário
@@ -53,7 +53,7 @@ s_profile = golias.get_profile_assoc(s_emailassoc)
 
 # verifica se o usuário possui a permissão de acesso ao módulo	
 if s_profile != 'S':  # somente supervisor (S) possui acesso a este módulo
-    # renderiza a página 'users.html' com a mensagem de que o usuário não possui permissão
+    # renderiza a página 'matrix.html' com a mensagem de que o usuário não possui permissão
     print mysf.include_start_response()
     print (mysf.include_header())
     print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
@@ -63,22 +63,21 @@ if s_profile != 'S':  # somente supervisor (S) possui acesso a este módulo
     print (mysf.include_div_e())
     print (mysf.include_footer())
 else:
-    # retorna os dados dos usuários cadastrados
-    (s_fields, s_dt_tb, s_errormsg) = golias.get_all_assoc(s_domain)
+    (s_fields, s_dt_tb, s_errormsg) = golias.get_all_matrix(s_domain)
 
-    # renderiza a página 'users.html' para visualizar os usuários cadastrados no sistema
+    # renderiza a página 'matrix.html' para visualizar a matriz de tarefas dos usuários
     print mysf.include_start_response()
     print (mysf.include_header())
     print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
     print (mysf.include_logout())
     print (mysf.include_div_s())
-    print (mysf.include_pageheader('Users ', ' Create, update and delete users'))
-    print (mysf.include_button_create_new_user(s_domain, s_nameuser, str.lower(s_emailassoc)))
+    print (mysf.include_pageheader('Workflow ', ' List all matrix task user'))
+    print (mysf.include_button_create_new_wkflw(s_domain, s_nameuser, str.lower(s_emailassoc)))
     if s_dt_tb is None:
         print (mysf.include_data_table(s_fields))
     else:
-        print (mysf.include_dt_tb_enable_users(s_domain, s_nameuser, str.lower(s_emailassoc), s_fields, s_dt_tb))
+        print (mysf.include_dt_tb_enable_matrix(s_domain, s_nameuser, str.lower(s_emailassoc), s_fields, s_dt_tb))
     print (mysf.include_pagination())
-    print (mysf.include_delete_user())
+    print (mysf.include_delete_matrix())
     print (mysf.include_div_e())
     print (mysf.include_footer())
