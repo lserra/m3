@@ -218,6 +218,46 @@ def fechar_bd():
     conn.close()
 
 
+def get_all_approver(domain_name):
+    """
+    # Função que retorna todos os users com o perfil de approver
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain_name: 'asparona'
+    :return: {fields, rs_dt_table}
+    """
+    #TODO: colocar igual ao 'get_all_publisher'
+    s_sql = "SELECT m.approver_email, m.approver_name " + \
+            "FROM tMatrixTaskUser m WHERE m.domain='" + str(domain_name) + "' ORDER BY m.approver_name;"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                rs_dt_table = bd.fetchall()
+                return rs_dt_table, msg_err
+            else:
+                rs_dt_table = None
+                return rs_dt_table, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return None, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
 def get_all_assoc(domain_name):
     """
     # Função que retorna os associados cadastrados
@@ -254,6 +294,89 @@ def get_all_assoc(domain_name):
     except MySQLdb.Error, e:
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
         return fields, None, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def get_all_payer(domain_name):
+    """
+    # Função que retorna todos os users com o perfil de payer
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain_name: 'asparona'
+    :return: {fields, rs_dt_table}
+    """
+    #TODO: colocar igual ao 'get_all_publisher'
+    s_sql = "SELECT m.payer_email, m.payer_name " + \
+            "FROM tMatrixTaskUser m WHERE m.domain='" + str(domain_name) + "' ORDER BY m.payer_name;"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                rs_dt_table = bd.fetchall()
+                return rs_dt_table, msg_err
+            else:
+                rs_dt_table = None
+                return rs_dt_table, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return None, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def get_all_publisher(domain_name):
+    """
+    # Função que retorna todos os users com o perfil de publisher
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain_name: 'asparona'
+    :return: {rs_dt_table}
+    """
+    s_sql = "SELECT u.email_user, u.name_user " + \
+            "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
+            "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
+            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'P' AND m.id_user NOT IN " + \
+            "(SELECT id_publisher_user FROM tMatrixTaskUser WHERE domain='" + str(domain_name) + "') " + \
+            "ORDER BY u.name_user;"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                rs_dt_table = bd.fetchall()
+                return rs_dt_table, msg_err
+            else:
+                rs_dt_table = None
+                return rs_dt_table, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return None, error_msg
 
     finally:
         if conn is not None:
