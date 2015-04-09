@@ -19,18 +19,14 @@ cgitb.enable()  # ativa o módulo para que os erros possam aparecer no browser
 
 form_data = cgi.FieldStorage()  # obter os dados de login do associado
 
-# TODO: revisar os campos que são passados
-s_domain_newuser = form_data.getvalue('domain_nu')  # pega o valor do campo domain
-s_fname_newuser = form_data.getvalue('fname')  # pega o valor do campo fname
-s_lname_newuser = form_data.getvalue('lname')  # pega o valor do campo lname
-s_email_newuser = form_data.getvalue('email')  # pega o valor do campo email
-s_pwd_newuser = form_data.getvalue('pwd')  # pega o valor do campo pwd
-s_profile_newuser = form_data.getvalue('profile')  # pega o valor do campo profile
-s_task_newuser = form_data.getvalue('task')  # pega o valor do campo task
 
+s_publisher = form_data.getvalue('publisher')  # pega o valor do campo publisher
+s_approver = form_data.getvalue('approver')  # pega o valor do campo approver
+s_payer = form_data.getvalue('payer')  # pega o valor do campo payer
 s_domain = form_data.getvalue('domain')  # pega o valor do campo domain
 s_user = form_data.getvalue('nameuser')  # pega o valor do campo nameuser
 s_email = form_data.getvalue('emailassoc')  # pega o valor do campo emailassoc
+
 
 import time  # funções de manipulação de data e hora do sistema
 import mysf  # funções de renderização e output
@@ -58,109 +54,57 @@ last_name = name[1]
 s_field = 1
 n_field = []
 s_f_msg = None
-# TODO: revisar e ajustar este trecho do código
-# valida se o campo dominio foi informado pelo usuário
-if s_domain_newuser is None:
-    s_field = 0
-    n_field.append('D')
-    s_f_msg = ' Data field required!'
-    s_domain_newuser = s_domain
-else:
-    s_domain_newuser = str.lower(s_domain_newuser)
 
-# valida se o campo first name foi informado pelo usuário
-if s_fname_newuser is None:
-    s_field = 0
-    n_field.append('F')
-    s_f_msg = ' Data field required!'
-    s_fname_newuser = 'required'
-else:
-    s_fname_newuser = str.capitalize(s_fname_newuser)
-
-# valida se o campo last name foi informado pelo usuário
-if s_lname_newuser is None:
-    s_field = 0
-    n_field.append('L')
-    s_f_msg = ' Data field required!'
-    s_lname_newuser = 'required'
-else:
-    s_lname_newuser = str.capitalize(s_lname_newuser)
-
-# valida se o campo email foi informado pelo usuário
-if s_email_newuser is None:
-    s_field = 0
-    n_field.append('E')
-    s_f_msg = ' Data field required!'
-    s_email_newuser = 'required'
-else:
-    # verifica se o endereço de e-mail informado pelo usuario é válido
-    (is_email) = golias.validate_email(s_email_newuser)
-    if is_email is False:
-        s_field = 0
-        n_field.append('E')
-        s_f_msg = ' Invalid e-mail. Please, try again!'
-        s_email_newuser = 'name@domain.com'
-
-# valida se o campo password foi informado pelo usuário
-if s_pwd_newuser is None:
-    s_field = 0
-    n_field.append('W')
-    s_f_msg = ' Data field required!'
-    s_pwd_newuser = '12345678'
-else:
-    (is_pwd) = golias.validate_pwd(s_pwd_newuser)
-    if is_pwd is False:
-        s_field = 0
-        n_field.append('W')
-        s_f_msg = ' The password must have more than 8 characters. Please, try again!'
-        s_pwd_newuser = '12345678'
-
-# valida se o campo profile foi informado pelo usuário
-if s_profile_newuser is None:
+# valida se o campo publisher foi informado pelo usuário
+if s_publisher is None:
     s_field = 0
     n_field.append('P')
     s_f_msg = ' Data field required!'
 
-# valida se o campo task foi informado pelo usuário
-if s_task_newuser is None:
+
+# valida se o campo approver foi informado pelo usuário
+if s_approver is None:
     s_field = 0
-    n_field.append('T')
+    n_field.append('A')
     s_f_msg = ' Data field required!'
 
-# TODO: revisar e ajustar este trecho do código
+
+# valida se o campo payer foi informado pelo usuário
+if s_payer is None:
+    s_field = 0
+    n_field.append('Y')
+    s_f_msg = ' Data field required!'
+
+
 # se todos os campos foram preenchidos, então realiza a inclusão de um novo workflow no sistema
 if s_field != 0:
-    s_newuser = str.strip(s_fname_newuser) + ' ' + str.strip(s_lname_newuser)
-
-    if s_profile_newuser == 'S':
-        exist_sup = golias.get_assoc_supervisor(s_domain_newuser)
-        if exist_sup is True:
-            user_added = False
-            s_erromsg = ' The \'Supervisor User\' was found. Please, try again or contact your System Administrator!'
-        else:
-            # TODO: criar a rotina add_newwkflw
-            (user_added, s_erromsg) = golias.add_newuser(s_domain_newuser, s_newuser, s_email_newuser, s_pwd_newuser,
-                                                         s_profile_newuser, s_task_newuser)
-    else:
-        (user_added, s_erromsg) = golias.add_newuser(s_domain_newuser, s_newuser, s_email_newuser, s_pwd_newuser,
-                                                     s_profile_newuser, s_task_newuser)
-
+    (wkflw_added, s_erromsg) = golias.add_newwkflw(s_domain, s_publisher, s_approver, s_payer)
     # se o workflow foi adicionado ao sistema, então renderiza a tela para cadastrar um novo workflow
-    if user_added is True:
-        # TODO: revisar e ajustar este trecho do código
+    if wkflw_added is True:
+        # retorna todos os users com o perfil 'publisher' para popular a combo box da pág cwkflw.html
+        rs_publishers, p_msg_err = golias.get_all_publisher(s_domain)
+        # retorna todos os users com o perfil 'approver' para popular a combo box da pág cwkflw.html
+        rs_approvers, a_msg_err = golias.get_all_approver(s_domain)
+        # retorna todos os users com o perfil 'payer' para popular a combo box da pág cwkflw.html
+        rs_payers, y_msg_err = golias.get_all_payer(s_domain)
         # renderiza a página 'cwkflw.html' para continuar com o cadastramento de um novo workflow no sistema
         print mysf.include_start_response()
         print (mysf.include_header())
         print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
         print (mysf.include_logout())
         print (mysf.include_div_s())
-        print (mysf.include_messages('2', ' New user created!'))
-        print (mysf.include_pageheader('Users ', ' Create new user'))
-        print (mysf.include_form_cu(s_domain, s_nameuser, str.lower(s_emailassoc)))
+        print (mysf.include_pageheader('Workflow ', ' Create new workflow'))
+        print (mysf.include_form_cw(s_domain, s_nameuser, str.lower(s_emailassoc),
+                                    rs_publishers, rs_approvers, rs_payers))
         print (mysf.include_div_e())
         print (mysf.include_footer())
     else:
-        # TODO: revisar e ajustar este trecho do código
+        # retorna todos os users com o perfil 'publisher' para popular a combo box da pág cwkflw.html
+        rs_publishers, p_msg_err = golias.get_all_publisher(s_domain)
+        # retorna todos os users com o perfil 'approver' para popular a combo box da pág cwkflw.html
+        rs_approvers, a_msg_err = golias.get_all_approver(s_domain)
+        # retorna todos os users com o perfil 'payer' para popular a combo box da pág cwkflw.html
+        rs_payers, y_msg_err = golias.get_all_payer(s_domain)
         # renderiza a página 'cwkflw.html' com a mensagem do erro para verificação e tratamento
         print mysf.include_start_response()
         print (mysf.include_header())
@@ -168,12 +112,18 @@ if s_field != 0:
         print (mysf.include_logout())
         print (mysf.include_div_s())
         print (mysf.include_messages('1', s_erromsg))
-        print (mysf.include_pageheader('Users ', ' Create new user'))
-        print (mysf.include_form_cu(s_domain, s_nameuser, str.lower(s_emailassoc)))
+        print (mysf.include_pageheader('Workflow ', ' Create new workflow'))
+        print (mysf.include_form_cw(s_domain, s_nameuser, str.lower(s_emailassoc),
+                                    rs_publishers, rs_approvers, rs_payers))
         print (mysf.include_div_e())
         print (mysf.include_footer())
 else:
-    # TODO: revisar e ajustar este trecho do código
+    # retorna todos os users com o perfil 'publisher' para popular a combo box da pág cwkflw.html
+    rs_publishers, p_msg_err = golias.get_all_publisher(s_domain)
+    # retorna todos os users com o perfil 'approver' para popular a combo box da pág cwkflw.html
+    rs_approvers, a_msg_err = golias.get_all_approver(s_domain)
+    # retorna todos os users com o perfil 'payer' para popular a combo box da pág cwkflw.html
+    rs_payers, y_msg_err = golias.get_all_payer(s_domain)
     # renderiza a página 'cwkflw.html' com a mensagem do erro para verificação e tratamento
     print mysf.include_start_response()
     print (mysf.include_header())
@@ -181,9 +131,8 @@ else:
     print (mysf.include_logout())
     print (mysf.include_div_s())
     print (mysf.include_messages('3', s_f_msg))
-    print (mysf.include_pageheader('Users ', ' Create new user'))
-    print (mysf.include_form_cu_err(s_domain_newuser, s_fname_newuser, s_lname_newuser, s_email_newuser,
-                                    s_pwd_newuser, s_profile_newuser, s_task_newuser, s_domain, s_nameuser,
-                                    str.lower(s_emailassoc), n_field))
+    print (mysf.include_pageheader('Workflow ', ' Create new workflow'))
+    print (mysf.include_form_cw_err(s_domain, s_nameuser, str.lower(s_emailassoc),
+                                    rs_publishers, rs_approvers, rs_payers, n_field))
     print (mysf.include_div_e())
     print (mysf.include_footer())

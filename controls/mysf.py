@@ -455,73 +455,6 @@ def include_form_cu(domain, nameuser, emailassoc):
     return form.substitute(form=form_cu)
 
 
-def include_form_cw(domain, nameuser, emailassoc, publishers, approvers, payers):
-    """
-    # função que cria o formulário: create new workflow
-    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
-    # elemento $form é substituído quando necessário por form_cw
-    :param domain: 'asparona'
-    :param nameuser: 'Laercio Serra'
-    :param emailassoc: 'laercio.serra@asparona.com'
-    :param publishers: {e_mail:name_user}
-    :param approvers: {e_mail:name_user}
-    :param payers: {e_mail:name_user}
-    :return:
-    """
-    form_cw = '            <form class="form-horizontal" role="form" method="post" action="../controls/iwkflw.py">\n'
-    form_cw += '            <div class="form-group">\n'
-    form_cw += '                 <label class="col-sm-4 control-label" for="publisher">Publisher</label>\n'
-    form_cw += '                 <div class="col-sm-6">\n'
-    form_cw += '                      <select class="form-control" id="publisher" name="publisher" required>\n'
-    for p in publishers:
-        form_cw += '                        <option value="' + p[0] + '">' + str.upper(p[1]) + '</option>\n'
-    form_cw += '                      </select>\n'
-    form_cw += '                 </div>\n'
-    form_cw += '            </div>\n'
-    form_cw += '            <div class="form-group">\n'
-    form_cw += '                <label class="col-sm-4 control-label" for="approver">Approver</label>\n'
-    form_cw += '                <div class="col-sm-6">\n'
-    form_cw += '                      <select class="form-control" id="approver" name="approver" required>\n'
-    for a in approvers:
-        form_cw += '                        <option value="' + a[0] + '">' + str.upper(a[1]) + '</option>\n'
-    form_cw += '                      </select>\n'
-    form_cw += '                </div>\n'
-    form_cw += '            </div>\n'
-    form_cw += '            <div class="form-group">\n'
-    form_cw += '                <label class="col-sm-4 control-label" for="payer">Payer</label>\n'
-    form_cw += '                <div class="col-sm-6">\n'
-    form_cw += '                      <select class="form-control" id="payer" name="payer" required>\n'
-    for y in payers:
-        form_cw += '                        <option value="' + y[0] + '">' + str.upper(y[1]) + '</option>\n'
-    form_cw += '                      </select>\n'
-    form_cw += '                </div>\n'
-    form_cw += '            </div>\n'
-    form_cw += '            <div class="form-group">\n'
-    form_cw += '                 <div class="col-sm-6">\n'
-    form_cw += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
-    form_cw += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
-    form_cw += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
-               emailassoc + '"/>\n'
-    form_cw += '                 </div>\n'
-    form_cw += '            </div>\n'
-    form_cw += '            <div class="form-group">\n'
-    form_cw += '                <div class="col-sm-offset-4 col-sm-6">\n'
-    form_cw += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
-    form_cw += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
-    form_cw += '                    <a class="btn btn-default" href="../controls/wkflw.py?d=' + domain + \
-               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
-    form_cw += '                </div>\n'
-    form_cw += '            </div>\n'
-    form_cw += '        </form>\n'
-
-    with open('../views/form.html') as formf:
-        form_text = formf.read()
-
-    form = Template(form_text)
-
-    return form.substitute(form=form_cw)
-
-
 def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newuser,
                         pwd_newuser, profile_newuser, task_newuser, domain, nameuser, emailassoc, field):
     """
@@ -654,6 +587,150 @@ def include_form_cu_err(domain_newuser, fname_newuser, lname_newuser, email_newu
     form = Template(form_text)
 
     return form.substitute(form=form_cu)
+
+
+def include_form_cw(domain, nameuser, emailassoc, publishers, approvers, payers):
+    """
+    # função que cria o formulário: create new workflow
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_cw
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param publishers: {id_user:name_user}
+    :param approvers: {id_user:name_user}
+    :param payers: {id_user:name_user}
+    :return:
+    """
+    form_cw = '            <form class="form-horizontal" role="form" method="post" action="../controls/iwkflw.py">\n'
+    form_cw += '            <div class="form-group">\n'
+    form_cw += '                 <label class="col-sm-4 control-label" for="publisher">Publisher</label>\n'
+    form_cw += '                 <div class="col-sm-6">\n'
+    form_cw += '                      <select class="form-control" id="publisher" name="publisher" required>\n'
+    for p in publishers:
+        form_cw += '                        <option value="' + str(p[0]) + '">' + p[1] + '</option>\n'
+    form_cw += '                      </select>\n'
+    form_cw += '                 </div>\n'
+    form_cw += '            </div>\n'
+    form_cw += '            <div class="form-group">\n'
+    form_cw += '                <label class="col-sm-4 control-label" for="approver">Approver</label>\n'
+    form_cw += '                <div class="col-sm-6">\n'
+    form_cw += '                      <select class="form-control" id="approver" name="approver" required>\n'
+    for a in approvers:
+        form_cw += '                        <option value="' + str(a[0]) + '">' + a[1] + '</option>\n'
+    form_cw += '                      </select>\n'
+    form_cw += '                </div>\n'
+    form_cw += '            </div>\n'
+    form_cw += '            <div class="form-group">\n'
+    form_cw += '                <label class="col-sm-4 control-label" for="payer">Payer</label>\n'
+    form_cw += '                <div class="col-sm-6">\n'
+    form_cw += '                      <select class="form-control" id="payer" name="payer" required>\n'
+    for y in payers:
+        form_cw += '                        <option value="' + str(y[0]) + '">' + y[1] + '</option>\n'
+    form_cw += '                      </select>\n'
+    form_cw += '                </div>\n'
+    form_cw += '            </div>\n'
+    form_cw += '            <div class="form-group">\n'
+    form_cw += '                 <div class="col-sm-6">\n'
+    form_cw += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_cw += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_cw += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+               emailassoc + '"/>\n'
+    form_cw += '                 </div>\n'
+    form_cw += '            </div>\n'
+    form_cw += '            <div class="form-group">\n'
+    form_cw += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_cw += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_cw += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_cw += '                    <a class="btn btn-default" href="../controls/wkflw.py?d=' + domain + \
+               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_cw += '                </div>\n'
+    form_cw += '            </div>\n'
+    form_cw += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_cw)
+
+
+def include_form_cw_err(domain, nameuser, emailassoc, publishers, approvers, payers, field):
+    """
+    # função que cria o formulário: create new workflow para tratamento dos erros encontrados
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_cw
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param publishers: {id_user:name_user}
+    :param approvers: {id_user:name_user}
+    :param payers: {id_user:name_user}
+    :param field: ['P', 'A', 'Y']
+    :return:
+    """
+    form_cw = '            <form class="form-horizontal" role="form" method="post" action="../controls/iwkflw.py">\n'
+    if field.count('P') != 0:
+        form_cw += '            <div class="form-group has-error">\n'
+    else:
+        form_cw += '            <div class="form-group">\n'
+    form_cw += '                 <label class="col-sm-4 control-label" for="publisher">Publisher</label>\n'
+    form_cw += '                 <div class="col-sm-6">\n'
+    form_cw += '                      <select class="form-control" id="publisher" name="publisher" required>\n'
+    for p in publishers:
+        form_cw += '                        <option value="' + str(p[0]) + '">' + p[1] + '</option>\n'
+    form_cw += '                      </select>\n'
+    form_cw += '                 </div>\n'
+    form_cw += '            </div>\n'
+    if field.count('A') != 0:
+        form_cw += '            <div class="form-group has-error">\n'
+    else:
+        form_cw += '            <div class="form-group">\n'
+    form_cw += '                <label class="col-sm-4 control-label" for="approver">Approver</label>\n'
+    form_cw += '                <div class="col-sm-6">\n'
+    form_cw += '                      <select class="form-control" id="approver" name="approver" required>\n'
+    for a in approvers:
+        form_cw += '                        <option value="' + str(a[0]) + '">' + a[1] + '</option>\n'
+    form_cw += '                      </select>\n'
+    form_cw += '                </div>\n'
+    form_cw += '            </div>\n'
+    if field.count('Y') != 0:
+        form_cw += '            <div class="form-group has-error">\n'
+    else:
+        form_cw += '            <div class="form-group">\n'
+    form_cw += '                <label class="col-sm-4 control-label" for="payer">Payer</label>\n'
+    form_cw += '                <div class="col-sm-6">\n'
+    form_cw += '                      <select class="form-control" id="payer" name="payer" required>\n'
+    for y in payers:
+        form_cw += '                        <option value="' + str(y[0]) + '">' + y[1] + '</option>\n'
+    form_cw += '                      </select>\n'
+    form_cw += '                </div>\n'
+    form_cw += '            </div>\n'
+    form_cw += '            <div class="form-group">\n'
+    form_cw += '                 <div class="col-sm-6">\n'
+    form_cw += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_cw += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_cw += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+               emailassoc + '"/>\n'
+    form_cw += '                 </div>\n'
+    form_cw += '            </div>\n'
+    form_cw += '            <div class="form-group">\n'
+    form_cw += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_cw += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_cw += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_cw += '                    <a class="btn btn-default" href="../controls/wkflw.py?d=' + domain + \
+               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_cw += '                </div>\n'
+    form_cw += '            </div>\n'
+    form_cw += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_cw)
 
 
 def include_form_cp():

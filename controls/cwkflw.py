@@ -48,15 +48,15 @@ last_name = name[1]
 # s_domain = golias.return_domain_name(s_iddomain)
 
 
-# retorna todos os users com o perfil publisher para popular a combo box da pág cusers.html
+# retorna todos os users com o perfil 'publisher' para popular a combo box da pág cwklw.html
 rs_publishers, p_msg_err = golias.get_all_publisher(s_domain)
-# retorna todos os users com o perfil approver para popular a combo box da pág cusers.html
+# retorna todos os users com o perfil 'approver' para popular a combo box da pág cwklw.html
 rs_approvers, a_msg_err = golias.get_all_approver(s_domain)
-# retorna todos os users com o perfil payer para popular a combo box da pág cusers.html
-rs_payers, s_msg_err = golias.get_all_payer(s_domain)
+# retorna todos os users com o perfil 'payer' para popular a combo box da pág cwklw.html
+rs_payers, y_msg_err = golias.get_all_payer(s_domain)
 
 
-# renderiza a página 'cusers.html' para criar um novo usuário no sistema
+# renderiza a página 'cwklw.html' para criar um novo usuário no sistema
 print mysf.include_start_response()
 print (mysf.include_header())
 print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
@@ -66,8 +66,8 @@ if p_msg_err is not None:
     print (mysf.include_messages('1', p_msg_err))
 elif a_msg_err is not None:
     print (mysf.include_messages('1', a_msg_err))
-elif s_msg_err is not None:
-    print (mysf.include_messages('1', s_msg_err))
+elif y_msg_err is not None:
+    print (mysf.include_messages('1', y_msg_err))
 else:
     print (mysf.include_pageheader('Workflow ', ' Create new workflow'))
     print (mysf.include_form_cw(s_domain, s_nameuser, str.lower(s_emailassoc), rs_publishers, rs_approvers, rs_payers))

@@ -69,6 +69,106 @@ def add_newuser(domain, name, email, pwd, profile, task):
         return user_added, error_msg
 
 
+def add_newwkflw(domain, publisher, approver, payer):
+    """
+    # Função que retorna se os dados do novo workflow foi gravado  na base de dados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain: 'asparona'
+    :param publisher: '33'
+    :param approver: '28'
+    :param payer: '12'
+    :return wklw_added: 'True/False'
+    :return erro_msg: 'Usuário já existe na base de dados'
+    """
+    global p_id, p_email, p_name, a_id, a_email, a_name, y_id, y_email, y_name
+    s_domain = str.lower(domain)
+
+    try:
+        msg_err = abrir_bd()
+
+        if msg_err != '' and msg_err is not None:
+            raise MySQLdb.Error(msg_err)
+        else:
+            # 1- Pegar dados do PUBLISHER
+            p_sql = "SELECT u.id_user, u.email_user, u.name_user " \
+                    "FROM tUser u INNER JOIN tDomain d ON u.id_domain = d.id_domain " \
+                    "INNER JOIN tMatrix m ON u.id_user = m.id_user " \
+                    "WHERE d.domain = '" + str(s_domain) + "' AND u.id_user = '" + str(publisher) + \
+                    "' AND m.task_user = 'C';"
+
+            bd.execute(p_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                p_id, p_email, p_name = bd.fetchone()
+
+            # 2- Pegar dados do APPROVER
+            a_sql = "SELECT u.id_user, u.email_user, u.name_user " \
+                    "FROM tUser u INNER JOIN tDomain d ON u.id_domain = d.id_domain " \
+                    "INNER JOIN tMatrix m ON u.id_user = m.id_user " \
+                    "WHERE d.domain = '" + str(s_domain) + "' AND u.id_user = '" + str(approver) + \
+                    "' AND m.task_user = 'A';"
+
+            bd.execute(a_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                a_id, a_email, a_name = bd.fetchone()
+
+            # 3- Pegar dados do PAYER
+            y_sql = "SELECT u.id_user, u.email_user, u.name_user " \
+                    "FROM tUser u INNER JOIN tDomain d ON u.id_domain = d.id_domain " \
+                    "INNER JOIN tMatrix m ON u.id_user = m.id_user " \
+                    "WHERE d.domain = '" + str(s_domain) + "' AND u.id_user = '" + str(payer) + \
+                    "' AND m.task_user = 'P';"
+
+            bd.execute(y_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                y_id, y_email, y_name = bd.fetchone()
+
+            # 4- INSERT VALUES na tMatrixTaskUser
+            s_sql = "INSERT INTO tMatrixTaskUser(domain, id_publisher_user, publisher_name, publisher_email, " \
+                    "id_approver_user, approver_name, approver_email, id_payer_user, payer_name, payer_email) " \
+                    "VALUES('" + s_domain + "','" + str(p_id) + "','" + p_name + "','" + p_email + "','" + str(a_id) + \
+                    "','" + a_name + "','" + a_email + "','" + str(y_id) + "','" + y_name + "','" + y_email + "');"
+
+            bd.execute(s_sql)
+
+            # Confirma a transação de inserção de registro no banco de dados
+            msg_err = commit_bd()
+            if msg_err != '' and msg_err is not None:
+                raise MySQLdb.Error(msg_err)
+            else:
+                return True, msg_err
+
+    except MySQLdb.IntegrityError, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = " %d - %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    except MySQLdb.Error, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
 def assoc_pwd_crypto(s_pwd):
     """
     # codifica a senha do associado
@@ -227,11 +327,12 @@ def get_all_approver(domain_name):
     # 3.1 - pega o resultset como uma tupla
     # 4- fechar a conexão com o banco de dados
     :param domain_name: 'asparona'
-    :return: {fields, rs_dt_table}
+    :return: {rs_dt_table}
     """
-    #TODO: colocar igual ao 'get_all_publisher'
-    s_sql = "SELECT m.approver_email, m.approver_name " + \
-            "FROM tMatrixTaskUser m WHERE m.domain='" + str(domain_name) + "' ORDER BY m.approver_name;"
+    s_sql = "SELECT m.id_user, u.name_user " + \
+            "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
+            "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
+            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'A';"
 
     try:
         msg_err = abrir_bd()
@@ -309,11 +410,12 @@ def get_all_payer(domain_name):
     # 3.1 - pega o resultset como uma tupla
     # 4- fechar a conexão com o banco de dados
     :param domain_name: 'asparona'
-    :return: {fields, rs_dt_table}
+    :return: {rs_dt_table}
     """
-    #TODO: colocar igual ao 'get_all_publisher'
-    s_sql = "SELECT m.payer_email, m.payer_name " + \
-            "FROM tMatrixTaskUser m WHERE m.domain='" + str(domain_name) + "' ORDER BY m.payer_name;"
+    s_sql = "SELECT m.id_user, u.name_user " + \
+            "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
+            "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
+            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'P';"
 
     try:
         msg_err = abrir_bd()
@@ -351,10 +453,10 @@ def get_all_publisher(domain_name):
     :param domain_name: 'asparona'
     :return: {rs_dt_table}
     """
-    s_sql = "SELECT u.email_user, u.name_user " + \
+    s_sql = "SELECT m.id_user, u.name_user " + \
             "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
             "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
-            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'P' AND m.id_user NOT IN " + \
+            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'C' AND m.id_user NOT IN " + \
             "(SELECT id_publisher_user FROM tMatrixTaskUser WHERE domain='" + str(domain_name) + "') " + \
             "ORDER BY u.name_user;"
 
