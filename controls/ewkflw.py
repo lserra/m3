@@ -22,7 +22,7 @@ form_data = cgi.FieldStorage()  # obter os dados de login do associado
 s_domain = form_data.getvalue('d')  # pega o valor do campo domain
 s_user = form_data.getvalue('u')  # pega o valor do campo user
 s_email = form_data.getvalue('e')  # pega o valor do campo email
-s_uedit = form_data.getvalue('ue')  # pega o valor do campo email do user a ser editado
+s_wedit = form_data.getvalue('we')  # pega o valor do campo email do user a ser editado
 
 
 import time  # funções de manipulação de data e hora do sistema
@@ -42,14 +42,19 @@ s_idassoc, s_iddomain, s_nameuser, s_emailassoc, s_pwdassoc = golias.return_data
 # retorna o nome do domínio
 # s_domain = golias.return_domain_name(s_iddomain)
 
-# TODO: criar uma rotina que retorna os dados do workflow a ser editado
+
+# retorna todos os users com o perfil 'approver' para popular a combo box da pág ewklw.html
+rs_approvers, a_msg_err = golias.get_all_approver(s_domain)
+# retorna todos os users com o perfil 'payer' para popular a combo box da pág ewklw.html
+rs_payers, y_msg_err = golias.get_all_payer(s_domain)
 # retorna os dados do workflow a ser editado
-(s_domain_ue, s_name_ue, s_email_ue, s_profile_ue, s_task_user) = golias.edit_user(s_domain, s_uedit)
+(i_publisher, s_publisher, i_approver, s_approver, i_payer, s_payer) = golias.edit_wkflw(s_domain, s_wedit)
+
 
 # pega o nome do usuário e divide em nome e sobrenome
-name = str.split(s_name_ue, ' ')
-first_name = name[0]
-last_name = name[1]
+# name = str.split(s_name_ue, ' ')
+# first_name = name[0]
+# last_name = name[1]
 
 
 # renderiza a página 'ewkflw.html' para editar os dados de um workflow do sistema
@@ -59,8 +64,7 @@ print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
 print (mysf.include_logout())
 print (mysf.include_div_s())
 print (mysf.include_pageheader('Workflow ', ' Edit task user'))
-# TODO: criar a rotina para o form de edição do workflow
-print (mysf.include_form_eu(s_domain, s_user, s_email, s_domain_ue, first_name, last_name, s_email_ue, s_profile_ue,
-                            s_task_user))
+print (mysf.include_form_ew(s_domain, s_nameuser, str.lower(s_emailassoc), i_publisher, s_publisher, i_approver,
+                            s_approver, i_payer, s_payer, rs_approvers, rs_payers))
 print (mysf.include_div_e())
 print (mysf.include_footer())
