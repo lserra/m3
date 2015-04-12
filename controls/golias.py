@@ -565,6 +565,50 @@ def get_all_matrix(domain_name):
             fechar_bd()
 
 
+def get_approver_from_id(domain, approver):
+    """
+    # Função que retorna os dados do approver a partir do id
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain: 'asparona'
+    :param approver: '12'
+    :return id_approver: '12'
+    :return name_approver: 'Laercio Serra'
+    :return email_approver: 'laercio.serra@asparona.com'
+    """
+    s_sql = "SELECT m.id_user, u.name_user, u.email_user " \
+            "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " \
+            "INNER JOIN tDomain d ON d.id_domain = u.id_domain " \
+            "WHERE d.domain='" + domain + "' AND m.task_user='A' AND " \
+                                          "m.id_user='" + str(approver) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                (id_approver, name_approver, email_approver) = bd.fetchone()
+                return id_approver, name_approver, email_approver
+            else:
+                return None, None, None
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
 def get_assoc_from_id(email):
     """
     # Função que verifica se o associado existe e retorna os seus dados a partir do email
@@ -595,6 +639,94 @@ def get_assoc_from_id(email):
                 return True, msg_err
             else:
                 return False, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def get_payer_from_id(domain, payer):
+    """
+    # Função que retorna os dados do payer a partir do id
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain: 'asparona'
+    :param payer: '12'
+    :return id_payer: '12'
+    :return name_payer: 'Laercio Serra'
+    :return email_payer: 'laercio.serra@asparona.com'
+    """
+    s_sql = "SELECT m.id_user, u.name_user, u.email_user " \
+            "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " \
+            "INNER JOIN tDomain d ON d.id_domain = u.id_domain " \
+            "WHERE d.domain='" + domain + "' AND m.task_user='P' AND " \
+                                          "m.id_user='" + str(payer) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                (id_payer, name_payer, email_payer) = bd.fetchone()
+                return id_payer, name_payer, email_payer
+            else:
+                return None, None, None
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def get_publisher_from_id(domain, publisher):
+    """
+    # Função que retorna os dados do publisher a partir do id
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain: 'asparona'
+    :param publisher: '12'
+    :return id_publisher: '12'
+    :return name_publisher: 'Laercio Serra'
+    :return email_publisher: 'laercio.serra@asparona.com'
+    """
+    s_sql = "SELECT m.id_user, u.name_user, u.email_user " \
+            "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " \
+            "INNER JOIN tDomain d ON d.id_domain = u.id_domain " \
+            "WHERE d.domain='" + domain + "' AND m.task_user='C' AND " \
+                                          "m.id_user='" + str(publisher) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                (id_publisher, name_publisher, email_publisher) = bd.fetchone()
+                return id_publisher, name_publisher, email_publisher
+            else:
+                return None, None, None
 
     except MySQLdb.Error, e:
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
@@ -1219,6 +1351,61 @@ def update_status_assoc(s_id, s_regra="S"):
     id_assoc = s_id
     regra = s_regra
     s_sql = "UPDATE TB_ASSOC SET regra='" + regra + "' WHERE idassoc='" + str(id_assoc) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Confirma a transação de update do registro no banco de dados
+            msg_err = commit_bd()
+            if msg_err != '' and msg_err is not None:
+                return False, msg_err
+            else:
+                return True, msg_err
+
+    except MySQLdb.Error, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def update_wkflw(wkflw, domain, id_p, name_p, email_p, id_a, name_a, email_a, id_y, name_y, email_y):
+    """
+    # Função que atualiza os dados do workflow na base de dados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - confirma a transação de update no banco de dados
+    # 4- fechar a conexão com o banco de dados
+    :param wkflw: '12'
+    :param domain: 'asparona'
+    :param id_p: '12'
+    :param name_p: 'Laercio Serra'
+    :param email_p: 'laercio.serra@asparona.com'
+    :param id_a: '32'
+    :param name_a: 'Dilma Roussef'
+    :param email_a: 'dilma.r@asparona.com'
+    :param id_y: '33'
+    :param name_y: 'Luiz Inacio da Silva'
+    :param email_y: 'lula@asparona.com'
+    :return wkflw_edited: 'True'
+    :return s_erromsg: error_msg
+    """
+    s_sql = "UPDATE tMatrixTaskUser SET " \
+            "id_publisher_user = '" + str(id_p) + "', publisher_name = '" + name_p + "', " \
+            "publisher_email = '" + email_p + "', " + "id_approver_user = '" + str(id_a) + "', " \
+            "approver_name = '" + name_a + "', approver_email = '" + email_a + "', " \
+            "id_payer_user = '" + str(id_y) + "', payer_name = '" + name_y + "', " \
+            "payer_email = '" + email_y + "' WHERE domain = '" + domain + "' AND " \
+            "id_matrix_task_user = '" + str(wkflw) + "';"
 
     try:
         msg_err = abrir_bd()
