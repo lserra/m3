@@ -52,9 +52,9 @@ rs_payers, y_msg_err = golias.get_all_payer(s_domain)
 
 
 # pega o nome do usuário e divide em nome e sobrenome
-# name = str.split(s_name_ue, ' ')
-# first_name = name[0]
-# last_name = name[1]
+name = str.split(s_nameuser, ' ')
+first_name = name[0]
+last_name = name[1]
 
 
 # renderiza a página 'ewkflw.html' para editar os dados de um workflow do sistema
@@ -64,7 +64,7 @@ print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
 print (mysf.include_logout())
 print (mysf.include_div_s())
 print (mysf.include_pageheader('Workflow ', ' Edit task user'))
-print (mysf.include_form_ew(s_domain, s_nameuser, str.lower(s_emailassoc), i_publisher, s_publisher, i_approver,
-                            s_approver, i_payer, s_payer, rs_approvers, rs_payers))
+print (mysf.include_form_ew(s_wedit, s_domain, s_nameuser, str.lower(s_emailassoc), i_publisher, s_publisher,
+                            i_approver, s_approver, i_payer, s_payer, rs_approvers, rs_payers))
 print (mysf.include_div_e())
 print (mysf.include_footer())
