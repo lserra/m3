@@ -269,6 +269,49 @@ def delete_user(iddomain_ue, email_ue):
             fechar_bd()
 
 
+def delete_wkflw(domain, wdel):
+    """
+    # Função que exclui os dados do workflow no sistema
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain: 'asparona'
+    :param wdel: 'name@domain.com'
+    :return: True, msg_err
+    """
+    s_sql = "DELETE FROM tMatrixTaskUser WHERE domain = '" + domain + "' AND id_matrix_task_user = '" + str(wdel) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            # exclui os dados do workflow
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                # Confirma a transação de exclusão do workflow no banco de dados
+                msg_err = commit_bd()
+                if msg_err != '' and msg_err is not None:
+                    raise MySQLdb.Error(msg_err)
+                else:
+                    return True, None
+            else:
+                return False, ' None workflow was deleted!'
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
 def edit_user(domain_ue, email_ue):
     """
     # Função que retorna os dados do associado cadastrado para edição
@@ -321,7 +364,7 @@ def edit_wkflw(domain_we, num_we):
     # 4- fechar a conexão com o banco de dados
     :param domain_we: 'asparona'
     :param num_we: 'Laercio Serra'
-    :return: id_p, name_p, id_a, name_a, id_y, name_y
+    :return: id_p, name_p
     """
     s_sql = "SELECT id_publisher_user, publisher_name, id_approver_user, approver_name, id_payer_user, payer_name " \
             "FROM tMatrixTaskUser WHERE domain = '" + domain_we + "' AND id_matrix_task_user = '" + num_we + "';"
@@ -372,6 +415,49 @@ def get_all_approver(domain_name):
             "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
             "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
             "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'A';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                rs_dt_table = bd.fetchall()
+                return rs_dt_table, msg_err
+            else:
+                rs_dt_table = None
+                return rs_dt_table, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return None, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def get_all_approver_cb(domain_name, approver):
+    """
+    # Função que retorna todos os users com o perfil de approver para popular a combo box
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain_name: 'asparona'
+    :param approver: '32'
+    :return: {rs_dt_table}
+    """
+    s_sql = "SELECT m.id_user, u.name_user " + \
+            "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
+            "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
+            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'A' " \
+            "AND m.id_user <> '" + str(approver) + "';"
 
     try:
         msg_err = abrir_bd()
@@ -455,6 +541,48 @@ def get_all_payer(domain_name):
             "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
             "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
             "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'P';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                rs_dt_table = bd.fetchall()
+                return rs_dt_table, msg_err
+            else:
+                rs_dt_table = None
+                return rs_dt_table, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return None, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def get_all_payer_cb(domain_name, payer):
+    """
+    # Função que retorna todos os users com o perfil de payer para popular a combo box
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain_name: 'asparona'
+    :param payer: 'asparona'
+    :return: {rs_dt_table}
+    """
+    s_sql = "SELECT m.id_user, u.name_user " + \
+            "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
+            "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
+            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'P' AND m.id_user <> '" + str(payer) + "';"
 
     try:
         msg_err = abrir_bd()

@@ -95,6 +95,7 @@ if s_field != 0:
         print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
         print (mysf.include_logout())
         print (mysf.include_div_s())
+        print (mysf.include_messages('2', ' New workflow created!'))
         print (mysf.include_pageheader('Workflow ', ' Create new workflow'))
         print (mysf.include_form_cw(s_domain, s_nameuser, str.lower(s_emailassoc),
                                     rs_publishers, rs_approvers, rs_payers))

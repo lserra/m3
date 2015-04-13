@@ -298,13 +298,13 @@ def include_dt_tb_enable_matrix(domain, nameuser, emailassoc, fields, rs_dt_tabl
             s_td += '   <td>' + str(col) + '</td>\n'
         s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
         s_td += '       <a href="../controls/ewkflw.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
-                '&we=' + record[0] + '" class="btn btn-default btn-xs">\n'
+                '&we=' + str(record[0]) + '" class="btn btn-default btn-xs">\n'
         s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
         s_td += '       </a>\n'
         # s_td += '       <a href="../controls/dwkflw.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
         #         '&ud=' + record[1] + '" class="btn btn-default btn-xs" data-toggle="modal" data-target="#delete">\n'
         s_td += '       <a href="javascript:funcDelUser(\'' + domain + '\', \'' + nameuser + '\', \'' + emailassoc + \
-                '\', \'' + record[0] + '\')" class="btn btn-default btn-xs">\n'
+                '\', \'' + str(record[0]) + '\')" class="btn btn-default btn-xs">\n'
         s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
         s_td += '       </a>\n'
         s_td += '   </td>\n'
@@ -607,8 +607,11 @@ def include_form_cw(domain, nameuser, emailassoc, publishers, approvers, payers)
     form_cw += '                 <label class="col-sm-4 control-label" for="publisher">Publisher</label>\n'
     form_cw += '                 <div class="col-sm-6">\n'
     form_cw += '                      <select class="form-control" id="publisher" name="publisher" required>\n'
-    for p in publishers:
-        form_cw += '                        <option value="' + str(p[0]) + '">' + p[1] + '</option>\n'
+    if publishers is None:
+        form_cw += '                        <option value="None">No record</option>\n'
+    else:
+        for p in publishers:
+            form_cw += '                        <option value="' + str(p[0]) + '">' + p[1] + '</option>\n'
     form_cw += '                      </select>\n'
     form_cw += '                 </div>\n'
     form_cw += '            </div>\n'
@@ -616,8 +619,11 @@ def include_form_cw(domain, nameuser, emailassoc, publishers, approvers, payers)
     form_cw += '                <label class="col-sm-4 control-label" for="approver">Approver</label>\n'
     form_cw += '                <div class="col-sm-6">\n'
     form_cw += '                      <select class="form-control" id="approver" name="approver" required>\n'
-    for a in approvers:
-        form_cw += '                        <option value="' + str(a[0]) + '">' + a[1] + '</option>\n'
+    if approvers is None:
+        form_cw += '                        <option value="None">No record</option>\n'
+    else:
+        for a in approvers:
+            form_cw += '                        <option value="' + str(a[0]) + '">' + a[1] + '</option>\n'
     form_cw += '                      </select>\n'
     form_cw += '                </div>\n'
     form_cw += '            </div>\n'
@@ -625,8 +631,11 @@ def include_form_cw(domain, nameuser, emailassoc, publishers, approvers, payers)
     form_cw += '                <label class="col-sm-4 control-label" for="payer">Payer</label>\n'
     form_cw += '                <div class="col-sm-6">\n'
     form_cw += '                      <select class="form-control" id="payer" name="payer" required>\n'
-    for y in payers:
-        form_cw += '                        <option value="' + str(y[0]) + '">' + y[1] + '</option>\n'
+    if payers is None:
+        form_cw += '                        <option value="None">No record</option>\n'
+    else:
+        for y in payers:
+            form_cw += '                        <option value="' + str(y[0]) + '">' + y[1] + '</option>\n'
     form_cw += '                      </select>\n'
     form_cw += '                </div>\n'
     form_cw += '            </div>\n'
@@ -678,8 +687,11 @@ def include_form_cw_err(domain, nameuser, emailassoc, publishers, approvers, pay
     form_cw += '                 <label class="col-sm-4 control-label" for="publisher">Publisher</label>\n'
     form_cw += '                 <div class="col-sm-6">\n'
     form_cw += '                      <select class="form-control" id="publisher" name="publisher" required>\n'
-    for p in publishers:
-        form_cw += '                        <option value="' + str(p[0]) + '">' + p[1] + '</option>\n'
+    if publishers is None:
+        form_cw += '                        <option value="None">No record</option>\n'
+    else:
+        for p in publishers:
+            form_cw += '                        <option value="' + str(p[0]) + '">' + p[1] + '</option>\n'
     form_cw += '                      </select>\n'
     form_cw += '                 </div>\n'
     form_cw += '            </div>\n'
@@ -690,8 +702,11 @@ def include_form_cw_err(domain, nameuser, emailassoc, publishers, approvers, pay
     form_cw += '                <label class="col-sm-4 control-label" for="approver">Approver</label>\n'
     form_cw += '                <div class="col-sm-6">\n'
     form_cw += '                      <select class="form-control" id="approver" name="approver" required>\n'
-    for a in approvers:
-        form_cw += '                        <option value="' + str(a[0]) + '">' + a[1] + '</option>\n'
+    if approvers is None:
+        form_cw += '                        <option value="None">No record</option>\n'
+    else:
+        for a in approvers:
+            form_cw += '                        <option value="' + str(a[0]) + '">' + a[1] + '</option>\n'
     form_cw += '                      </select>\n'
     form_cw += '                </div>\n'
     form_cw += '            </div>\n'
@@ -702,8 +717,11 @@ def include_form_cw_err(domain, nameuser, emailassoc, publishers, approvers, pay
     form_cw += '                <label class="col-sm-4 control-label" for="payer">Payer</label>\n'
     form_cw += '                <div class="col-sm-6">\n'
     form_cw += '                      <select class="form-control" id="payer" name="payer" required>\n'
-    for y in payers:
-        form_cw += '                        <option value="' + str(y[0]) + '">' + y[1] + '</option>\n'
+    if payers is None:
+        form_cw += '                        <option value="None">No record</option>\n'
+    else:
+        for y in payers:
+            form_cw += '                        <option value="' + str(y[0]) + '">' + y[1] + '</option>\n'
     form_cw += '                      </select>\n'
     form_cw += '                </div>\n'
     form_cw += '            </div>\n'
@@ -979,8 +997,8 @@ def include_form_eu_err(domain_eduser, fname_eduser, lname_eduser, email_eduser,
     return form.substitute(form=form_eu)
 
 
-def include_form_ew(wkflw, domain, nameuser, emailassoc, id_publisher, publisher, id_approver, approver, id_payer,
-                    payer, approvers, payers):
+def include_form_ew(wkflw, domain, nameuser, emailassoc, id_publisher, publisher, id_approver, approver,
+                    id_payer, payer, approvers, payers):
     """
     # função que cria o formulário: edit workflow
     # a página em si é armazenada em um arquivo separado em "views/form.html" e o
@@ -992,9 +1010,9 @@ def include_form_ew(wkflw, domain, nameuser, emailassoc, id_publisher, publisher
     :param id_publisher: '1'
     :param publisher: 'Larissa Serra'
     :param id_approver: '33'
-    :param approver: 'John Lennon'
-    :param id_payer: '26'
-    :param payer: 'Dilma Roussef'
+    :param approver: 'Dilma Roussef'
+    :param id_payer: '14'
+    :param payer: 'Luiz Inacio da Silva'
     :param approvers: {id_user:name_user}
     :param payers: {id_user:name_user}
     :return:
@@ -1012,9 +1030,13 @@ def include_form_ew(wkflw, domain, nameuser, emailassoc, id_publisher, publisher
     form_ew += '                <label class="col-sm-4 control-label" for="approver">Approver</label>\n'
     form_ew += '                <div class="col-sm-6">\n'
     form_ew += '                      <select class="form-control" id="approver" name="approver" required>\n'
-    for a in approvers:
-        form_ew += '                        <option value="' + str(a[0]) + '">' + a[1] + '</option>\n'
-    form_ew += '                        <option selected value="' + str(id_approver) + '">' + approver + '</option>\n'
+    if approvers is None:
+        form_ew += '                        <option value="' + str(id_approver) + '">' + approver + '</option>\n'
+    else:
+        for a in approvers:
+            form_ew += '                        <option value="' + str(a[0]) + '">' + a[1] + '</option>\n'
+        form_ew += '                        <option selected value="' + str(id_approver) + '">' + approver + \
+                   '</option>\n'
     form_ew += '                      </select>\n'
     form_ew += '                </div>\n'
     form_ew += '            </div>\n'
@@ -1022,9 +1044,12 @@ def include_form_ew(wkflw, domain, nameuser, emailassoc, id_publisher, publisher
     form_ew += '                <label class="col-sm-4 control-label" for="payer">Payer</label>\n'
     form_ew += '                <div class="col-sm-6">\n'
     form_ew += '                      <select class="form-control" id="payer" name="payer" required>\n'
-    for y in payers:
-        form_ew += '                        <option value="' + str(y[0]) + '">' + y[1] + '</option>\n'
-    form_ew += '                        <option selected value="' + str(id_payer) + '">' + payer + '</option>\n'
+    if payers is None:
+        form_ew += '                        <option value="' + str(id_payer) + '">' + payer + '</option>\n'
+    else:
+        for y in payers:
+            form_ew += '                        <option value="' + str(y[0]) + '">' + y[1] + '</option>\n'
+        form_ew += '                        <option selected value="' + str(id_payer) + '">' + payer + '</option>\n'
     form_ew += '                      </select>\n'
     form_ew += '                </div>\n'
     form_ew += '            </div>\n'
@@ -1068,9 +1093,9 @@ def include_form_ew_err(wkflw, domain, nameuser, emailassoc, id_publisher, publi
     :param id_publisher: '1'
     :param publisher: 'Larissa Serra'
     :param id_approver: '33'
-    :param approver: 'John Lennon'
-    :param id_payer: '26'
-    :param payer: 'Dilma Roussef'
+    :param approver: 'Dilma Roussef'
+    :param id_payer: '14'
+    :param payer: 'Luiz Inacio da Silva'
     :param approvers: {id_user:name_user}
     :param payers: {id_user:name_user}
     :param field: ['P', 'A', 'Y']
@@ -1095,9 +1120,13 @@ def include_form_ew_err(wkflw, domain, nameuser, emailassoc, id_publisher, publi
     form_ew += '                <label class="col-sm-4 control-label" for="approver">Approver</label>\n'
     form_ew += '                <div class="col-sm-6">\n'
     form_ew += '                      <select class="form-control" id="approver" name="approver" required>\n'
-    for a in approvers:
-        form_ew += '                        <option value="' + str(a[0]) + '">' + a[1] + '</option>\n'
-    form_ew += '                        <option selected value="' + str(id_approver) + '">' + approver + '</option>\n'
+    if approvers is None:
+        form_ew += '                        <option value="' + str(id_approver) + '">' + approver + '</option>\n'
+    else:
+        for a in approvers:
+            form_ew += '                        <option value="' + str(a[0]) + '">' + a[1] + '</option>\n'
+        form_ew += '                        <option selected value="' + str(id_approver) + '">' + approver + \
+                   '</option>\n'
     form_ew += '                      </select>\n'
     form_ew += '                </div>\n'
     form_ew += '            </div>\n'
@@ -1108,9 +1137,12 @@ def include_form_ew_err(wkflw, domain, nameuser, emailassoc, id_publisher, publi
     form_ew += '                <label class="col-sm-4 control-label" for="payer">Payer</label>\n'
     form_ew += '                <div class="col-sm-6">\n'
     form_ew += '                      <select class="form-control" id="payer" name="payer" required>\n'
-    for y in payers:
-        form_ew += '                        <option value="' + str(y[0]) + '">' + y[1] + '</option>\n'
-    form_ew += '                        <option selected value="' + str(id_payer) + '">' + payer + '</option>\n'
+    if payers is None:
+        form_ew += '                        <option value="' + str(id_payer) + '">' + payer + '</option>\n'
+    else:
+        for y in payers:
+            form_ew += '                        <option value="' + str(y[0]) + '">' + y[1] + '</option>\n'
+        form_ew += '                        <option selected value="' + str(id_payer) + '">' + payer + '</option>\n'
     form_ew += '                      </select>\n'
     form_ew += '                </div>\n'
     form_ew += '            </div>\n'

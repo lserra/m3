@@ -20,12 +20,12 @@
     </div><!-- /.modal -->
     <!--Function javascript that redirect the page if the user confirm to delete user of the system-->
     <script>
-        function funcDelUser(d, u, e, ud) {
+        function funcDelUser(d, u, e, wd) {
             var strResp = confirm("Are you sure you want to delete this entry?");
 
             if (strResp == true){
                 //redirect to the page 'dwkflw.py'
-                location.href="../controls/dwkflw.py?d="+d+"&u="+u+"&e="+e+"&ud="+ud;
+                location.href="../controls/dwkflw.py?d="+d+"&u="+u+"&e="+e+"&wd="+wd;
             }
 
         }

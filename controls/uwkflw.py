@@ -79,14 +79,14 @@ if s_payer is None:
 
 # retorna os dados do publisher editado
 (s_id_p, s_name_p, s_email_p) = golias.get_publisher_from_id(s_domain, s_publisher)
-# retorna os dados do approvar editado
+# retorna os dados do approver editado
 (s_id_a, s_name_a, s_email_a) = golias.get_approver_from_id(s_domain, s_approver)
 # retorna os dados do payer editado
 (s_id_y, s_name_y, s_email_y) = golias.get_payer_from_id(s_domain, s_payer)
 # retorna todos os users com o perfil 'approver' para popular a combo box da pág 'uwklw.html'
-rs_approvers, a_msg_err = golias.get_all_approver(s_domain)
+rs_approvers, a_msg_err = golias.get_all_approver_cb(s_domain, s_id_a)
 # retorna todos os users com o perfil 'payer' para popular a combo box da pág 'uwklw.html'
-rs_payers, y_msg_err = golias.get_all_payer(s_domain)
+rs_payers, y_msg_err = golias.get_all_payer_cb(s_domain, s_id_y)
 
 
 # se todos os campos foram preenchidos, então realiza a alteração dos dados do workflow no sistema
