@@ -1483,7 +1483,7 @@ def update_pwd_assoc(s_id_domain, s_email, s_pwd1):
     :return: True, msg_err
     """
     s_sql = "UPDATE tUser SET password = '" + s_pwd1 + "' " \
-            "WHERE id_domain = '" + s_id_domain + "' AND email_user = '" + s_email + "';"
+            "WHERE id_domain = '" + str(s_id_domain[0]) + "' AND email_user = '" + s_email + "';"
 
     try:
         msg_err = abrir_bd()
