@@ -664,7 +664,7 @@ def get_all_publisher_cb(domain_name, publisher):
     # 3.1 - pega o resultset como uma tupla
     # 4- fechar a conexão com o banco de dados
     :param domain_name: 'asparona'
-    :param approver: '32'
+    :param publisher: '32'
     :return: {rs_dt_table}
     """
     s_sql = "SELECT m.id_user, u.name_user " + \
@@ -1456,6 +1456,47 @@ def update_profile_assoc(d_eduser, id_eduser, n_eduser, e_eduser, p_eduser, t_ed
                     return False, msg_err
                 else:
                     return True, msg_err
+
+    except MySQLdb.Error, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def update_pwd_assoc(s_id_domain, s_email, s_pwd1):
+    """
+    # Função que atualiza a senha do associado na base de dados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - confirma a transação de update no banco de dados
+    # 4- fechar a conexão com o banco de dados
+    :param s_id_domain:'asparona'
+    :param s_email:'laercio.serra@gmail.com'
+    :param s_pwd1:'teste1234'
+    :return: True, msg_err
+    """
+    s_sql = "UPDATE tUser SET password = '" + s_pwd1 + "' " \
+            "WHERE id_domain = '" + s_id_domain + "' AND email_user = '" + s_email + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Confirma a transação de update do registro no banco de dados
+            msg_err = commit_bd()
+            if msg_err != '' and msg_err is not None:
+                return False, msg_err
+            else:
+                return True, msg_err
 
     except MySQLdb.Error, e:
         if conn:

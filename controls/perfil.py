@@ -39,13 +39,22 @@ s_date = time.localtime()  # Captura os dados de data/hora do sistema
 s_date = time.strftime("%A %d, %B %Y", s_date)  # Formatação da data: Monday 01, September 2014
 
 
-# valida a nova senha  # TODO: criar a função de atualização da nova senha no banco de dados
+# valida a nova senha
 (is_valid, s_errmsg) = golias.validate_newpwd(s_pwd1, s_pwd2)
-
-
 if is_valid:
-    s_type = '2'
-    s_msg = ' Password changed successfully!'
+    # retorna o id_domain
+    s_id_domain = golias.return_domain_id(s_domain)
+    # criptografa a nova senha do associado
+    s_pwd1 = golias.assoc_pwd_crypto(s_pwd2)
+    # atualiza a senha do associado
+    (pwd_update, s_errmsg_u) = golias.update_pwd_assoc(s_id_domain, s_email, s_pwd1)
+    if pwd_update:
+        s_type = '2'
+        s_msg = ' Password changed successfully!'
+    else:
+        is_valid = False
+        s_type = '1'
+        s_msg = s_errmsg_u
 else:
     s_type = '1'
     s_msg = s_errmsg
