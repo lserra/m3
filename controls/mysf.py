@@ -608,7 +608,7 @@ def include_form_cw(domain, nameuser, emailassoc, publishers, approvers, payers)
     form_cw += '                 <div class="col-sm-6">\n'
     form_cw += '                      <select class="form-control" id="publisher" name="publisher" required>\n'
     if publishers is None:
-        form_cw += '                        <option value="None">No record</option>\n'
+        form_cw += '                        <option value="">No record</option>\n'
     else:
         for p in publishers:
             form_cw += '                        <option value="' + str(p[0]) + '">' + p[1] + '</option>\n'
@@ -620,7 +620,7 @@ def include_form_cw(domain, nameuser, emailassoc, publishers, approvers, payers)
     form_cw += '                <div class="col-sm-6">\n'
     form_cw += '                      <select class="form-control" id="approver" name="approver" required>\n'
     if approvers is None:
-        form_cw += '                        <option value="None">No record</option>\n'
+        form_cw += '                        <option value="">No record</option>\n'
     else:
         for a in approvers:
             form_cw += '                        <option value="' + str(a[0]) + '">' + a[1] + '</option>\n'
@@ -632,7 +632,7 @@ def include_form_cw(domain, nameuser, emailassoc, publishers, approvers, payers)
     form_cw += '                <div class="col-sm-6">\n'
     form_cw += '                      <select class="form-control" id="payer" name="payer" required>\n'
     if payers is None:
-        form_cw += '                        <option value="None">No record</option>\n'
+        form_cw += '                        <option value="">No record</option>\n'
     else:
         for y in payers:
             form_cw += '                        <option value="' + str(y[0]) + '">' + y[1] + '</option>\n'
@@ -688,7 +688,7 @@ def include_form_cw_err(domain, nameuser, emailassoc, publishers, approvers, pay
     form_cw += '                 <div class="col-sm-6">\n'
     form_cw += '                      <select class="form-control" id="publisher" name="publisher" required>\n'
     if publishers is None:
-        form_cw += '                        <option value="None">No record</option>\n'
+        form_cw += '                        <option value="">No record</option>\n'
     else:
         for p in publishers:
             form_cw += '                        <option value="' + str(p[0]) + '">' + p[1] + '</option>\n'
@@ -703,7 +703,7 @@ def include_form_cw_err(domain, nameuser, emailassoc, publishers, approvers, pay
     form_cw += '                <div class="col-sm-6">\n'
     form_cw += '                      <select class="form-control" id="approver" name="approver" required>\n'
     if approvers is None:
-        form_cw += '                        <option value="None">No record</option>\n'
+        form_cw += '                        <option value="">No record</option>\n'
     else:
         for a in approvers:
             form_cw += '                        <option value="' + str(a[0]) + '">' + a[1] + '</option>\n'
@@ -718,7 +718,7 @@ def include_form_cw_err(domain, nameuser, emailassoc, publishers, approvers, pay
     form_cw += '                <div class="col-sm-6">\n'
     form_cw += '                      <select class="form-control" id="payer" name="payer" required>\n'
     if payers is None:
-        form_cw += '                        <option value="None">No record</option>\n'
+        form_cw += '                        <option value="">No record</option>\n'
     else:
         for y in payers:
             form_cw += '                        <option value="' + str(y[0]) + '">' + y[1] + '</option>\n'

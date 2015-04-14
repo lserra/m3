@@ -414,7 +414,8 @@ def get_all_approver(domain_name):
     s_sql = "SELECT m.id_user, u.name_user " + \
             "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
             "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
-            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'A';"
+            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'A' " \
+            "ORDER BY u.name_user;"
 
     try:
         msg_err = abrir_bd()
@@ -457,7 +458,7 @@ def get_all_approver_cb(domain_name, approver):
             "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
             "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
             "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'A' " \
-            "AND m.id_user <> '" + str(approver) + "';"
+            "AND m.id_user <> '" + str(approver) + "' ORDER BY u.name_user;"
 
     try:
         msg_err = abrir_bd()
@@ -540,7 +541,8 @@ def get_all_payer(domain_name):
     s_sql = "SELECT m.id_user, u.name_user " + \
             "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
             "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
-            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'P';"
+            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'P' " \
+            "ORDER BY u.name_user;"
 
     try:
         msg_err = abrir_bd()
@@ -582,7 +584,8 @@ def get_all_payer_cb(domain_name, payer):
     s_sql = "SELECT m.id_user, u.name_user " + \
             "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
             "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
-            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'P' AND m.id_user <> '" + str(payer) + "';"
+            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'P' AND m.id_user <> '" + str(payer) + \
+            "' ORDER BY u.name_user;"
 
     try:
         msg_err = abrir_bd()
@@ -626,6 +629,49 @@ def get_all_publisher(domain_name):
             "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'C' AND m.id_user NOT IN " + \
             "(SELECT id_publisher_user FROM tMatrixTaskUser WHERE domain='" + str(domain_name) + "') " + \
             "ORDER BY u.name_user;"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                rs_dt_table = bd.fetchall()
+                return rs_dt_table, msg_err
+            else:
+                rs_dt_table = None
+                return rs_dt_table, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return None, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def get_all_publisher_cb(domain_name, publisher):
+    """
+    # Função que retorna todos os users com o perfil de publisher para popular a combo box
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain_name: 'asparona'
+    :param approver: '32'
+    :return: {rs_dt_table}
+    """
+    s_sql = "SELECT m.id_user, u.name_user " + \
+            "FROM tMatrix m INNER JOIN tUser u ON m.id_user = u.id_user " + \
+            "INNER JOIN tDomain d ON d.id_domain = u.id_domain " + \
+            "WHERE d.domain='" + str(domain_name) + "' AND m.task_user = 'C' " \
+            "AND m.id_user <> '" + str(publisher) + "' ORDER BY u.name_user;"
 
     try:
         msg_err = abrir_bd()

@@ -76,19 +76,17 @@ if s_payer is None:
     s_f_msg = ' Data field required!'
 
 
-# retorna todos os users com o perfil 'publisher' para popular a combo box da pág cwkflw.html
-rs_publishers, p_msg_err = golias.get_all_publisher(s_domain)
-# retorna todos os users com o perfil 'approver' para popular a combo box da pág cwkflw.html
-rs_approvers, a_msg_err = golias.get_all_approver(s_domain)
-# retorna todos os users com o perfil 'payer' para popular a combo box da pág cwkflw.html
-rs_payers, y_msg_err = golias.get_all_payer(s_domain)
-
-
 # se todos os campos foram preenchidos, então realiza a inclusão de um novo workflow no sistema
 if s_field != 0:
     (wkflw_added, s_erromsg) = golias.add_newwkflw(s_domain, s_publisher, s_approver, s_payer)
     # se o workflow foi adicionado ao sistema, então renderiza a tela para cadastrar um novo workflow
     if wkflw_added is True:
+        # retorna todos os users com o perfil 'publisher' para popular a combo box da pág cwkflw.html
+        rs_publishers, p_msg_err = golias.get_all_publisher(s_domain)
+        # retorna todos os users com o perfil 'approver' para popular a combo box da pág cwkflw.html
+        rs_approvers, a_msg_err = golias.get_all_approver(s_domain)
+        # retorna todos os users com o perfil 'payer' para popular a combo box da pág cwkflw.html
+        rs_payers, y_msg_err = golias.get_all_payer(s_domain)
         # renderiza a página 'cwkflw.html' para continuar com o cadastramento de um novo workflow no sistema
         print mysf.include_start_response()
         print (mysf.include_header())
@@ -102,6 +100,12 @@ if s_field != 0:
         print (mysf.include_div_e())
         print (mysf.include_footer())
     else:
+        # retorna todos os users com o perfil 'publisher' para popular a combo box da pág cwkflw.html
+        rs_publishers, p_msg_err = golias.get_all_publisher(s_domain)
+        # retorna todos os users com o perfil 'approver' para popular a combo box da pág cwkflw.html
+        rs_approvers, a_msg_err = golias.get_all_approver(s_domain)
+        # retorna todos os users com o perfil 'payer' para popular a combo box da pág cwkflw.html
+        rs_payers, y_msg_err = golias.get_all_payer(s_domain)
         # renderiza a página 'cwkflw.html' com a mensagem do erro para verificação e tratamento
         print mysf.include_start_response()
         print (mysf.include_header())
@@ -115,6 +119,12 @@ if s_field != 0:
         print (mysf.include_div_e())
         print (mysf.include_footer())
 else:
+    # retorna todos os users com o perfil 'publisher' para popular a combo box da pág cwkflw.html
+    rs_publishers, p_msg_err = golias.get_all_publisher(s_domain)
+    # retorna todos os users com o perfil 'approver' para popular a combo box da pág cwkflw.html
+    rs_approvers, a_msg_err = golias.get_all_approver(s_domain)
+    # retorna todos os users com o perfil 'payer' para popular a combo box da pág cwkflw.html
+    rs_payers, y_msg_err = golias.get_all_payer(s_domain)
     # renderiza a página 'cwkflw.html' com a mensagem do erro para verificação e tratamento
     print mysf.include_start_response()
     print (mysf.include_header())
