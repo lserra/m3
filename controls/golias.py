@@ -823,6 +823,44 @@ def get_assoc_from_id(email):
             fechar_bd()
 
 
+def get_domain_assoc(id_domain, email):
+    """
+    # Função que verifica se o associado pertence ao dominio informado
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param id_domain: '2'
+    :param email: 'laercio.serra@gmail.com'
+    :return: True, msg_err
+    """
+    s_sql = "SELECT id_user, id_domain, name_user, email_user, password FROM tUser WHERE id_domain = '" + \
+            str(id_domain) + "' AND email_user = '" + email + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                return True, msg_err
+            else:
+                return False, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
 def get_payer_from_id(domain, payer):
     """
     # Função que retorna os dados do payer a partir do id
