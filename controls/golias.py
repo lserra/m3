@@ -485,6 +485,45 @@ def get_all_approver_cb(domain_name, approver):
             fechar_bd()
 
 
+def get_all_acct():
+    """
+    # Função que retorna os accounts cadastrados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :return: {fields, rs_dt_table}
+    """
+    s_sql = "SELECT name_account FROM tAccount;"
+
+    fields = ('Account',)
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return fields, None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                rs_dt_table = bd.fetchall()
+                return fields, rs_dt_table, msg_err
+            else:
+                rs_dt_table = None
+                return fields, rs_dt_table, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return fields, None, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
 def get_all_assoc(domain_name):
     """
     # Função que retorna os associados cadastrados

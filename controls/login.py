@@ -123,7 +123,7 @@ else:
         s_f_msg = ' Data value invalid. Please, try again!'
         s_senha = None
 
-
+# TODO: fazer testes contra ataques de SQL injection
 # valida se todos os campos foram preenchidos
 if s_field != 0:
     # verifica se o domínio informado é válido
