@@ -1776,7 +1776,56 @@ def include_form_ca(domain, nameuser, emailassoc):
     form_ca += '                <div class="col-sm-offset-4 col-sm-6">\n'
     form_ca += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
     form_ca += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
-    form_ca += '                    <a class="btn btn-default" href="../controls/wkflw.py?d=' + domain + \
+    form_ca += '                    <a class="btn btn-default" href="../controls/acct.py?d=' + domain + \
+               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_ca += '                </div>\n'
+    form_ca += '            </div>\n'
+    form_ca += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ca)
+
+
+def include_form_ca_err(domain, nameuser, emailassoc, acct, field):
+    """
+    # função que cria o formulário: create new account para tratamento dos erros encontrados
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ca
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param acct: 'Cash'
+    :param field: ['A',]
+    :return:
+    """
+    form_ca = '            <form class="form-horizontal" role="form" method="post" action="../controls/iacct.py">\n'
+    if field.count('A') != 0:
+        form_ca += '            <div class="form-group has-error">\n'
+    else:
+        form_ca += '            <div class="form-group">\n'
+    form_ca += '                 <label class="col-sm-4 control-label" for="account">Account</label>\n'
+    form_ca += '                 <div class="col-sm-6">\n'
+    form_ca += '                    <input class="form-control" id="account" name= "account" type="text" ' \
+               'value="' + acct + '" required />\n'
+    form_ca += '                 </div>\n'
+    form_ca += '            </div>\n'
+    form_ca += '            <div class="form-group">\n'
+    form_ca += '                 <div class="col-sm-6">\n'
+    form_ca += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_ca += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_ca += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+               emailassoc + '"/>\n'
+    form_ca += '                 </div>\n'
+    form_ca += '            </div>\n'
+    form_ca += '            <div class="form-group">\n'
+    form_ca += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ca += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_ca += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_ca += '                    <a class="btn btn-default" href="../controls/acct.py?d=' + domain + \
                '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
     form_ca += '                </div>\n'
     form_ca += '            </div>\n'
