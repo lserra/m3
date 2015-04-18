@@ -1837,3 +1837,102 @@ def include_form_ca_err(domain, nameuser, emailassoc, acct, field):
     form = Template(form_text)
 
     return form.substitute(form=form_ca)
+
+
+def include_form_ea(acct, id_account, domain, nameuser, emailassoc):
+    """
+    # função que cria o formulário: edit account
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ea
+    :param acct: 'Cash'
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param id_account: '1'
+    :return:
+    """
+    form_ea = '            <form class="form-horizontal" role="form" method="post" action="../controls/uacct.py">\n'
+    form_ea += '            <div class="form-group">\n'
+    form_ea += '                 <label class="col-sm-4 control-label" for="account">Account</label>\n'
+    form_ea += '                 <div class="col-sm-6">\n'
+    form_ea += '                    <input class="form-control" id="account" name= "account" type="text" ' \
+               'value="' + acct + '" required />\n'
+    form_ea += '                 </div>\n'
+    form_ea += '            </div>\n'
+    form_ea += '            <div class="form-group">\n'
+    form_ea += '                 <div class="col-sm-6">\n'
+    form_ea += '                     <input type="hidden" id="id_acct" name="id_acct" value="' + str(id_account) \
+               + '"/>\n'
+    form_ea += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_ea += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_ea += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+               emailassoc + '"/>\n'
+    form_ea += '                 </div>\n'
+    form_ea += '            </div>\n'
+    form_ea += '            <div class="form-group">\n'
+    form_ea += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ea += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_ea += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_ea += '                    <a class="btn btn-default" href="../controls/acct.py?d=' + domain + \
+               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_ea += '                </div>\n'
+    form_ea += '            </div>\n'
+    form_ea += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ea)
+
+
+def include_form_ea_err(acct, id_account, domain, nameuser, emailassoc, field):
+    """
+    # função que cria o formulário: edit account
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ea
+    :param acct: 'Cash'
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param id_account: '1'
+    :return:
+    """
+    form_ea = '            <form class="form-horizontal" role="form" method="post" action="../controls/uacct.py">\n'
+    form_ea += '            <div class="form-group">\n'
+    form_ea += '                 <label class="col-sm-4 control-label" for="account">Account</label>\n'
+    if field.count('A') != 0:
+        form_ea += '            <div class="form-group has-error">\n'
+    else:
+        form_ea += '            <div class="form-group">\n'
+    form_ea += '                    <input class="form-control" id="account" name= "account" type="text" ' \
+               'value="' + acct + '" required />\n'
+    form_ea += '                 </div>\n'
+    form_ea += '            </div>\n'
+    form_ea += '            <div class="form-group">\n'
+    form_ea += '                 <div class="col-sm-6">\n'
+    form_ea += '                     <input type="hidden" id="id_acct" name="id_acct" value="' + str(id_account) \
+               + '"/>\n'
+    form_ea += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_ea += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_ea += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+               emailassoc + '"/>\n'
+    form_ea += '                 </div>\n'
+    form_ea += '            </div>\n'
+    form_ea += '            <div class="form-group">\n'
+    form_ea += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ea += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_ea += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_ea += '                    <a class="btn btn-default" href="../controls/acct.py?d=' + domain + \
+               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_ea += '                </div>\n'
+    form_ea += '            </div>\n'
+    form_ea += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ea)

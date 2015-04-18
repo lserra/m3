@@ -822,6 +822,43 @@ def get_approver_from_id(domain, approver):
             fechar_bd()
 
 
+def get_acct_from_id(idacct):
+    """
+    # Função que retorna o account cadastrado
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param idacct: '1'
+    :return: s_acct_new
+    """
+    s_sql = "SELECT name_account FROM tAccount WHERE id_account = '" + idacct + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                s_account = bd.fetchone()
+                return s_account[0], msg_err
+            else:
+                return None, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return None, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
 def get_assoc_from_id(email):
     """
     # Função que verifica se o associado existe e retorna os seus dados a partir do email
@@ -1953,6 +1990,85 @@ def delete_acct(adel):
                 return False, ' None account was deleted!'
 
     except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def edit_acct(acct):
+    """
+    # Função que retorna o id do account para edição
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param acct: 'Cash'
+    :return: name_account
+    """
+    s_sql = "SELECT id_account " \
+            "FROM tAccount WHERE name_account = '" + acct + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                id_account = bd.fetchone()
+                return id_account[0]
+            else:
+                return None
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def update_acct(idacct, acct):
+    """
+    # Função que atualiza os dados do account na base de dados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - confirma a transação de update no banco de dados
+    # 4- fechar a conexão com o banco de dados
+    :param idacct: '12'
+    :param acct: 'Cash'
+    :return acct_edited: 'True'
+    :return s_erromsg: error_msg
+    """
+    s_sql = "UPDATE tAccount SET " \
+            "name_account = '" + acct + "' WHERE id_account = '" + str(idacct) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Confirma a transação de update do registro no banco de dados
+            msg_err = commit_bd()
+            if msg_err != '' and msg_err is not None:
+                return False, msg_err
+            else:
+                return True, msg_err
+
+    except MySQLdb.Error, e:
+        if conn:
+            rollback_bd()
+
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
         return False, error_msg
 
