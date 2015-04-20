@@ -1936,3 +1936,276 @@ def include_form_ea_err(acct, id_account, domain, nameuser, emailassoc, field):
     form = Template(form_text)
 
     return form.substitute(form=form_ea)
+
+
+def include_button_create_new_cat(s_domain, s_nameuser, s_emailassoc):
+    """
+    # função que cria um formulário com controles ocultos para uma simples passagem de parâmetros
+    # quando o botão de comando "Create New Category" for acionado
+    :param s_domain: 'asparona'
+    :param s_nameuser: 'Laercio Serra'
+    :param s_emailassoc: 'laercio.serra@asparona.com'
+    :return:
+    """
+    with open('../views/buttonnewcat.html') as sformb:
+        sform_text = sformb.read()
+
+    buttonform = Template(sform_text)
+
+    return buttonform.substitute(domain=s_domain, nameuser=s_nameuser, emailassoc=s_emailassoc)
+
+
+def include_dt_tb_enable_cat(domain, nameuser, emailassoc, fields, rs_dt_table):
+    """
+    # função que apresenta os dados em uma tabela estática com os botões de comandos (edit/delete) habilitados
+    # a página em si é armazenada em um arquivo separado em "views/table.html" e
+    # os elementos <$headers, $data_tb> são substituídos quando necessários
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@gmail.com'
+    :param fields: {field1, field2, field3, field4, field5}
+    :param rs_dt_table: {(v1, v2, v3), (v4, v5, v6), (v7, v8, v9)}
+    :return: headers, data_tb
+    """
+    s_th = ''
+
+    for th in fields:
+        s_hd = '<th>' + th + '</th>\n'
+        s_th += s_hd
+
+    s_th += '<!--Fixed Colunm -->\n'
+    s_th += '<th class="text-center">Action</th>\n'
+
+    s_dtb = ''
+
+    for record in rs_dt_table:
+        s_td = '<tr>\n'
+        for col in record:
+            s_td += '   <td>' + str(col) + '</td>\n'
+        s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
+        s_td += '       <a href="../controls/ecat.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+                '&ce=' + record[0] + '" class="btn btn-default btn-xs">\n'
+        s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
+        s_td += '       </a>\n'
+        # s_td += '       <a href="../controls/dcat.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+        #         '&ad=' + record[0] + '" class="btn btn-default btn-xs" data-toggle="modal" data-target="#delete">\n'
+        s_td += '       <a href="javascript:funcDelCat(\'' + domain + '\', \'' + nameuser + '\', \'' + emailassoc + \
+                '\', \'' + record[0] + '\')" class="btn btn-default btn-xs">\n'
+        s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
+        s_td += '       </a>\n'
+        s_td += '   </td>\n'
+        s_td += '</tr>\n'
+        s_dtb += s_td
+
+    with open('../views/table.html') as tablef:
+        table_text = tablef.read()
+
+    table = Template(table_text)
+
+    return table.substitute(headers=s_th, data_tb=s_dtb)
+
+
+def include_delete_cat():
+    """
+    # função que cria a janela modal para confirmação da exclusão de um registro.
+    # a página em si é armazenada em um arquivo separado em "views/delete.html"
+    :return:
+    """
+    with open('../views/delete_cat.html') as delf:
+        del_text = delf.read()
+
+    delete = Template(del_text)
+
+    return delete.substitute()
+
+
+def include_form_cc(domain, nameuser, emailassoc):
+    """
+    # função que cria o formulário: create new category
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_cc
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :return:
+    """
+    form_cc = '        <form class="form-horizontal" role="form" method="post" action="../controls/icat.py">\n'
+    form_cc += '            <div class="form-group">\n'
+    form_cc += '                 <label class="col-sm-4 control-label" for="category">Category</label>\n'
+    form_cc += '                 <div class="col-sm-6">\n'
+    form_cc += '                    <input class="form-control" id="category" name= "category" type="text" ' \
+               'value="" required />\n'
+    form_cc += '                 </div>\n'
+    form_cc += '            </div>\n'
+    form_cc += '            <div class="form-group">\n'
+    form_cc += '                 <div class="col-sm-6">\n'
+    form_cc += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_cc += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_cc += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+               emailassoc + '"/>\n'
+    form_cc += '                 </div>\n'
+    form_cc += '            </div>\n'
+    form_cc += '            <div class="form-group">\n'
+    form_cc += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_cc += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_cc += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_cc += '                    <a class="btn btn-default" href="../controls/cat.py?d=' + domain + \
+               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_cc += '                </div>\n'
+    form_cc += '            </div>\n'
+    form_cc += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_cc)
+
+
+def include_form_cc_err(domain, nameuser, emailassoc, cat, field):
+    """
+    # função que cria o formulário: create new category para tratamento dos erros encontrados
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_cc
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param cat: 'Restaurant'
+    :param field: ['C',]
+    :return:
+    """
+    form_cc = '            <form class="form-horizontal" role="form" method="post" action="../controls/icat.py">\n'
+    if field.count('C') != 0:
+        form_cc += '            <div class="form-group has-error">\n'
+    else:
+        form_cc += '            <div class="form-group">\n'
+    form_cc += '                 <label class="col-sm-4 control-label" for="category">Category</label>\n'
+    form_cc += '                 <div class="col-sm-6">\n'
+    form_cc += '                    <input class="form-control" id="category" name= "category" type="text" ' \
+               'value="' + cat + '" required />\n'
+    form_cc += '                 </div>\n'
+    form_cc += '            </div>\n'
+    form_cc += '            <div class="form-group">\n'
+    form_cc += '                 <div class="col-sm-6">\n'
+    form_cc += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_cc += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_cc += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+               emailassoc + '"/>\n'
+    form_cc += '                 </div>\n'
+    form_cc += '            </div>\n'
+    form_cc += '            <div class="form-group">\n'
+    form_cc += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_cc += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_cc += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_cc += '                    <a class="btn btn-default" href="../controls/cat.py?d=' + domain + \
+               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_cc += '                </div>\n'
+    form_cc += '            </div>\n'
+    form_cc += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_cc)
+
+
+def include_form_ec(cat, id_category, domain, nameuser, emailassoc):
+    """
+    # função que cria o formulário: edit category
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ec
+    :param cat: 'Restaurant'
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param id_category: '1'
+    :return:
+    """
+    form_ec = '            <form class="form-horizontal" role="form" method="post" action="../controls/ucat.py">\n'
+    form_ec += '            <div class="form-group">\n'
+    form_ec += '                 <label class="col-sm-4 control-label" for="category">Category</label>\n'
+    form_ec += '                 <div class="col-sm-6">\n'
+    form_ec += '                    <input class="form-control" id="category" name= "category" type="text" ' \
+               'value="' + cat + '" required />\n'
+    form_ec += '                 </div>\n'
+    form_ec += '            </div>\n'
+    form_ec += '            <div class="form-group">\n'
+    form_ec += '                 <div class="col-sm-6">\n'
+    form_ec += '                     <input type="hidden" id="id_cat" name="id_cat" value="' + str(id_category) \
+               + '"/>\n'
+    form_ec += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_ec += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_ec += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+               emailassoc + '"/>\n'
+    form_ec += '                 </div>\n'
+    form_ec += '            </div>\n'
+    form_ec += '            <div class="form-group">\n'
+    form_ec += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ec += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_ec += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_ec += '                    <a class="btn btn-default" href="../controls/cat.py?d=' + domain + \
+               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_ec += '                </div>\n'
+    form_ec += '            </div>\n'
+    form_ec += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ec)
+
+
+def include_form_ec_err(cat, id_category, domain, nameuser, emailassoc, field):
+    """
+    # função que cria o formulário: edit category
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ec
+    :param cat: 'Restaurant'
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param id_category: '1'
+    :return:
+    """
+    form_ec = '            <form class="form-horizontal" role="form" method="post" action="../controls/ucat.py">\n'
+    form_ec += '            <div class="form-group">\n'
+    form_ec += '                 <label class="col-sm-4 control-label" for="category">Category</label>\n'
+    if field.count('C') != 0:
+        form_ec += '            <div class="form-group has-error">\n'
+    else:
+        form_ec += '            <div class="form-group">\n'
+    form_ec += '                    <input class="form-control" id="category" name= "category" type="text" ' \
+               'value="' + cat + '" required />\n'
+    form_ec += '                 </div>\n'
+    form_ec += '            </div>\n'
+    form_ec += '            <div class="form-group">\n'
+    form_ec += '                 <div class="col-sm-6">\n'
+    form_ec += '                     <input type="hidden" id="id_cat" name="id_cat" value="' + str(id_category) \
+               + '"/>\n'
+    form_ec += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_ec += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_ec += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+               emailassoc + '"/>\n'
+    form_ec += '                 </div>\n'
+    form_ec += '            </div>\n'
+    form_ec += '            <div class="form-group">\n'
+    form_ec += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ec += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_ec += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_ec += '                    <a class="btn btn-default" href="../controls/cat.py?d=' + domain + \
+               '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_ec += '                </div>\n'
+    form_ec += '            </div>\n'
+    form_ec += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ec)
