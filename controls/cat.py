@@ -63,7 +63,7 @@ if s_profile != 'S':  # somente supervisor (S) possui acesso a este módulo
     print (mysf.include_div_e())
     print (mysf.include_footer())
 else:
-    (s_fields, s_dt_tb, s_errormsg) = golias.get_all_cat()
+    (s_fields, s_dt_tb, s_errormsg) = golias.get_all_cat(s_domain)
 
     # renderiza a página 'cat.html' para visualizar a lista de categorias
     print mysf.include_start_response()

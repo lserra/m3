@@ -63,7 +63,7 @@ if s_profile != 'S':  # somente supervisor (S) possui acesso a este módulo
     print (mysf.include_div_e())
     print (mysf.include_footer())
 else:
-    (s_fields, s_dt_tb, s_errormsg) = golias.get_all_acct()
+    (s_fields, s_dt_tb, s_errormsg) = golias.get_all_acct(s_domain)
 
     # renderiza a página 'acct.html' para visualizar a lista de accounts
     print mysf.include_start_response()

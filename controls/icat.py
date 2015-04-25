@@ -62,7 +62,7 @@ if s_cat is None:
 
 # se todos os campos foram preenchidos, então realiza a inclusão de um novo category no sistema
 if s_field != 0:
-    (cat_added, s_erromsg) = golias.add_newcat(str.capitalize(s_cat))
+    (cat_added, s_erromsg) = golias.add_newcat(str.capitalize(s_cat), s_domain)
     # se o category foi adicionado ao sistema, então renderiza a tela para cadastrar um novo category
     if cat_added is True:
         # renderiza a página 'ccat.html' para continuar com o cadastramento de um novo category no sistema

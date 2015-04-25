@@ -485,7 +485,7 @@ def get_all_approver_cb(domain_name, approver):
             fechar_bd()
 
 
-def get_all_acct():
+def get_all_acct(domain):
     """
     # Função que retorna os accounts cadastrados
     # 1- estabelece uma conexão com o banco de dados
@@ -493,9 +493,10 @@ def get_all_acct():
     # 3- usando o cursor, manipula os dados usando o sql
     # 3.1 - pega o resultset como uma tupla
     # 4- fechar a conexão com o banco de dados
+    :param domain: 'asparona'
     :return: {fields, rs_dt_table}
     """
-    s_sql = "SELECT name_account FROM tAccount;"
+    s_sql = "SELECT name_account FROM tAccount WHERE domain = '" + domain + "';"
 
     fields = ('Account',)
 
@@ -1907,7 +1908,7 @@ def verify_assoc_id(name_user):
             fechar_bd()
 
 
-def add_newacct(acct):
+def add_newacct(acct, domain):
     """
     # Função que retorna se os dados do novo account foi gravado  na base de dados
     # 1- estabelece uma conexão com o banco de dados
@@ -1916,6 +1917,7 @@ def add_newacct(acct):
     # 3.1 - pega o resultset como uma tupla
     # 4- fechar a conexão com o banco de dados
     :param acct: 'Cash'
+    :param domain: 'asparona'
     :return acct_added: 'True/False'
     :return erro_msg: 'Account já existe na base de dados'
     """
@@ -1926,7 +1928,7 @@ def add_newacct(acct):
             raise MySQLdb.Error(msg_err)
         else:
             # INSERT VALUES na tAccount
-            s_sql = "INSERT INTO tAccount(name_account) VALUES('" + acct + "');"
+            s_sql = "INSERT INTO tAccount(name_account, domain) VALUES('" + acct + "','" + domain + "');"
 
             bd.execute(s_sql)
 
@@ -2077,7 +2079,7 @@ def update_acct(idacct, acct):
             fechar_bd()
 
 
-def get_all_cat():
+def get_all_cat(domain):
     """
     # Função que retorna as categorias cadastradas
     # 1- estabelece uma conexão com o banco de dados
@@ -2085,9 +2087,10 @@ def get_all_cat():
     # 3- usando o cursor, manipula os dados usando o sql
     # 3.1 - pega o resultset como uma tupla
     # 4- fechar a conexão com o banco de dados
+    :param domain: 'asparona'
     :return: {fields, rs_dt_table}
     """
-    s_sql = "SELECT name_category FROM tCategory;"
+    s_sql = "SELECT name_category FROM tCategory WHERE domain = '" + domain + "';"
 
     fields = ('Category',)
 
@@ -2116,7 +2119,7 @@ def get_all_cat():
             fechar_bd()
 
 
-def add_newcat(cat):
+def add_newcat(cat, domain):
     """
     # Função que retorna se os dados do novo category foi gravado na base de dados
     # 1- estabelece uma conexão com o banco de dados
@@ -2125,6 +2128,7 @@ def add_newcat(cat):
     # 3.1 - pega o resultset como uma tupla
     # 4- fechar a conexão com o banco de dados
     :param cat: 'Restaurant'
+    :param domain: 'asparona'
     :return cat_added: 'True/False'
     :return erro_msg: 'Category já existe na base de dados'
     """
@@ -2134,8 +2138,8 @@ def add_newcat(cat):
         if msg_err != '' and msg_err is not None:
             raise MySQLdb.Error(msg_err)
         else:
-            # INSERT VALUES na tcategory
-            s_sql = "INSERT INTO tCategory(name_category) VALUES('" + cat + "');"
+            # INSERT VALUES na tCategory
+            s_sql = "INSERT INTO tCategory(name_category, domain) VALUES('" + cat + "','" + domain + "');"
 
             bd.execute(s_sql)
 
