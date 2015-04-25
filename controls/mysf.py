@@ -2322,7 +2322,7 @@ def include_form_cstr(domain, nameuser, emailassoc):
     form_cstr += '                <div class="col-sm-offset-4 col-sm-6">\n'
     form_cstr += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
     form_cstr += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
-    form_cstr += '                    <a class="btn btn-default" href="../controls/cat.py?d=' + domain + \
+    form_cstr += '                    <a class="btn btn-default" href="../controls/cstr.py?d=' + domain + \
                  '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
     form_cstr += '                </div>\n'
     form_cstr += '            </div>\n'
@@ -2407,7 +2407,7 @@ def include_form_ecstr(cstr, id_customer, domain, nameuser, emailassoc):
     form_ecstr += '            </div>\n'
     form_ecstr += '            <div class="form-group">\n'
     form_ecstr += '                 <div class="col-sm-6">\n'
-    form_ecstr += '                     <input type="hidden" id="id_cat" name="id_cat" value="' + str(id_customer) \
+    form_ecstr += '                     <input type="hidden" id="id_cstr" name="id_cstr" value="' + str(id_customer) \
                   + '"/>\n'
     form_ecstr += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
     form_ecstr += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
@@ -2419,7 +2419,7 @@ def include_form_ecstr(cstr, id_customer, domain, nameuser, emailassoc):
     form_ecstr += '                <div class="col-sm-offset-4 col-sm-6">\n'
     form_ecstr += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
     form_ecstr += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
-    form_ecstr += '                    <a class="btn btn-default" href="../controls/cat.py?d=' + domain + \
+    form_ecstr += '                    <a class="btn btn-default" href="../controls/cstr.py?d=' + domain + \
                   '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
     form_ecstr += '                </div>\n'
     form_ecstr += '            </div>\n'
@@ -2482,3 +2482,276 @@ def include_form_ecstr_err(cstr, id_customer, domain, nameuser, emailassoc, fiel
     form = Template(form_text)
 
     return form.substitute(form=form_ecstr)
+
+
+def include_button_create_new_proj(s_domain, s_nameuser, s_emailassoc):
+    """
+    # função que cria um formulário com controles ocultos para uma simples passagem de parâmetros
+    # quando o botão de comando "Create New Project" for acionado
+    :param s_domain: 'asparona'
+    :param s_nameuser: 'Laercio Serra'
+    :param s_emailassoc: 'laercio.serra@asparona.com'
+    :return:
+    """
+    with open('../views/buttonnewproj.html') as sformb:
+        sform_text = sformb.read()
+
+    buttonform = Template(sform_text)
+
+    return buttonform.substitute(domain=s_domain, nameuser=s_nameuser, emailassoc=s_emailassoc)
+
+
+def include_dt_tb_enable_proj(domain, nameuser, emailassoc, fields, rs_dt_table):
+    """
+    # função que apresenta os dados em uma tabela estática com os botões de comandos (edit/delete) habilitados
+    # a página em si é armazenada em um arquivo separado em "views/table.html" e
+    # os elementos <$headers, $data_tb> são substituídos quando necessários
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@gmail.com'
+    :param fields: {field1, field2, field3, field4, field5}
+    :param rs_dt_table: {(v1, v2, v3), (v4, v5, v6), (v7, v8, v9)}
+    :return: headers, data_tb
+    """
+    s_th = ''
+
+    for th in fields:
+        s_hd = '<th>' + th + '</th>\n'
+        s_th += s_hd
+
+    s_th += '<!--Fixed Colunm -->\n'
+    s_th += '<th class="text-center">Action</th>\n'
+
+    s_dtb = ''
+
+    for record in rs_dt_table:
+        s_td = '<tr>\n'
+        for col in record:
+            s_td += '   <td>' + str(col) + '</td>\n'
+        s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
+        s_td += '       <a href="../controls/eproj.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+                '&pe=' + record[0] + '" class="btn btn-default btn-xs">\n'
+        s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
+        s_td += '       </a>\n'
+        # s_td += '       <a href="../controls/dproj.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+        #         '&ad=' + record[0] + '" class="btn btn-default btn-xs" data-toggle="modal" data-target="#delete">\n'
+        s_td += '       <a href="javascript:funcDelProj(\'' + domain + '\', \'' + nameuser + '\', \'' + emailassoc + \
+                '\', \'' + record[0] + '\')" class="btn btn-default btn-xs">\n'
+        s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
+        s_td += '       </a>\n'
+        s_td += '   </td>\n'
+        s_td += '</tr>\n'
+        s_dtb += s_td
+
+    with open('../views/table.html') as tablef:
+        table_text = tablef.read()
+
+    table = Template(table_text)
+
+    return table.substitute(headers=s_th, data_tb=s_dtb)
+
+
+def include_delete_proj():
+    """
+    # função que cria a janela modal para confirmação da exclusão de um registro.
+    # a página em si é armazenada em um arquivo separado em "views/delete.html"
+    :return:
+    """
+    with open('../views/delete_proj.html') as delf:
+        del_text = delf.read()
+
+    delete = Template(del_text)
+
+    return delete.substitute()
+
+
+def include_form_cproj(domain, nameuser, emailassoc):
+    """
+    # função que cria o formulário: create new project
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_cproj
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :return:
+    """
+    form_cproj = '        <form class="form-horizontal" role="form" method="post" action="../controls/iproj.py">\n'
+    form_cproj += '            <div class="form-group">\n'
+    form_cproj += '                 <label class="col-sm-4 control-label" for="project">Project</label>\n'
+    form_cproj += '                 <div class="col-sm-6">\n'
+    form_cproj += '                    <input class="form-control" id="project" name= "project" type="text" ' \
+                  'value="" required />\n'
+    form_cproj += '                 </div>\n'
+    form_cproj += '            </div>\n'
+    form_cproj += '            <div class="form-group">\n'
+    form_cproj += '                 <div class="col-sm-6">\n'
+    form_cproj += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_cproj += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_cproj += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+                  emailassoc + '"/>\n'
+    form_cproj += '                 </div>\n'
+    form_cproj += '            </div>\n'
+    form_cproj += '            <div class="form-group">\n'
+    form_cproj += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_cproj += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_cproj += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_cproj += '                    <a class="btn btn-default" href="../controls/proj.py?d=' + domain + \
+                  '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_cproj += '                </div>\n'
+    form_cproj += '            </div>\n'
+    form_cproj += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_cproj)
+
+
+def include_form_cproj_err(domain, nameuser, emailassoc, proj, field):
+    """
+    # função que cria o formulário: create new project para tratamento dos erros encontrados
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_proj
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param proj: 'Tivit BIRH'
+    :param field: ['P',]
+    :return:
+    """
+    form_proj = '            <form class="form-horizontal" role="form" method="post" action="../controls/iproj.py">\n'
+    if field.count('P') != 0:
+        form_proj += '            <div class="form-group has-error">\n'
+    else:
+        form_proj += '            <div class="form-group">\n'
+    form_proj += '                 <label class="col-sm-4 control-label" for="project">Project</label>\n'
+    form_proj += '                 <div class="col-sm-6">\n'
+    form_proj += '                    <input class="form-control" id="project" name= "project" type="text" ' \
+                 'value="' + proj + '" required />\n'
+    form_proj += '                 </div>\n'
+    form_proj += '            </div>\n'
+    form_proj += '            <div class="form-group">\n'
+    form_proj += '                 <div class="col-sm-6">\n'
+    form_proj += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_proj += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_proj += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+                 emailassoc + '"/>\n'
+    form_proj += '                 </div>\n'
+    form_proj += '            </div>\n'
+    form_proj += '            <div class="form-group">\n'
+    form_proj += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_proj += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_proj += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_proj += '                    <a class="btn btn-default" href="../controls/proj.py?d=' + domain + \
+                 '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_proj += '                </div>\n'
+    form_proj += '            </div>\n'
+    form_proj += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_proj)
+
+
+def include_form_eproj(proj, id_project, domain, nameuser, emailassoc):
+    """
+    # função que cria o formulário: edit project
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_eproj
+    :param proj: 'Tivit BIRH'
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param id_project: '1'
+    :return:
+    """
+    form_eproj = '            <form class="form-horizontal" role="form" method="post" action="../controls/uproj.py">\n'
+    form_eproj += '            <div class="form-group">\n'
+    form_eproj += '                 <label class="col-sm-4 control-label" for="project">Project</label>\n'
+    form_eproj += '                 <div class="col-sm-6">\n'
+    form_eproj += '                    <input class="form-control" id="project" name= "project" type="text" ' \
+                  'value="' + proj + '" required />\n'
+    form_eproj += '                 </div>\n'
+    form_eproj += '            </div>\n'
+    form_eproj += '            <div class="form-group">\n'
+    form_eproj += '                 <div class="col-sm-6">\n'
+    form_eproj += '                     <input type="hidden" id="id_proj" name="id_proj" value="' + str(id_project) \
+                  + '"/>\n'
+    form_eproj += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_eproj += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_eproj += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+                  emailassoc + '"/>\n'
+    form_eproj += '                 </div>\n'
+    form_eproj += '            </div>\n'
+    form_eproj += '            <div class="form-group">\n'
+    form_eproj += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_eproj += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_eproj += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_eproj += '                    <a class="btn btn-default" href="../controls/proj.py?d=' + domain + \
+                  '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_eproj += '                </div>\n'
+    form_eproj += '            </div>\n'
+    form_eproj += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_eproj)
+
+
+def include_form_eproj_err(proj, id_project, domain, nameuser, emailassoc, field):
+    """
+    # função que cria o formulário: edit project
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_eproj
+    :param proj: 'Tivit'
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param id_project: '1'
+    :return:
+    """
+    form_eproj = '            <form class="form-horizontal" role="form" method="post" action="../controls/uproj.py">\n'
+    form_eproj += '            <div class="form-group">\n'
+    form_eproj += '                 <label class="col-sm-4 control-label" for="project">Project</label>\n'
+    if field.count('P') != 0:
+        form_eproj += '            <div class="form-group has-error">\n'
+    else:
+        form_eproj += '            <div class="form-group">\n'
+    form_eproj += '                    <input class="form-control" id="project" name= "project" type="text" ' \
+                  'value="' + proj + '" required />\n'
+    form_eproj += '                 </div>\n'
+    form_eproj += '            </div>\n'
+    form_eproj += '            <div class="form-group">\n'
+    form_eproj += '                 <div class="col-sm-6">\n'
+    form_eproj += '                     <input type="hidden" id="id_proj" name="id_proj" value="' + str(id_project) \
+                  + '"/>\n'
+    form_eproj += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_eproj += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_eproj += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+                  emailassoc + '"/>\n'
+    form_eproj += '                 </div>\n'
+    form_eproj += '            </div>\n'
+    form_eproj += '            <div class="form-group">\n'
+    form_eproj += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_eproj += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_eproj += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_eproj += '                    <a class="btn btn-default" href="../controls/proj.py?d=' + domain + \
+                  '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_eproj += '                </div>\n'
+    form_eproj += '            </div>\n'
+    form_eproj += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_eproj)

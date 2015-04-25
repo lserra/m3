@@ -20,7 +20,7 @@ cgitb.enable()  # ativa o módulo para que os erros possam aparecer no browser
 form_data = cgi.FieldStorage()  # obter os dados de login do associado
 
 
-s_cstr = form_data.getvalue('customer')  # pega o valor do campo customer
+s_proj = form_data.getvalue('project')  # pega o valor do campo project
 s_domain = form_data.getvalue('domain')  # pega o valor do campo domain
 s_user = form_data.getvalue('nameuser')  # pega o valor do campo nameuser
 s_email = form_data.getvalue('emailassoc')  # pega o valor do campo emailassoc
@@ -53,50 +53,50 @@ s_field = 1
 n_field = []
 s_f_msg = None
 
-# valida se o campo customer foi informado pelo usuário
-if s_cstr is None:
+# valida se o campo project foi informado pelo usuário
+if s_proj is None:
     s_field = 0
-    n_field.append('C')
+    n_field.append('P')
     s_f_msg = ' Data field required!'
 
 
-# se todos os campos foram preenchidos, então realiza a inclusão de um novo customer no sistema
+# se todos os campos foram preenchidos, então realiza a inclusão de um novo project no sistema
 if s_field != 0:
-    (cstr_added, s_erromsg) = golias.add_newcstr(str.capitalize(s_cstr), s_domain)
-    # se o customer foi adicionado ao sistema, então renderiza a tela para cadastrar um novo customer
-    if cstr_added is True:
-        # renderiza a página 'ccstr.html' para continuar com o cadastramento de um novo customer no sistema
+    (proj_added, s_erromsg) = golias.add_newproj(str.capitalize(s_proj), s_domain)
+    # se o project foi adicionado ao sistema, então renderiza a tela para cadastrar um novo project
+    if proj_added is True:
+        # renderiza a página 'cproj.html' para continuar com o cadastramento de um novo project no sistema
         print mysf.include_start_response()
         print (mysf.include_header())
         print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
         print (mysf.include_logout())
         print (mysf.include_div_s())
-        print (mysf.include_messages('2', ' New customer created!'))
-        print (mysf.include_pageheader('Customer ', ' Create new customer'))
-        print (mysf.include_form_cstr(s_domain, s_nameuser, str.lower(s_emailassoc)))
+        print (mysf.include_messages('2', ' New project created!'))
+        print (mysf.include_pageheader('Project ', ' Create new project'))
+        print (mysf.include_form_cproj(s_domain, s_nameuser, str.lower(s_emailassoc)))
         print (mysf.include_div_e())
         print (mysf.include_footer())
     else:
-        # renderiza a página 'ccstr.html' com a mensagem do erro para verificação e tratamento
+        # renderiza a página 'cproj.html' com a mensagem do erro para verificação e tratamento
         print mysf.include_start_response()
         print (mysf.include_header())
         print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
         print (mysf.include_logout())
         print (mysf.include_div_s())
         print (mysf.include_messages('1', s_erromsg))
-        print (mysf.include_pageheader('Customer ', ' Create new customer'))
-        print (mysf.include_form_cstr(s_domain, s_nameuser, str.lower(s_emailassoc)))
+        print (mysf.include_pageheader('Project ', ' Create new project'))
+        print (mysf.include_form_cproj(s_domain, s_nameuser, str.lower(s_emailassoc)))
         print (mysf.include_div_e())
         print (mysf.include_footer())
 else:
-    # renderiza a página 'ccstr.html' com a mensagem do erro para verificação e tratamento
+    # renderiza a página 'cproj.html' com a mensagem do erro para verificação e tratamento
     print mysf.include_start_response()
     print (mysf.include_header())
     print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
     print (mysf.include_logout())
     print (mysf.include_div_s())
     print (mysf.include_messages('3', s_f_msg))
-    print (mysf.include_pageheader('Customer ', ' Create new customer'))
-    print (mysf.include_form_cstr_err(s_domain, s_nameuser, str.lower(s_emailassoc), s_cstr, s_field))
+    print (mysf.include_pageheader('Project ', ' Create new project'))
+    print (mysf.include_form_cproj_err(s_domain, s_nameuser, str.lower(s_emailassoc), s_proj, s_field))
     print (mysf.include_div_e())
     print (mysf.include_footer())

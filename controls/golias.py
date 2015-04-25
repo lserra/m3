@@ -2363,7 +2363,7 @@ def get_all_cstr(domain):
             fechar_bd()
 
 
-def add_newcstr(cstr):
+def add_newcstr(cstr, domain):
     """
     # Função que retorna se os dados do novo customer foi gravado na base de dados
     # 1- estabelece uma conexão com o banco de dados
@@ -2372,6 +2372,7 @@ def add_newcstr(cstr):
     # 3.1 - pega o resultset como uma tupla
     # 4- fechar a conexão com o banco de dados
     :param cstr: 'Tivit'
+    :param domain: 'asparona'
     :return cstr_added: 'True/False'
     :return erro_msg: 'Customer já existe na base de dados'
     """
@@ -2382,7 +2383,7 @@ def add_newcstr(cstr):
             raise MySQLdb.Error(msg_err)
         else:
             # INSERT VALUES na tCustomer
-            s_sql = "INSERT INTO tCustomer(name_customer) VALUES('" + cstr + "');"
+            s_sql = "INSERT INTO tCustomer(name_customer, domain) VALUES('" + cstr + "','" + domain + "');"
 
             bd.execute(s_sql)
 
@@ -2502,7 +2503,7 @@ def get_cstr_from_id(idcstr):
     :param idcstr: '1'
     :return: s_customer
     """
-    s_sql = "SELECT name_customer FROM tCustomer WHERE id_customer = '" + idcstr + "';"
+    s_sql = "SELECT name_customer FROM tCustomer WHERE id_customer = '" + str(idcstr) + "';"
 
     try:
         msg_err = abrir_bd()
@@ -2539,7 +2540,7 @@ def delete_cstr(cdel):
     :param cdel: '1'
     :return: True, msg_err
     """
-    s_sql = "DELETE FROM tCustomer WHERE id_customer = '" + str(cdel) + "';"
+    s_sql = "DELETE FROM tCustomer WHERE name_customer = '" + cdel + "';"
 
     try:
         msg_err = abrir_bd()
@@ -2560,6 +2561,254 @@ def delete_cstr(cdel):
                     return True, None
             else:
                 return False, ' None customer was deleted!'
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def get_all_proj(domain):
+    """
+    # Função que retorna os projects cadastrados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain: 'asparona'
+    :return: {fields, rs_dt_table}
+    """
+    s_sql = "SELECT name_project FROM tProject WHERE domain = '" + domain + "';"
+
+    fields = ('Project',)
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return fields, None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                rs_dt_table = bd.fetchall()
+                return fields, rs_dt_table, msg_err
+            else:
+                rs_dt_table = None
+                return fields, rs_dt_table, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return fields, None, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def add_newproj(proj, domain):
+    """
+    # Função que retorna se os dados do novo project foi gravado na base de dados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param proj: 'Tivit BIRH'
+    :param domain: 'asparona'
+    :return proj_added: 'True/False'
+    :return erro_msg: 'Project já existe na base de dados'
+    """
+    try:
+        msg_err = abrir_bd()
+
+        if msg_err != '' and msg_err is not None:
+            raise MySQLdb.Error(msg_err)
+        else:
+            # INSERT VALUES na tProject
+            s_sql = "INSERT INTO tProject(name_project, domain) VALUES('" + proj + "','" + domain + "');"
+
+            bd.execute(s_sql)
+
+            # Confirma a transação de inserção de registro no banco de dados
+            msg_err = commit_bd()
+            if msg_err != '' and msg_err is not None:
+                raise MySQLdb.Error(msg_err)
+            else:
+                return True, msg_err
+
+    except MySQLdb.IntegrityError, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = " %d - %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    except MySQLdb.Error, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def edit_proj(proj):
+    """
+    # Função que retorna o id do project para edição
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param proj: 'Tivit'
+    :return: name_project
+    """
+    s_sql = "SELECT id_project " \
+            "FROM tProject WHERE name_project = '" + proj + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                id_project = bd.fetchone()
+                return id_project[0]
+            else:
+                return None
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def update_proj(idproj, proj):
+    """
+    # Função que atualiza os dados do project na base de dados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - confirma a transação de update no banco de dados
+    # 4- fechar a conexão com o banco de dados
+    :param idproj: '12'
+    :param proj: 'Tivit BIRH'
+    :return proj_edited: 'True'
+    :return s_erromsg: error_msg
+    """
+    s_sql = "UPDATE tProject SET " \
+            "name_project = '" + proj + "' WHERE id_project = '" + str(idproj) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Confirma a transação de update do registro no banco de dados
+            msg_err = commit_bd()
+            if msg_err != '' and msg_err is not None:
+                return False, msg_err
+            else:
+                return True, msg_err
+
+    except MySQLdb.Error, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def get_proj_from_id(idproj):
+    """
+    # Função que retorna o project cadastrado
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param idproj: '1'
+    :return: s_project
+    """
+    s_sql = "SELECT name_project FROM tProject WHERE id_project = '" + str(idproj) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                s_project = bd.fetchone()
+                return s_project[0], msg_err
+            else:
+                return None, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return None, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def delete_proj(pdel):
+    """
+    # Função que exclui os dados do project no sistema
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param pdel: '1'
+    :return: True, msg_err
+    """
+    s_sql = "DELETE FROM tProject WHERE id_project = '" + str(pdel) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            # exclui os dados do project
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                # Confirma a transação de exclusão do project no banco de dados
+                msg_err = commit_bd()
+                if msg_err != '' and msg_err is not None:
+                    raise MySQLdb.Error(msg_err)
+                else:
+                    return True, None
+            else:
+                return False, ' None project was deleted!'
 
     except MySQLdb.Error, e:
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])

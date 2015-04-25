@@ -20,7 +20,8 @@ cgitb.enable()  # ativa o módulo para que os erros possam aparecer no browser
 form_data = cgi.FieldStorage()  # obter os dados de login do associado
 
 
-s_cstr = form_data.getvalue('customer')  # pega o valor do campo customer
+s_proj = form_data.getvalue('project')  # pega o valor do campo project
+i_proj = form_data.getvalue('id_proj')  # pega o valor do campo id_proj
 s_domain = form_data.getvalue('domain')  # pega o valor do campo domain
 s_user = form_data.getvalue('nameuser')  # pega o valor do campo nameuser
 s_email = form_data.getvalue('emailassoc')  # pega o valor do campo emailassoc
@@ -40,7 +41,7 @@ golias.get_assoc_from_id(s_email)
 s_idassoc, s_iddomain, s_nameuser, s_emailassoc, s_pwdassoc = golias.return_data_assoc()
 
 
-# pega o nome do usuário e divide em nome e sobrenome
+# pega o nome do associado e divide em nome e sobrenome
 name = str.split(s_nameuser, ' ')
 first_name = name[0]
 last_name = name[1]
@@ -49,54 +50,55 @@ last_name = name[1]
 # retorna o nome do domínio
 # s_domain = golias.return_domain_name(s_iddomain)
 
+
 s_field = 1
 n_field = []
 s_f_msg = None
-
-# valida se o campo customer foi informado pelo usuário
-if s_cstr is None:
+# valida se o campo project foi informado pelo associado
+if s_proj is None:
     s_field = 0
-    n_field.append('C')
+    n_field.append('P')
     s_f_msg = ' Data field required!'
 
 
-# se todos os campos foram preenchidos, então realiza a inclusão de um novo customer no sistema
+# se todos os campos foram preenchidos, então realiza a alteração dos dados do project no sistema
 if s_field != 0:
-    (cstr_added, s_erromsg) = golias.add_newcstr(str.capitalize(s_cstr), s_domain)
-    # se o customer foi adicionado ao sistema, então renderiza a tela para cadastrar um novo customer
-    if cstr_added is True:
-        # renderiza a página 'ccstr.html' para continuar com o cadastramento de um novo customer no sistema
+    # atualiza os dados do project editado no sistema
+    (proj_edited, s_erromsg_u) = golias.update_proj(i_proj, str.capitalize(s_proj))
+    if proj_edited is True:
+        (s_proj_new, s_erromsg_g) = golias.get_proj_from_id(i_proj)
+        # renderiza a página 'uproj.html' para continuar com a edição do project no sistema
         print mysf.include_start_response()
         print (mysf.include_header())
         print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
         print (mysf.include_logout())
         print (mysf.include_div_s())
-        print (mysf.include_messages('2', ' New customer created!'))
-        print (mysf.include_pageheader('Customer ', ' Create new customer'))
-        print (mysf.include_form_cstr(s_domain, s_nameuser, str.lower(s_emailassoc)))
+        print (mysf.include_messages('2', ' Data saved with success!'))
+        print (mysf.include_pageheader('Project ', ' Edit project'))
+        print (mysf.include_form_eproj(s_proj_new, i_proj, s_domain, s_nameuser, str.lower(s_emailassoc)))
         print (mysf.include_div_e())
         print (mysf.include_footer())
     else:
-        # renderiza a página 'ccstr.html' com a mensagem do erro para verificação e tratamento
+        # renderiza a página 'uproj.html' com a mensagem do erro para verificação e tratamento
         print mysf.include_start_response()
         print (mysf.include_header())
         print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
         print (mysf.include_logout())
         print (mysf.include_div_s())
-        print (mysf.include_messages('1', s_erromsg))
-        print (mysf.include_pageheader('Customer ', ' Create new customer'))
-        print (mysf.include_form_cstr(s_domain, s_nameuser, str.lower(s_emailassoc)))
+        print (mysf.include_messages('1', s_erromsg_u))
+        print (mysf.include_pageheader('Project ', ' Edit project'))
+        print (mysf.include_form_eproj(s_proj, i_proj, s_domain, s_nameuser, str.lower(s_emailassoc)))
         print (mysf.include_div_e())
         print (mysf.include_footer())
 else:
-    # renderiza a página 'ccstr.html' com a mensagem do erro para verificação e tratamento
+    # renderiza a página 'uproj.html' com a mensagem do erro para verificação e tratamento
     print mysf.include_start_response()
     print (mysf.include_header())
     print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
     print (mysf.include_logout())
     print (mysf.include_div_s())
     print (mysf.include_messages('3', s_f_msg))
-    print (mysf.include_pageheader('Customer ', ' Create new customer'))
-    print (mysf.include_form_cstr_err(s_domain, s_nameuser, str.lower(s_emailassoc), s_cstr, s_field))
+    print (mysf.include_pageheader('Project ', ' Edit project'))
+    print (mysf.include_form_eproj_err(s_proj, i_proj, s_domain, s_nameuser, str.lower(s_emailassoc), n_field))
     print (mysf.include_div_e())
     print (mysf.include_footer())
