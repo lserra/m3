@@ -2788,7 +2788,7 @@ def delete_proj(pdel):
     :param pdel: '1'
     :return: True, msg_err
     """
-    s_sql = "DELETE FROM tProject WHERE id_project = '" + str(pdel) + "';"
+    s_sql = "DELETE FROM tProject WHERE name_project = '" + pdel + "';"
 
     try:
         msg_err = abrir_bd()
