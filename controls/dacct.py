@@ -54,7 +54,7 @@ last_name = name[1]
 
 
 # retorna a lista de accounts
-(s_fields, s_dt_tb, s_errormsg_a) = golias.get_all_acct()
+(s_fields, s_dt_tb, s_errormsg_a) = golias.get_all_acct(s_domain)
 
 
 # renderiza a página 'acct.html' para visualizar os accounts do sistema

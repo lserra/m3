@@ -54,7 +54,7 @@ last_name = name[1]
 
 
 # retorna a lista de category
-(s_fields, s_dt_tb, s_errormsg_c) = golias.get_all_cat()
+(s_fields, s_dt_tb, s_errormsg_c) = golias.get_all_cat(s_domain)
 
 
 # renderiza a página 'cat.html' para visualizar os category do sistema
