@@ -64,7 +64,7 @@ if s_cat is None:
 # se todos os campos foram preenchidos, então realiza a alteração dos dados do category no sistema
 if s_field != 0:
     # atualiza os dados do category editado no sistema
-    (cat_edited, s_erromsg_u) = golias.update_cat(i_cat, str.capitalize(s_cat))
+    (cat_edited, s_erromsg_u) = golias.update_cat(i_cat, str.title(s_cat))
     if cat_edited is True:
         (s_cat_new, s_erromsg_g) = golias.get_cat_from_id(i_cat)
         # renderiza a página 'ucat.html' para continuar com a edição do category no sistema

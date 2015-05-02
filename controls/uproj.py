@@ -64,7 +64,7 @@ if s_proj is None:
 # se todos os campos foram preenchidos, então realiza a alteração dos dados do project no sistema
 if s_field != 0:
     # atualiza os dados do project editado no sistema
-    (proj_edited, s_erromsg_u) = golias.update_proj(i_proj, str.capitalize(s_proj))
+    (proj_edited, s_erromsg_u) = golias.update_proj(i_proj, str.title(s_proj))
     if proj_edited is True:
         (s_proj_new, s_erromsg_g) = golias.get_proj_from_id(i_proj)
         # renderiza a página 'uproj.html' para continuar com a edição do project no sistema

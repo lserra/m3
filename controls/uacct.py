@@ -64,7 +64,7 @@ if s_acct is None:
 # se todos os campos foram preenchidos, então realiza a alteração dos dados do account no sistema
 if s_field != 0:
     # atualiza os dados do account editado no sistema
-    (acct_edited, s_erromsg_u) = golias.update_acct(i_acct, str.capitalize(s_acct))
+    (acct_edited, s_erromsg_u) = golias.update_acct(i_acct, str.title(s_acct))
     if acct_edited is True:
         (s_acct_new, s_erromsg_g) = golias.get_acct_from_id(i_acct)
         # renderiza a página 'uacct.html' para continuar com a edição do account no sistema

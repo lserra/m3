@@ -62,7 +62,7 @@ if s_proj is None:
 
 # se todos os campos foram preenchidos, então realiza a inclusão de um novo project no sistema
 if s_field != 0:
-    (proj_added, s_erromsg) = golias.add_newproj(str.capitalize(s_proj), s_domain)
+    (proj_added, s_erromsg) = golias.add_newproj(str.title(s_proj), s_domain)
     # se o project foi adicionado ao sistema, então renderiza a tela para cadastrar um novo project
     if proj_added is True:
         # renderiza a página 'cproj.html' para continuar com o cadastramento de um novo project no sistema

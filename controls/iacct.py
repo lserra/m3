@@ -62,7 +62,7 @@ if s_acct is None:
 
 # se todos os campos foram preenchidos, então realiza a inclusão de um novo account no sistema
 if s_field != 0:
-    (acct_added, s_erromsg) = golias.add_newacct(str.capitalize(s_acct), s_domain)
+    (acct_added, s_erromsg) = golias.add_newacct(str.title(s_acct), s_domain)
     # se o account foi adicionado ao sistema, então renderiza a tela para cadastrar um novo account
     if acct_added is True:
         # renderiza a página 'cacct.html' para continuar com o cadastramento de um novo account no sistema

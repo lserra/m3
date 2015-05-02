@@ -64,7 +64,7 @@ if s_cstr is None:
 # se todos os campos foram preenchidos, então realiza a alteração dos dados do customer no sistema
 if s_field != 0:
     # atualiza os dados do customer editado no sistema
-    (cstr_edited, s_erromsg_u) = golias.update_cstr(i_cstr, str.capitalize(s_cstr))
+    (cstr_edited, s_erromsg_u) = golias.update_cstr(i_cstr, str.title(s_cstr))
     if cstr_edited is True:
         (s_cstr_new, s_erromsg_g) = golias.get_cstr_from_id(i_cstr)
         # renderiza a página 'ucstr.html' para continuar com a edição do customer no sistema

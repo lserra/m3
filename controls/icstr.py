@@ -62,7 +62,7 @@ if s_cstr is None:
 
 # se todos os campos foram preenchidos, então realiza a inclusão de um novo customer no sistema
 if s_field != 0:
-    (cstr_added, s_erromsg) = golias.add_newcstr(str.capitalize(s_cstr), s_domain)
+    (cstr_added, s_erromsg) = golias.add_newcstr(str.title(s_cstr), s_domain)
     # se o customer foi adicionado ao sistema, então renderiza a tela para cadastrar um novo customer
     if cstr_added is True:
         # renderiza a página 'ccstr.html' para continuar com o cadastramento de um novo customer no sistema
