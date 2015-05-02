@@ -1897,6 +1897,7 @@ def include_form_ea_err(acct, id_account, domain, nameuser, emailassoc, field):
     :param nameuser: 'Laercio Serra'
     :param emailassoc: 'laercio.serra@asparona.com'
     :param id_account: '1'
+    :param field: ['P',]
     :return:
     """
     form_ea = '            <form class="form-horizontal" role="form" method="post" action="../controls/uacct.py">\n'
@@ -2170,6 +2171,7 @@ def include_form_ec_err(cat, id_category, domain, nameuser, emailassoc, field):
     :param nameuser: 'Laercio Serra'
     :param emailassoc: 'laercio.serra@asparona.com'
     :param id_category: '1'
+    :param field: ['P',]
     :return:
     """
     form_ec = '            <form class="form-horizontal" role="form" method="post" action="../controls/ucat.py">\n'
@@ -2443,6 +2445,7 @@ def include_form_ecstr_err(cstr, id_customer, domain, nameuser, emailassoc, fiel
     :param nameuser: 'Laercio Serra'
     :param emailassoc: 'laercio.serra@asparona.com'
     :param id_customer: '1'
+    :param field: ['P',]
     :return:
     """
     form_ecstr = '            <form class="form-horizontal" role="form" method="post" action="../controls/ucstr.py">\n'
@@ -2716,6 +2719,7 @@ def include_form_eproj_err(proj, id_project, domain, nameuser, emailassoc, field
     :param nameuser: 'Laercio Serra'
     :param emailassoc: 'laercio.serra@asparona.com'
     :param id_project: '1'
+    :param field: ['P',]
     :return:
     """
     form_eproj = '            <form class="form-horizontal" role="form" method="post" action="../controls/uproj.py">\n'
@@ -2755,3 +2759,351 @@ def include_form_eproj_err(proj, id_project, domain, nameuser, emailassoc, field
     form = Template(form_text)
 
     return form.substitute(form=form_eproj)
+
+
+def include_button_create_new_curr(s_domain, s_nameuser, s_emailassoc):
+    """
+    # função que cria um formulário com controles ocultos para uma simples passagem de parâmetros
+    # quando o botão de comando "Create New Currency" for acionado
+    :param s_domain: 'asparona'
+    :param s_nameuser: 'Laercio Serra'
+    :param s_emailassoc: 'laercio.serra@asparona.com'
+    :return:
+    """
+    with open('../views/buttonnewcurr.html') as sformb:
+        sform_text = sformb.read()
+
+    buttonform = Template(sform_text)
+
+    return buttonform.substitute(domain=s_domain, nameuser=s_nameuser, emailassoc=s_emailassoc)
+
+
+def include_dt_tb_enable_curr(domain, nameuser, emailassoc, fields, rs_dt_table):
+    """
+    # função que apresenta os dados em uma tabela estática com os botões de comandos (edit/delete) habilitados
+    # a página em si é armazenada em um arquivo separado em "views/table.html" e
+    # os elementos <$headers, $data_tb> são substituídos quando necessários
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@gmail.com'
+    :param fields: {field1, field2, field3, field4, field5}
+    :param rs_dt_table: {(v1, v2, v3), (v4, v5, v6), (v7, v8, v9)}
+    :return: headers, data_tb
+    """
+    s_th = ''
+
+    for th in fields:
+        s_hd = '<th>' + th + '</th>\n'
+        s_th += s_hd
+
+    s_th += '<!--Fixed Colunm -->\n'
+    s_th += '<th class="text-center">Action</th>\n'
+
+    s_dtb = ''
+
+    for record in rs_dt_table:
+        s_td = '<tr>\n'
+        for col in record:
+            s_td += '   <td>' + str(col) + '</td>\n'
+        s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
+        s_td += '       <a href="../controls/ecurr.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+                '&ce=' + record[0] + '" class="btn btn-default btn-xs">\n'
+        s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
+        s_td += '       </a>\n'
+        # s_td += '       <a href="../controls/dcurr.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+        #         '&ad=' + record[0] + '" class="btn btn-default btn-xs" data-toggle="modal" data-target="#delete">\n'
+        s_td += '       <a href="javascript:funcDelCurr(\'' + domain + '\', \'' + nameuser + '\', \'' + emailassoc + \
+                '\', \'' + record[0] + '\')" class="btn btn-default btn-xs">\n'
+        s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
+        s_td += '       </a>\n'
+        s_td += '   </td>\n'
+        s_td += '</tr>\n'
+        s_dtb += s_td
+
+    with open('../views/table.html') as tablef:
+        table_text = tablef.read()
+
+    table = Template(table_text)
+
+    return table.substitute(headers=s_th, data_tb=s_dtb)
+
+
+def include_delete_curr():
+    """
+    # função que cria a janela modal para confirmação da exclusão de um registro.
+    # a página em si é armazenada em um arquivo separado em "views/delete.html"
+    :return:
+    """
+    with open('../views/delete_curr.html') as delf:
+        del_text = delf.read()
+
+    delete = Template(del_text)
+
+    return delete.substitute()
+
+
+def include_form_ecurr(desc, code, sign, id_currency, domain, nameuser, emailassoc):
+    """
+    # função que cria o formulário: edit currency
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ecurr
+    :param desc: 'Brazilian Real'
+    :param code: 'BRL'
+    :param sign: 'R$'
+    :param id_currency: '1'
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :return:
+    """
+    form_ecurr = '            <form class="form-horizontal" role="form" method="post" action="../controls/ucurr.py">\n'
+    form_ecurr += '            <div class="form-group">\n'
+    form_ecurr += '                 <label class="col-sm-4 control-label" for="code">Code</label>\n'
+    form_ecurr += '                 <div class="col-sm-6">\n'
+    form_ecurr += '                    <input class="form-control" id="code" name= "code" type="text" ' \
+                  'value="' + code + '" required />\n'
+    form_ecurr += '                 </div>\n'
+    form_ecurr += '            </div>\n'
+    form_ecurr += '            <div class="form-group">\n'
+    form_ecurr += '                 <label class="col-sm-4 control-label" for="description">Description</label>\n'
+    form_ecurr += '                 <div class="col-sm-6">\n'
+    form_ecurr += '                    <input class="form-control" id="description" name= "description" type="text" ' \
+                  'value="' + desc + '" required />\n'
+    form_ecurr += '                 </div>\n'
+    form_ecurr += '            </div>\n'
+    form_ecurr += '            <div class="form-group">\n'
+    form_ecurr += '                 <label class="col-sm-4 control-label" for="sign">Sign</label>\n'
+    form_ecurr += '                 <div class="col-sm-6">\n'
+    form_ecurr += '                    <input class="form-control" id="sign" name= "sign" type="text" ' \
+                  'value="' + sign + '" required />\n'
+    form_ecurr += '                 </div>\n'
+    form_ecurr += '            </div>\n'
+    form_ecurr += '            <div class="form-group">\n'
+    form_ecurr += '                 <div class="col-sm-6">\n'
+    form_ecurr += '                     <input type="hidden" id="id_curr" name="id_curr" value="' + str(id_currency) + \
+                  '"/>\n'
+    form_ecurr += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_ecurr += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_ecurr += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+                  emailassoc + '"/>\n'
+    form_ecurr += '                 </div>\n'
+    form_ecurr += '            </div>\n'
+    form_ecurr += '            <div class="form-group">\n'
+    form_ecurr += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ecurr += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_ecurr += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_ecurr += '                    <a class="btn btn-default" href="../controls/curr.py?d=' + domain + \
+                  '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_ecurr += '                </div>\n'
+    form_ecurr += '            </div>\n'
+    form_ecurr += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ecurr)
+
+
+def include_form_ecurr_err(code, desc, sign, id_currency, domain, nameuser, emailassoc, field):
+    """
+    # função que cria o formulário: edit currency para verificação e tratamento do erro
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ecurr
+    :param desc: 'Brazilian Real'
+    :param code: 'BRL'
+    :param sign: 'R$'
+    :param id_currency: '1'
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param field: ['C', 'D', 'S']
+    :return:
+    """
+    form_ecurr = '            <form class="form-horizontal" role="form" method="post" action="../controls/ucurr.py">\n'
+    if field.count('C') != 0:
+        form_ecurr += '            <div class="form-group has-error">\n'
+    else:
+        form_ecurr += '            <div class="form-group">\n'
+    form_ecurr += '                 <label class="col-sm-4 control-label" for="code">Code</label>\n'
+    form_ecurr += '                 <div class="col-sm-6">\n'
+    form_ecurr += '                    <input class="form-control" id="code" name= "code" type="text" ' \
+                  'value="' + code + '" required />\n'
+    form_ecurr += '                 </div>\n'
+    form_ecurr += '            </div>\n'
+    if field.count('D') != 0:
+        form_ecurr += '            <div class="form-group has-error">\n'
+    else:
+        form_ecurr += '            <div class="form-group">\n'
+    form_ecurr += '                 <label class="col-sm-4 control-label" for="description">Description</label>\n'
+    form_ecurr += '                 <div class="col-sm-6">\n'
+    form_ecurr += '                    <input class="form-control" id="description" name= "description" type="text" ' \
+                  'value="' + desc + '" required />\n'
+    form_ecurr += '                 </div>\n'
+    form_ecurr += '            </div>\n'
+    if field.count('S') != 0:
+        form_ecurr += '            <div class="form-group has-error">\n'
+    else:
+        form_ecurr += '            <div class="form-group">\n'
+    form_ecurr += '                 <label class="col-sm-4 control-label" for="sign">Sign</label>\n'
+    form_ecurr += '                 <div class="col-sm-6">\n'
+    form_ecurr += '                    <input class="form-control" id="sign" name= "sign" type="text" ' \
+                  'value="' + sign + '" required />\n'
+    form_ecurr += '                 </div>\n'
+    form_ecurr += '            </div>\n'
+    form_ecurr += '            <div class="form-group">\n'
+    form_ecurr += '                 <div class="col-sm-6">\n'
+    form_ecurr += '                     <input type="hidden" id="id_curr" name="id_curr" value="' + str(id_currency) + \
+                  '"/>\n'
+    form_ecurr += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_ecurr += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_ecurr += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+                  emailassoc + '"/>\n'
+    form_ecurr += '                 </div>\n'
+    form_ecurr += '            </div>\n'
+    form_ecurr += '            <div class="form-group">\n'
+    form_ecurr += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ecurr += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_ecurr += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_ecurr += '                    <a class="btn btn-default" href="../controls/curr.py?d=' + domain + \
+                  '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_ecurr += '                </div>\n'
+    form_ecurr += '            </div>\n'
+    form_ecurr += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ecurr)
+
+
+def include_form_ccurr(domain, nameuser, emailassoc):
+    """
+    # função que cria o formulário: create new currency
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ccurr
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :return:
+    """
+    form_ccurr = '        <form class="form-horizontal" role="form" method="post" action="../controls/icurr.py">\n'
+    form_ccurr += '            <div class="form-group">\n'
+    form_ccurr += '                 <label class="col-sm-4 control-label" for="code">Code</label>\n'
+    form_ccurr += '                 <div class="col-sm-6">\n'
+    form_ccurr += '                    <input class="form-control" id="code" name= "code" type="text" ' \
+                  'value="" required />\n'
+    form_ccurr += '                 </div>\n'
+    form_ccurr += '            </div>\n'
+    form_ccurr += '            <div class="form-group">\n'
+    form_ccurr += '                 <label class="col-sm-4 control-label" for="desc">Description</label>\n'
+    form_ccurr += '                 <div class="col-sm-6">\n'
+    form_ccurr += '                    <input class="form-control" id="desc" name= "desc" type="text" ' \
+                  'value="" required />\n'
+    form_ccurr += '                 </div>\n'
+    form_ccurr += '            </div>\n'
+    form_ccurr += '            <div class="form-group">\n'
+    form_ccurr += '                 <label class="col-sm-4 control-label" for="sign">Sign</label>\n'
+    form_ccurr += '                 <div class="col-sm-6">\n'
+    form_ccurr += '                    <input class="form-control" id="sign" name= "sign" type="text" ' \
+                  'value="" required />\n'
+    form_ccurr += '                 </div>\n'
+    form_ccurr += '            </div>\n'
+    form_ccurr += '            <div class="form-group">\n'
+    form_ccurr += '                 <div class="col-sm-6">\n'
+    form_ccurr += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_ccurr += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_ccurr += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+                  emailassoc + '"/>\n'
+    form_ccurr += '                 </div>\n'
+    form_ccurr += '            </div>\n'
+    form_ccurr += '            <div class="form-group">\n'
+    form_ccurr += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ccurr += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_ccurr += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_ccurr += '                    <a class="btn btn-default" href="../controls/curr.py?d=' + domain + \
+                  '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_ccurr += '                </div>\n'
+    form_ccurr += '            </div>\n'
+    form_ccurr += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ccurr)
+
+
+def include_form_ccurr_err(code, desc, sign, domain, nameuser, emailassoc, field):
+    """
+    # função que cria o formulário: create new currency para tratamento dos erros encontrados
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ccurr
+    :param code: 'BRL'
+    :param desc: 'Brazilian Real'
+    :param sign: 'R$'
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param field: ['P',]
+    :return:
+    """
+    form_ccurr = '            <form class="form-horizontal" role="form" method="post" action="../controls/icurr.py">\n'
+    if field.count('C') != 0:
+        form_ccurr += '            <div class="form-group has-error">\n'
+    else:
+        form_ccurr += '            <div class="form-group">\n'
+    form_ccurr += '                 <label class="col-sm-4 control-label" for="code">Code</label>\n'
+    form_ccurr += '                 <div class="col-sm-6">\n'
+    form_ccurr += '                    <input class="form-control" id="code" name= "code" type="text" ' \
+                  'value="' + code + '" required />\n'
+    form_ccurr += '                 </div>\n'
+    form_ccurr += '            </div>\n'
+    if field.count('D') != 0:
+        form_ccurr += '            <div class="form-group has-error">\n'
+    else:
+        form_ccurr += '            <div class="form-group">\n'
+    form_ccurr += '                 <label class="col-sm-4 control-label" for="description">Description</label>\n'
+    form_ccurr += '                 <div class="col-sm-6">\n'
+    form_ccurr += '                    <input class="form-control" id="description" name= "description" type="text" ' \
+                  'value="' + desc + '" required />\n'
+    form_ccurr += '                 </div>\n'
+    form_ccurr += '            </div>\n'
+    if field.count('S') != 0:
+        form_ccurr += '            <div class="form-group has-error">\n'
+    else:
+        form_ccurr += '            <div class="form-group">\n'
+    form_ccurr += '                 <label class="col-sm-4 control-label" for="sign">Sign</label>\n'
+    form_ccurr += '                 <div class="col-sm-6">\n'
+    form_ccurr += '                    <input class="form-control" id="sign" name= "sign" type="text" ' \
+                  'value="' + sign + '" required />\n'
+    form_ccurr += '                 </div>\n'
+    form_ccurr += '            </div>\n'
+    form_ccurr += '            <div class="form-group">\n'
+    form_ccurr += '                 <div class="col-sm-6">\n'
+    form_ccurr += '                     <input type="hidden" id="domain" name="domain" value="' + domain + '"/>\n'
+    form_ccurr += '                     <input type="hidden" id="nameuser" name="nameuser" value="' + nameuser + '"/>\n'
+    form_ccurr += '                     <input type="hidden" id="emailassoc" name="emailassoc" value="' + \
+                  emailassoc + '"/>\n'
+    form_ccurr += '                 </div>\n'
+    form_ccurr += '            </div>\n'
+    form_ccurr += '            <div class="form-group">\n'
+    form_ccurr += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ccurr += '                    <input type="submit" name="save" value="Save" class="btn btn-primary">\n'
+    form_ccurr += '                    <input type="reset" name="reset" value="Reset" class="btn btn-default">\n'
+    form_ccurr += '                    <a class="btn btn-default" href="../controls/curr.py?d=' + domain + \
+                  '&u=' + nameuser + '&e=' + emailassoc + '" role="button">Cancel</a>\n'
+    form_ccurr += '                </div>\n'
+    form_ccurr += '            </div>\n'
+    form_ccurr += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ccurr)

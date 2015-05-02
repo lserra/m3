@@ -2821,3 +2821,266 @@ def delete_proj(pdel):
     finally:
         if conn is not None:
             fechar_bd()
+
+
+def get_all_curr(domain):
+    """
+    # Função que retorna os currency cadastrados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um currsor para se comunicar através da conexão com os dados
+    # 3- usando o currsor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain: 'asparona'
+    :return: {fields, rs_dt_table}
+    """
+    s_sql = "SELECT code, description, sign FROM tCurrency WHERE domain = '" + domain + "';"
+
+    fields = ('Code', 'Description', 'Sign')
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return fields, None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                rs_dt_table = bd.fetchall()
+                return fields, rs_dt_table, msg_err
+            else:
+                rs_dt_table = None
+                return fields, rs_dt_table, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return fields, None, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def edit_curr(curr):
+    """
+    # Função que retorna os dados do currency para edição
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param curr: 'BRL'
+    :return: id_currency
+    :return: description
+    :return: sign
+    """
+    s_sql = "SELECT id_currency, description, sign " \
+            "FROM tCurrency WHERE code = '" + curr + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                id_currency, description, sign = bd.fetchone()
+                return id_currency, description, sign
+            else:
+                return None, None, None
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def update_curr(curr, desc, sign, i_curr, domain):
+    """
+    # Função que atualiza os dados do currency na base de dados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - confirma a transação de update no banco de dados
+    # 4- fechar a conexão com o banco de dados
+    :param curr: 'BRL'
+    :param desc: 'Brazilian Real'
+    :param sign: 'R$'
+    :param i_curr: '1'
+    :param domain: 'asparona'
+    :return curr_edited: 'True'
+    :return s_erromsg: error_msg
+    """
+    s_sql = "UPDATE tCurrency SET " \
+            "code = '" + curr + "'," \
+            "description = '" + desc + "'," \
+            "sign = '" + sign + "' " \
+            "WHERE id_currency = '" + str(i_curr) + "' " \
+            "AND domain = '" + domain + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            bd.execute(s_sql)
+            # Confirma a transação de update do registro no banco de dados
+            msg_err = commit_bd()
+            if msg_err != '' and msg_err is not None:
+                return False, msg_err
+            else:
+                return True, msg_err
+
+    except MySQLdb.Error, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def get_curr_from_id(idcurr):
+    """
+    # Função que retorna o currency cadastrado
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param idcurr: '1'
+    :return: s_curr
+    :return: s_desc
+    :return: s_sign
+    :return: s_erromsg_g
+    """
+    s_sql = "SELECT code, description, sign FROM tCurrency WHERE id_currency = '" + str(idcurr) + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                s_curr, s_desc, s_sign = bd.fetchone()
+                return s_curr, s_desc, s_sign, msg_err
+            else:
+                return None, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return None, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def add_newcurr(curr, desc, sign, domain):
+    """
+    # Função que retorna se os dados do novo currency foi gravado na base de dados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param curr: 'BRL'
+    :param desc: 'Brazilian Real'
+    :param sign: 'R$'
+    :param domain: 'asparona'
+    :return curr_added: 'True/False'
+    :return erro_msg: 'Currency já existe na base de dados'
+    """
+    try:
+        msg_err = abrir_bd()
+
+        if msg_err != '' and msg_err is not None:
+            raise MySQLdb.Error(msg_err)
+        else:
+            # INSERT VALUES na tCurrency
+            s_sql = "INSERT INTO tCurrency (code, description, sign, domain) " \
+                    "VALUES('" + curr + "','" + desc + "','" + sign + "','" + domain + "');"
+
+            bd.execute(s_sql)
+
+            # Confirma a transação de inserção de registro no banco de dados
+            msg_err = commit_bd()
+            if msg_err != '' and msg_err is not None:
+                raise MySQLdb.Error(msg_err)
+            else:
+                return True, msg_err
+
+    except MySQLdb.IntegrityError, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = " %d - %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    except MySQLdb.Error, e:
+        if conn:
+            rollback_bd()
+
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def delete_curr(cdel):
+    """
+    # Função que exclui os dados do currency no sistema
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um cursor para se comunicar através da conexão com os dados
+    # 3- usando o cursor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param cdel: '1'
+    :return: True, msg_err
+    """
+    s_sql = "DELETE FROM tCurrency WHERE code = '" + cdel + "';"
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return False, msg_err
+        else:
+            # exclui os dados do currency
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                # Confirma a transação de exclusão do currency no banco de dados
+                msg_err = commit_bd()
+                if msg_err != '' and msg_err is not None:
+                    raise MySQLdb.Error(msg_err)
+                else:
+                    return True, None
+            else:
+                return False, ' None currency was deleted!'
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
