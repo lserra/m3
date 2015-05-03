@@ -2836,7 +2836,7 @@ def get_all_curr(domain):
     """
     s_sql = "SELECT code, description, sign FROM tCurrency WHERE domain = '" + domain + "';"
 
-    fields = ('Code', 'Description', 'Sign')
+    fields = ('Code', 'Description', 'Symbol')
 
     try:
         msg_err = abrir_bd()

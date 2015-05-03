@@ -2872,7 +2872,7 @@ def include_form_ecurr(desc, code, sign, id_currency, domain, nameuser, emailass
     form_ecurr += '                 </div>\n'
     form_ecurr += '            </div>\n'
     form_ecurr += '            <div class="form-group">\n'
-    form_ecurr += '                 <label class="col-sm-4 control-label" for="sign">Sign</label>\n'
+    form_ecurr += '                 <label class="col-sm-4 control-label" for="sign">Symbol</label>\n'
     form_ecurr += '                 <div class="col-sm-6">\n'
     form_ecurr += '                    <input class="form-control" id="sign" name= "sign" type="text" ' \
                   'value="' + sign + '" required />\n'
@@ -2946,7 +2946,7 @@ def include_form_ecurr_err(code, desc, sign, id_currency, domain, nameuser, emai
         form_ecurr += '            <div class="form-group has-error">\n'
     else:
         form_ecurr += '            <div class="form-group">\n'
-    form_ecurr += '                 <label class="col-sm-4 control-label" for="sign">Sign</label>\n'
+    form_ecurr += '                 <label class="col-sm-4 control-label" for="sign">Symbol</label>\n'
     form_ecurr += '                 <div class="col-sm-6">\n'
     form_ecurr += '                    <input class="form-control" id="sign" name= "sign" type="text" ' \
                   'value="' + sign + '" required />\n'
@@ -3006,7 +3006,7 @@ def include_form_ccurr(domain, nameuser, emailassoc):
     form_ccurr += '                 </div>\n'
     form_ccurr += '            </div>\n'
     form_ccurr += '            <div class="form-group">\n'
-    form_ccurr += '                 <label class="col-sm-4 control-label" for="sign">Sign</label>\n'
+    form_ccurr += '                 <label class="col-sm-4 control-label" for="sign">Symbol</label>\n'
     form_ccurr += '                 <div class="col-sm-6">\n'
     form_ccurr += '                    <input class="form-control" id="sign" name= "sign" type="text" ' \
                   'value="" required />\n'
@@ -3077,7 +3077,7 @@ def include_form_ccurr_err(code, desc, sign, domain, nameuser, emailassoc, field
         form_ccurr += '            <div class="form-group has-error">\n'
     else:
         form_ccurr += '            <div class="form-group">\n'
-    form_ccurr += '                 <label class="col-sm-4 control-label" for="sign">Sign</label>\n'
+    form_ccurr += '                 <label class="col-sm-4 control-label" for="sign">Symbol</label>\n'
     form_ccurr += '                 <div class="col-sm-6">\n'
     form_ccurr += '                    <input class="form-control" id="sign" name= "sign" type="text" ' \
                   'value="' + sign + '" required />\n'
