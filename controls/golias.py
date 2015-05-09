@@ -1112,7 +1112,7 @@ def get_profile_assoc(email):
             fechar_bd()
 
 
-def get_setsys(id_domain):
+def get_setsys(domain_id):
     """
     # Função que retorna os settings system armazenado no banco de dados
     # 1- estabelece uma conexão com o banco de dados
@@ -1120,12 +1120,13 @@ def get_setsys(id_domain):
     # 3- usando o cursor, manipula os dados usando o sql
     # 3.1 - pega o resultset como uma tupla
     # 4- fechar a conexão com o banco de dados
-    :param id_domain: 1
-    :return: s_iddomain, s_dtrep, s_alrep
+    :param domain_id: 1
+    :return: s_iddomain, s_dtrep, s_alrep, s_dt_close_report, s_from_email, s_currency, s_dsymbol, s_tsymbol
     """
-    global s_iddomain, s_dtrep, s_alrep
+    # global s_iddomain, s_dtrep, s_alrep
 
-    s_sql = "SELECT id_domain, dt_close_report, email_alert FROM tSystem WHERE id_domain = '" + str(id_domain) + "';"
+    s_sql = "SELECT id_domain, dt_close_report, email_alert, from_email_address, currency_default, decimal_symbol, " \
+            "thousand_symbol FROM tSystem WHERE id_domain = '" + str(domain_id) + "';"
 
     try:
         msg_err = abrir_bd()
@@ -1137,10 +1138,10 @@ def get_setsys(id_domain):
             numrows = int(bd.rowcount)
 
             if numrows > 0:
-                (s_iddomain, s_dtrep, s_alrep) = bd.fetchone()
-                return s_iddomain, s_dtrep, s_alrep
+                (s_iddomain, s_dtrep, s_alrep, s_from_email, s_currency, s_dsymbol, s_tsymbol) = bd.fetchone()
+                return s_iddomain, s_dtrep, s_alrep, s_from_email, s_currency, s_dsymbol, s_tsymbol
             else:
-                return 'None', 'None', 'None'
+                return 'None', 'None', 'None', 'None', 'None', 'None', 'None'
 
     except MySQLdb.Error, e:
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
@@ -1418,7 +1419,7 @@ def send_login_assoc(s_email, s_pwd):
         header = 'To:' + s_email + '\n' + 'From: ' + sender + '\n' + 'Subject:' + subject + '\n'
 
         body = 'Dear Associated,\n\n'
-        body += 'We are sending your login to access the M3-My Expenses Report.\r\n\r\n'
+        body += 'We are sending your login to access the M3-Expenses Report.\r\n\r\n'
         body += 'Login = ' + s_email + '\r\n'
         body += 'Password = ' + s_pwd + '\r\n\r\n'
         body += 'Best regards,\n\n'
@@ -1625,7 +1626,7 @@ def update_pwd_assoc(s_id_domain, s_email, s_pwd1):
             fechar_bd()
 
 
-def update_setsys(id_domain, alrep, dtrep):
+def update_setsys(id_domain, alrep, dtrep,  f_email, curr, dsy, tsy):
     """
     # Função que atualiza os settings system na base de dados
     # 1- estabelece uma conexão com o banco de dados
@@ -1633,13 +1634,19 @@ def update_setsys(id_domain, alrep, dtrep):
     # 3- usando o cursor, manipula os dados usando o sql
     # 3.1 - confirma a transação de update no banco de dados
     # 4- fechar a conexão com o banco de dados
-    :param id_domain:
-    :param alrep:
-    :param dtrep:
+    :param id_domain:'2'
+    :param alrep: 'TRUE'
+    :param dtrep: '2015-08-02'
+    :param f_email: 'm3-expenserep@asparona.com'
+    :param curr: 'BRL'
+    :param dsy: '.'
+    :param tsy: ','
     :return:True, msg_err
     """
-    s_sql = "UPDATE tSystem SET email_alert = '" + alrep + "', dt_close_report = '" + dtrep + "', "
-    s_sql += "dt_default = '" + dtrep + "' WHERE id_domain = '" + str(id_domain) + "';"
+    s_sql = "UPDATE tSystem SET email_alert = '" + alrep + "', dt_close_report = '" + dtrep + "', dt_default = '" + \
+            dtrep + "', from_email_address = '" + f_email + "', currency_default = '" + \
+            curr + "', decimal_symbol = '" + dsy + "', thousand_symbol = '" + tsy + "' WHERE id_domain = '" + \
+            str(id_domain) + "';"
 
     try:
         msg_err = abrir_bd()
