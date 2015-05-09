@@ -1343,7 +1343,7 @@ def include_form_login_err(field):
     return form.substitute(form=form_l_err)
 
 
-def include_form_ss(domain, nameuser, emailassoc, dtrep, alrep):
+def include_form_ss(domain, nameuser, emailassoc, dtrep, alrep, from_email, currency, dsymbol, tsymbol, all_curr):
     """
     # função que cria o formulário: settings system
     # a página em si é armazenada em um arquivo separado em "views/form.html" e o
@@ -1353,9 +1353,27 @@ def include_form_ss(domain, nameuser, emailassoc, dtrep, alrep):
     :param emailassoc: 'laercio.serra@asparona.com'
     :param dtrep: '2015-01-26'
     :param alrep: 'TRUE'
+    :param from_email: 'm3-expenserep@asparona.com'
+    :param currency: 'BRL'
+    :param dsymbol: '.'
+    :param tsymbol: ','
+    :param all_curr: ('BRL', 'AUD', 'USS')
     :return:
     """
     form_ss = '            <form class="form-horizontal" role="form" method="post" action="../controls/usystem.py">\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="alrep">' \
+               'Alert users to the closing report</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="alrep" name="alrep">\n'
+    form_ss += '                      	<option selected value="' + alrep + '">' + alrep + '</option>\n'
+    if alrep == 'FALSE':
+        form_ss += '                      	<option value="TRUE">TRUE </option>\n'
+    else:
+        form_ss += '                      	<option value="FALSE">FALSE </option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
     form_ss += '            <div class="form-group">\n'
     form_ss += '                 <label class="col-sm-4 control-label" for="dtrep">Closing date of the report</label>\n'
     form_ss += '                 <div class="col-sm-6">\n'
@@ -1364,19 +1382,48 @@ def include_form_ss(domain, nameuser, emailassoc, dtrep, alrep):
     form_ss += '                 </div>\n'
     form_ss += '            </div>\n'
     form_ss += '            <div class="form-group">\n'
-    form_ss += '                <label class="col-sm-4 control-label" for="alrep">' \
-               'Alert users to the closing report</label>\n'
-    # form_ss += '                <div class="col-sm-6">\n'
-    # form_ss += '                      <input class="form-control" id="alrep" name= "alrep" ' \
-    # 'type="text" value="' + alrep + '"/>\n'
-    # form_ss += '                </div>\n'
+    form_ss += '                 <label class="col-sm-4 control-label" for="f_email">E-mail address sender (From:)' \
+               '</label>\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input class="form-control" id="f_email" name="f_email" type="text" ' \
+               'value="' + from_email + '" required />\n'
+    form_ss += '                 </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="curr">' \
+               'Set the location currency</label>\n'
     form_ss += '                <div class="col-sm-6">\n'
-    form_ss += '                      <select class="form-control" id="alrep" name="alrep">\n'
-    form_ss += '                      	<option selected value="' + alrep + '">' + alrep + '</option>\n'
-    if alrep == 'FALSE':
-        form_ss += '                      	<option value="TRUE">TRUE </option>\n'
+    form_ss += '                      <select class="form-control" id="curr" name="curr">\n'
+    form_ss += '                      	<option selected value="' + currency + '">' + currency + '</option>\n'
+    if all_curr is not None:
+        for cy in all_curr:
+            form_ss += '                      	<option value="' + cy + '">' + cy + '</option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="dsy">' \
+               'Set the decimal format</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="dsy" name="dsy">\n'
+    form_ss += '                      	<option selected value="' + dsymbol + '">' + dsymbol + '</option>\n'
+    if dsymbol == '.':
+        form_ss += '                      	<option value=",">,</option>\n'
     else:
-        form_ss += '                      	<option value="FALSE">FALSE </option>\n'
+        form_ss += '                      	<option value=".">.</option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="tsy">' \
+               'Set the thousands format</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="tsy" name="tsy">\n'
+    form_ss += '                      	<option selected value="' + tsymbol + '">' + tsymbol + '</option>\n'
+    if tsymbol == '.':
+        form_ss += '                      	<option value=",">,</option>\n'
+    else:
+        form_ss += '                      	<option value=".">.</option>\n'
     form_ss += '                      </select>\n'
     form_ss += '                </div>\n'
     form_ss += '            </div>\n'
@@ -1403,7 +1450,7 @@ def include_form_ss(domain, nameuser, emailassoc, dtrep, alrep):
     return form.substitute(form=form_ss)
 
 
-def include_form_ss_erra(domain, nameuser, emailassoc, dtrep, alrep):
+def include_form_ss_erra(domain, nameuser, emailassoc, dtrep, alrep, from_email, currency, dsymbol, tsymbol, all_curr):
     """
     # função que cria o formulário: settings system com foco no campo alerta (validation state)
     # a página em si é armazenada em um arquivo separado em "views/form.html" e o
@@ -1413,23 +1460,17 @@ def include_form_ss_erra(domain, nameuser, emailassoc, dtrep, alrep):
     :param emailassoc: 'laercio.serra@asparona.com'
     :param dtrep: '2015-01-26'
     :param alrep: 'TRUE'
+    :param from_email: 'm3-expenserep@asparona.com'
+    :param currency: 'BRL'
+    :param dsymbol: '.'
+    :param tsymbol: ','
+    :param all_curr: ('BRL', 'AUD', 'USS')
     :return:
     """
     form_ss = '            <form class="form-horizontal" role="form" method="post" action="../controls/usystem.py">\n'
-    form_ss += '            <div class="form-group">\n'
-    form_ss += '                 <label class="col-sm-4 control-label" for="dtrep">Closing date of the report</label>\n'
-    form_ss += '                 <div class="col-sm-6">\n'
-    form_ss += '                     <input class="form-control" id="dtrep" name="dtrep" type="text" ' \
-               'value="' + str(dtrep) + '" required />\n'
-    form_ss += '                 </div>\n'
-    form_ss += '            </div>\n'
     form_ss += '            <div class="form-group has-error">\n'
     form_ss += '                <label class="col-sm-4 control-label" for="alrep">' \
                'Alert users to the closing report</label>\n'
-    # form_ss += '                <div class="col-sm-6">\n'
-    # form_ss += '                      <input class="form-control" id="alrep" name= "alrep" type="text" ' \
-    #            'value="' + alrep + '"/>\n'
-    # form_ss += '                </div>\n'
     form_ss += '                <div class="col-sm-6">\n'
     form_ss += '                      <select class="form-control" id="alrep" name="alrep">\n'
     form_ss += '                      	<option selected value="' + alrep + '">' + alrep + '</option>\n'
@@ -1437,6 +1478,59 @@ def include_form_ss_erra(domain, nameuser, emailassoc, dtrep, alrep):
         form_ss += '                      	<option value="TRUE">TRUE </option>\n'
     else:
         form_ss += '                      	<option value="FALSE">FALSE </option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                 <label class="col-sm-4 control-label" for="dtrep">Closing date of the report</label>\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input class="form-control" id="dtrep" name="dtrep" type="text" ' \
+               'value="' + str(dtrep) + '" required />\n'
+    form_ss += '                 </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                 <label class="col-sm-4 control-label" for="f_email">E-mail address sender (From:)' \
+               '</label>\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input class="form-control" id="f_email" name="f_email" type="text" ' \
+               'value="' + from_email + '" required />\n'
+    form_ss += '                 </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="curr">' \
+               'Set the location currency</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="curr" name="curr">\n'
+    form_ss += '                      	<option selected value="' + currency + '">' + currency + '</option>\n'
+    if all_curr is not None:
+        for cy in all_curr:
+            form_ss += '                      	<option value="' + cy + '">' + cy + '</option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="dsy">' \
+               'Set the decimal format</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="dsy" name="dsy">\n'
+    form_ss += '                      	<option selected value="' + dsymbol + '">' + dsymbol + '</option>\n'
+    if dsymbol == '.':
+        form_ss += '                      	<option value=",">,</option>\n'
+    else:
+        form_ss += '                      	<option value=".">.</option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="tsy">' \
+               'Set the thousands format</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="tsy" name="tsy">\n'
+    form_ss += '                      	<option selected value="' + tsymbol + '">' + tsymbol + '</option>\n'
+    if tsymbol == '.':
+        form_ss += '                      	<option value=",">,</option>\n'
+    else:
+        form_ss += '                      	<option value=".">.</option>\n'
     form_ss += '                      </select>\n'
     form_ss += '                </div>\n'
     form_ss += '            </div>\n'
@@ -1463,7 +1557,7 @@ def include_form_ss_erra(domain, nameuser, emailassoc, dtrep, alrep):
     return form.substitute(form=form_ss)
 
 
-def include_form_ss_errd(domain, nameuser, emailassoc, dtrep, alrep):
+def include_form_ss_errd(domain, nameuser, emailassoc, dtrep, alrep, from_email, currency, dsymbol, tsymbol, all_curr):
     """
     # função que cria o formulário: settings system com foco no campo data (validation state)
     # a página em si é armazenada em um arquivo separado em "views/form.html" e o
@@ -1473,9 +1567,27 @@ def include_form_ss_errd(domain, nameuser, emailassoc, dtrep, alrep):
     :param emailassoc: 'laercio.serra@asparona.com'
     :param dtrep: '2015-01-26'
     :param alrep: 'TRUE'
+    :param from_email: 'm3-expenserep@asparona.com'
+    :param currency: 'BRL'
+    :param dsymbol: '.'
+    :param tsymbol: ','
+    :param all_curr: ('BRL', 'AUD', 'USS')
     :return:
     """
     form_ss = '            <form class="form-horizontal" role="form" method="post" action="../controls/usystem.py">\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="alrep">' \
+               'Alert users to the closing report</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="alrep" name="alrep">\n'
+    form_ss += '                      	<option selected value="' + alrep + '">' + alrep + '</option>\n'
+    if alrep == 'FALSE':
+        form_ss += '                      	<option value="TRUE">TRUE </option>\n'
+    else:
+        form_ss += '                      	<option value="FALSE">FALSE </option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
     form_ss += '            <div class="form-group has-error">\n'
     form_ss += '                 <label class="col-sm-4 control-label" for="dtrep">Closing date of the report</label>\n'
     form_ss += '                 <div class="col-sm-6">\n'
@@ -1484,19 +1596,48 @@ def include_form_ss_errd(domain, nameuser, emailassoc, dtrep, alrep):
     form_ss += '                 </div>\n'
     form_ss += '            </div>\n'
     form_ss += '            <div class="form-group">\n'
-    form_ss += '                <label class="col-sm-4 control-label" for="alrep">' \
-               'Alert users to the closing report</label>\n'
-    # form_ss += '                <div class="col-sm-6">\n'
-    # form_ss += '                      <input class="form-control" id="alrep" name= "alrep" type="text" ' \
-    #            'value="' + alrep + '"/>\n'
-    # form_ss += '                </div>\n'
+    form_ss += '                 <label class="col-sm-4 control-label" for="f_email">E-mail address sender (From:)' \
+               '</label>\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input class="form-control" id="f_email" name="f_email" type="text" ' \
+               'value="' + from_email + '" required />\n'
+    form_ss += '                 </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="curr">' \
+               'Set the location currency</label>\n'
     form_ss += '                <div class="col-sm-6">\n'
-    form_ss += '                      <select class="form-control" id="alrep" name="alrep">\n'
-    form_ss += '                      	<option selected value="' + alrep + '">' + alrep + '</option>\n'
-    if alrep == 'FALSE':
-        form_ss += '                      	<option value="TRUE">TRUE </option>\n'
+    form_ss += '                      <select class="form-control" id="curr" name="curr">\n'
+    form_ss += '                      	<option selected value="' + currency + '">' + currency + '</option>\n'
+    if all_curr is not None:
+        for cy in all_curr:
+            form_ss += '                      	<option value="' + cy + '">' + cy + '</option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="dsy">' \
+               'Set the decimal format</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="dsy" name="dsy">\n'
+    form_ss += '                      	<option selected value="' + dsymbol + '">' + dsymbol + '</option>\n'
+    if dsymbol == '.':
+        form_ss += '                      	<option value=",">,</option>\n'
     else:
-        form_ss += '                      	<option value="FALSE">FALSE </option>\n'
+        form_ss += '                      	<option value=".">.</option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="tsy">' \
+               'Set the thousands format</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="tsy" name="tsy">\n'
+    form_ss += '                      	<option selected value="' + tsymbol + '">' + tsymbol + '</option>\n'
+    if tsymbol == '.':
+        form_ss += '                      	<option value=",">,</option>\n'
+    else:
+        form_ss += '                      	<option value=".">.</option>\n'
     form_ss += '                      </select>\n'
     form_ss += '                </div>\n'
     form_ss += '            </div>\n'
@@ -3107,3 +3248,110 @@ def include_form_ccurr_err(code, desc, sign, domain, nameuser, emailassoc, field
     form = Template(form_text)
 
     return form.substitute(form=form_ccurr)
+
+
+def include_form_ss_erre(domain, nameuser, emailassoc, dtrep, alrep, from_email, currency, dsymbol, tsymbol, all_curr):
+    """
+    # função que cria o formulário: settings system com foco no campo e-mail (validation state)
+    # a página em si é armazenada em um arquivo separado em "views/form.html" e o
+    # elemento $form é substituído quando necessário por form_ss
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@asparona.com'
+    :param dtrep: '2015-01-26'
+    :param alrep: 'TRUE'
+    :param from_email: 'm3-expenserep@asparona.com'
+    :param currency: 'BRL'
+    :param dsymbol: '.'
+    :param tsymbol: ','
+    :param all_curr: ('BRL', 'AUD', 'USS')
+    :return:
+    """
+    form_ss = '            <form class="form-horizontal" role="form" method="post" action="../controls/usystem.py">\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="alrep">' \
+               'Alert users to the closing report</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="alrep" name="alrep">\n'
+    form_ss += '                        <option selected value="' + alrep + '">' + alrep + '</option>\n'
+    if alrep == 'FALSE':
+        form_ss += '                        <option value="TRUE">TRUE </option>\n'
+    else:
+        form_ss += '                        <option value="FALSE">FALSE </option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                 <label class="col-sm-4 control-label" for="dtrep">Closing date of the report</label>\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input class="form-control" id="dtrep" name="dtrep" type="text" ' \
+               'value="' + str(dtrep) + '" required />\n'
+    form_ss += '                 </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group has-error">\n'
+    form_ss += '                 <label class="col-sm-4 control-label" for="f_email">E-mail address sender (From:)' \
+               '</label>\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input class="form-control" id="f_email" name="f_email" type="text" ' \
+               'value="' + from_email + '" required />\n'
+    form_ss += '                 </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="curr">' \
+               'Set the location currency</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="curr" name="curr">\n'
+    form_ss += '                        <option selected value="' + currency + '">' + currency + '</option>\n'
+    if all_curr is not None:
+        for cy in all_curr:
+            form_ss += '                        <option value="' + cy + '">' + cy + '</option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="dsy">' \
+               'Set the decimal format</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="dsy" name="dsy">\n'
+    form_ss += '                        <option selected value="' + dsymbol + '">' + dsymbol + '</option>\n'
+    if dsymbol == '.':
+        form_ss += '                        <option value=",">,</option>\n'
+    else:
+        form_ss += '                        <option value=".">.</option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <label class="col-sm-4 control-label" for="tsy">' \
+               'Set the thousands format</label>\n'
+    form_ss += '                <div class="col-sm-6">\n'
+    form_ss += '                      <select class="form-control" id="tsy" name="tsy">\n'
+    form_ss += '                        <option selected value="' + tsymbol + '">' + tsymbol + '</option>\n'
+    if tsymbol == '.':
+        form_ss += '                        <option value=",">,</option>\n'
+    else:
+        form_ss += '                        <option value=".">.</option>\n'
+    form_ss += '                      </select>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                 <div class="col-sm-6">\n'
+    form_ss += '                     <input id="domain" name="domain" type="hidden" value="' + domain + '"/>\n'
+    form_ss += '                     <input id="nameuser" name="nameuser" type="hidden" value="' + nameuser + '"/>\n'
+    form_ss += '                     <input id="emailassoc" name="emailassoc" type="hidden" ' \
+               'value="' + emailassoc + '"/>\n'
+    form_ss += '                 </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '            <div class="form-group">\n'
+    form_ss += '                <div class="col-sm-offset-4 col-sm-6">\n'
+    form_ss += '                    <button type="submit" class="btn btn-primary">Update</button>\n'
+    form_ss += '                </div>\n'
+    form_ss += '            </div>\n'
+    form_ss += '        </form>\n'
+
+    with open('../views/form.html') as formf:
+        form_text = formf.read()
+
+    form = Template(form_text)
+
+    return form.substitute(form=form_ss)

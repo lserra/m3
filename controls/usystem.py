@@ -19,8 +19,12 @@ cgitb.enable()  # ativa o módulo para que os erros possam aparecer no browser
 
 form_data = cgi.FieldStorage()  # obter os dados de configuração do sistema
 
-s_dtrep = form_data.getvalue('dtrep')  # pega o valor do campo date report
 s_alrep = form_data.getvalue('alrep')  # pega o valor do campo alert report
+s_dtrep = form_data.getvalue('dtrep')  # pega o valor do campo date report
+s_f_email = form_data.getvalue('f_email')  # pega o valor do campo from email
+s_curr = form_data.getvalue('curr')  # pega o valor do campo currency
+s_dsy = form_data.getvalue('dsy')  # pega o valor do campo decimal symbol
+s_tsy = form_data.getvalue('tsy')  # pega o valor do campo thousand symbol
 s_domain = form_data.getvalue('domain')  # pega o valor do campo domain
 s_user = form_data.getvalue('nameuser')  # pega o valor do campo name user
 s_email = form_data.getvalue('emailassoc')  # pega o valor do campo email associado
@@ -74,39 +78,70 @@ else:
     statusa = 1
     a_errormsg = 'Incorrect data value, should be "TRUE or FALSE"'
 
-if statusd == 0 and statusa == 0:
+
+# valida se o e-mail fornecido pelo associado é válido
+if golias.validate_email(s_f_email):
+    statuse = 0
+    e_errormsg = None
+else:
+    statuse = 1
+    e_errormsg = 'Incorrect data value, should be "user@domain.com"'
+
+
+if statusd == 0 and statusa == 0 and statuse == 0:
     # rotina para gravar os dados do sistema no banco de dados
-    (status, s_errormsg) = golias.update_setsys(s_iddomain, str.upper(s_alrep), s_dtrep)
+    (status, s_errormsg) = golias.update_setsys(s_iddomain, str.upper(s_alrep), s_dtrep, s_f_email, s_curr,
+                                                s_dsy, s_tsy)
     # rotina que lê os dados atualizados do sistema no banco de dados e apresenta no form
-    (s_iddomain, s_dtrep, s_alrep) = golias.get_setsys(s_iddomain)
+    (s_iddomain, s_dtrep, s_alrep, s_f_email, s_curr, s_dsy, s_tsy) = golias.get_setsys(s_iddomain)
 else:
     status = 'False'
 
 
+# retorna todas as currency para popular a combo box
+(s_fields, s_dt_tb_curr, s_errormsg_gac) = golias.get_all_curr(s_domain)
+
+s_all_curr = []
+
+if s_dt_tb_curr is not None:
+    for curr in s_dt_tb_curr:
+        s_all_curr.append(curr[0])
+
+    s_all_curr.remove(s_curr)
+
+
 # renderiza a página 'usystem.html' depois de ter os dados do sistema atualizado
-print mysf.include_start_response()
+print (mysf.include_start_response())
 print (mysf.include_user(s_domain, s_nameuser, str.lower(s_emailassoc), s_date))
 print (mysf.include_logout())
 print (mysf.include_div_s())
 print (mysf.include_header())
 
 if status is True:
-    print mysf.include_messages('2', ' Settings system updated')
+    print (mysf.include_messages('2', ' Settings system updated'))
 else:
     if statusd == 1:
-        print mysf.include_messages('1', d_errormsg)
+        print (mysf.include_messages('1', d_errormsg))
     elif statusa == 1:
-        print mysf.include_messages('1', a_errormsg)
+        print (mysf.include_messages('1', a_errormsg))
+    elif statuse == 1:
+        print (mysf.include_messages('1', e_errormsg))
 
 print (mysf.include_pageheader('Expenses ', ' Update settings system'))
 
 if status is True:
-    print (mysf.include_form_ss(s_domain, s_nameuser, s_emailassoc, s_dtrep, s_alrep))
+    print (mysf.include_form_ss(s_domain, s_nameuser, s_emailassoc, s_dtrep, s_alrep, s_f_email,
+                                s_curr, s_dsy, s_tsy, s_all_curr))
 else:
     if statusd == 1:
-        print (mysf.include_form_ss_errd(s_domain, s_nameuser, s_emailassoc, s_dtrep, s_alrep))
+        print (mysf.include_form_ss_errd(s_domain, s_nameuser, s_emailassoc, s_dtrep, s_alrep, s_f_email,
+                                         s_curr, s_dsy, s_tsy, s_all_curr))
     elif statusa == 1:
-        print (mysf.include_form_ss_erra(s_domain, s_nameuser, s_emailassoc, s_dtrep, s_alrep))
+        print (mysf.include_form_ss_erra(s_domain, s_nameuser, s_emailassoc, s_dtrep, s_alrep, s_f_email,
+                                         s_curr, s_dsy, s_tsy, s_all_curr))
+    elif statuse == 1:
+        print (mysf.include_form_ss_erre(s_domain, s_nameuser, s_emailassoc, s_dtrep, s_alrep, s_f_email,
+                                         s_curr, s_dsy, s_tsy, s_all_curr))
 
 print (mysf.include_div_e())
 print (mysf.include_footer())

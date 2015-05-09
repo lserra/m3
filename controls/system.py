@@ -69,13 +69,22 @@ if s_profile != 'S':  # somente supervisor (S) possui acesso a este módulo
     print (mysf.include_footer())
 else:
     # retorna os dados do sistema no banco de dados
-    (s_iddomain, s_dtrep, s_alrep) = golias.get_setsys(s_iddomain)
+    (s_iddomain, s_dtrep, s_alrep, s_from_email, s_currency, s_dsymbol, s_tsymbol) = golias.get_setsys(s_iddomain)
+    # retorna todas as currency para popular a combo box
+    (s_fields, s_dt_tb_curr, s_errormsg) = golias.get_all_curr(s_domain)
 
     if s_alrep is None:
         s_alrep = 'FALSE'
 
     if s_dtrep is None:
         s_dtrep = '0000-00-00'
+
+    s_all_curr = []
+    if s_dt_tb_curr is not None:
+        for curr in s_dt_tb_curr:
+            s_all_curr.append(curr[0])
+
+        s_all_curr.remove(s_currency)
 
     # renderiza a página 'system.html' para atualizar os dados do sistema
     print mysf.include_start_response()
@@ -84,6 +93,7 @@ else:
     print (mysf.include_logout())
     print (mysf.include_div_s())
     print (mysf.include_pageheader('Expenses ', ' Update settings system'))
-    print (mysf.include_form_ss(s_domain, s_nameuser, str.lower(s_emailassoc), s_dtrep, s_alrep))
+    print (mysf.include_form_ss(s_domain, s_nameuser, str.lower(s_emailassoc), s_dtrep, s_alrep, s_from_email,
+                                s_currency, s_dsymbol, s_tsymbol, s_all_curr))
     print (mysf.include_div_e())
     print (mysf.include_footer())

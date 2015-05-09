@@ -48,7 +48,7 @@ def render_mthree_html(domain, nameuser, emailassoc, date, fields, dt_tb):
     print (mysf.include_user(domain, nameuser, emailassoc, date))
     print (mysf.include_logout())
     print (mysf.include_div_s())
-    print (mysf.include_messages('2', ' Welcome to My Expenses Report!'))
+    print (mysf.include_messages('2', ' Welcome to Expenses Report!'))
     print (mysf.include_pageheader('Expenses ', ' Last payments'))
     print (mysf.include_search_form())
     if dt_tb is None:
