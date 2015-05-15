@@ -1165,7 +1165,7 @@ def list_expenses_payments_accepted(id_assoc):
             "b.id_expense = c.id_expense AND d.id_step = '5' AND b.status = 'A' AND a.id_user = '" + str(id_assoc) + \
             "' ORDER by 2 desc;"
 
-    fields = ('Number', 'Date', 'Period', 'Total', 'Step', 'Status')
+    fields = ('#', 'Date', 'Period', 'Total', 'Step', 'Status')
 
     try:
         msg_err = abrir_bd()
@@ -3087,6 +3087,54 @@ def delete_curr(cdel):
     except MySQLdb.Error, e:
         error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
         return False, error_msg
+
+    finally:
+        if conn is not None:
+            fechar_bd()
+
+
+def list_expenses_created(id_assoc):
+    """
+    # Função que retorna os expenses cadastrados
+    # 1- estabelece uma conexão com o banco de dados
+    # 2- criar um exprsor para se comunicar através da conexão com os dados
+    # 3- usando o exprsor, manipula os dados usando o sql
+    # 3.1 - pega o resultset como uma tupla
+    # 4- fechar a conexão com o banco de dados
+    :param domain: 'asparona'
+    :return: {fields, rs_dt_table}
+    """
+    s_sql = "SELECT DISTINCTROW c.id_expense, c.dt_expense, c.period, c.name_customer, c.name_project, c.total_expense " \
+            "FROM tUser a, tWkflUserExp b, tExpense c, tWorkflow d " \
+            "WHERE " \
+            "a.id_user = b.id_user AND " \
+            "b.id_expense = c.id_expense AND " \
+            "d.id_step = '1' AND " \
+            "b.status = 'A' AND " \
+            "a.id_user = '" + str(id_assoc) + "' " \
+            "ORDER by 2 desc;"
+
+    fields = ('#', 'Date', 'Period', 'Customer', 'Project', 'Total')
+
+    try:
+        msg_err = abrir_bd()
+        if msg_err != '' and msg_err is not None:
+            return fields, None, msg_err
+        else:
+            bd.execute(s_sql)
+            # Pega o número de linhas no resultset
+            numrows = int(bd.rowcount)
+
+            if numrows > 0:
+                rs_dt_table = bd.fetchall()
+                return fields, rs_dt_table, msg_err
+            else:
+                rs_dt_table = None
+                return fields, rs_dt_table, msg_err
+
+    except MySQLdb.Error, e:
+        error_msg = "Database connection failure. Erro %d: %s" % (e.args[0], e.args[1])
+        return fields, None, error_msg
 
     finally:
         if conn is not None:

@@ -3355,3 +3355,131 @@ def include_form_ss_erre(domain, nameuser, emailassoc, dtrep, alrep, from_email,
     form = Template(form_text)
 
     return form.substitute(form=form_ss)
+
+
+def include_wells():
+    """
+    # função que renderiza um well
+    # a página em si é armazenada em um arquivo separado em "views/wells.html"
+    :return:
+    """
+    with open('../views/wells.html') as wellf:
+        well_text = wellf.read()
+
+    wells = Template(well_text)
+
+    return wells.substitute()
+
+
+def include_workflow(i_step):
+    """
+    # função que renderiza o diagrama de workflow
+    # a página em si é armazenada em um arquivo separado em "views/workflow.html"
+    :return:
+    """
+    if i_step == '1':
+        s_btn1 = 'btn btn-success btn-circle'
+        s_btn2 = 'btn btn-default btn-circle'
+        s_btn3 = 'btn btn-default btn-circle'
+    elif i_step == '2':
+        s_btn1 = 'btn btn-default btn-circle'
+        s_btn2 = 'btn btn-success btn-circle'
+        s_btn3 = 'btn btn-default btn-circle'
+    elif i_step == '3':
+        s_btn1 = 'btn btn-default btn-circle'
+        s_btn2 = 'btn btn-default btn-circle'
+        s_btn3 = 'btn btn-success btn-circle'
+    else:
+        s_btn1 = 'btn btn-default btn-circle'
+        s_btn2 = 'btn btn-default btn-circle'
+        s_btn3 = 'btn btn-default btn-circle'
+
+    with open('../views/workflow.html') as wkflf:
+        wkfl_text = wkflf.read()
+
+    wkfl = Template(wkfl_text)
+
+    return wkfl.substitute(btn1=s_btn1, btn2=s_btn2, btn3=s_btn3)
+
+
+def include_button_create_new_expr(s_domain, s_nameuser, s_emailassoc):
+    """
+    # função que cria um formulário com controles ocultos para uma simples passagem de parâmetros
+    # quando o botão de comando "Create New Expense Report" for acionado
+    :param s_domain: 'asparona'
+    :param s_nameuser: 'Laercio Serra'
+    :param s_emailassoc: 'laercio.serra@asparona.com'
+    :return:
+    """
+    with open('../views/buttonnewexpr.html') as sformb:
+        sform_text = sformb.read()
+
+    buttonform = Template(sform_text)
+
+    return buttonform.substitute(domain=s_domain, nameuser=s_nameuser, emailassoc=s_emailassoc)
+
+
+def include_dt_tb_enable_expr(domain, nameuser, emailassoc, fields, rs_dt_table):
+    """
+    # função que apresenta os dados em uma tabela estática com os botões de comandos (edit/delete/to approval) habilitados
+    # a página em si é armazenada em um arquivo separado em "views/table.html" e
+    # os elementos <$headers, $data_tb> são substituídos quando necessários
+    :param domain: 'asparona'
+    :param nameuser: 'Laercio Serra'
+    :param emailassoc: 'laercio.serra@gmail.com'
+    :param fields: {field1, field2, field3, field4, field5}
+    :param rs_dt_table: {(v1, v2, v3), (v4, v5, v6), (v7, v8, v9)}
+    :return: headers, data_tb
+    """
+    s_th = ''
+
+    for th in fields:
+        s_hd = '<th>' + th + '</th>\n'
+        s_th += s_hd
+
+    s_th += '<!--Fixed Colunm -->\n'
+    s_th += '<th class="text-center">Action</th>\n'
+
+    s_dtb = ''
+
+    for record in rs_dt_table:
+        s_td = '<tr>\n'
+        for col in record:
+            s_td += '   <td>' + str(col) + '</td>\n'
+        s_td += '   <td class="text-center"> <!--Fixed Cells -->\n'
+        s_td += '       <a href="../controls/eexpr.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+                '&ee=' + str(record[0]) + '" class="btn btn-default btn-xs">\n'
+        s_td += '           <span class="glyphicon glyphicon-edit"></span> Edit\n'
+        s_td += '       </a>\n'
+        s_td += '       <a href="javascript:funcDelExpr(\'' + domain + '\', \'' + nameuser + '\', \'' + emailassoc + \
+                '\', \'' + str(record[0]) + '\')" class="btn btn-default btn-xs">\n'
+        s_td += '           <span class="glyphicon glyphicon-trash"></span> Delete\n'
+        s_td += '       </a>\n'
+        s_td += '       <a href="../controls/aexpr.py?d=' + domain + '&u=' + nameuser + '&e=' + emailassoc + \
+                '&ea=' + str(record[0]) + '" class="btn btn-default btn-xs">\n'
+        s_td += '           <span class="glyphicon glyphicon-check"></span> To Approval\n'
+        s_td += '       </a>\n'
+        s_td += '   </td>\n'
+        s_td += '</tr>\n'
+        s_dtb += s_td
+
+    with open('../views/table.html') as tablef:
+        table_text = tablef.read()
+
+    table = Template(table_text)
+
+    return table.substitute(headers=s_th, data_tb=s_dtb)
+
+
+def include_delete_expr():
+    """
+    # função que cria a janela modal para confirmação da exclusão de um registro.
+    # a página em si é armazenada em um arquivo separado em "views/delete.html"
+    :return:
+    """
+    with open('../views/delete_expr.html') as delf:
+        del_text = delf.read()
+
+    delete = Template(del_text)
+
+    return delete.substitute()
