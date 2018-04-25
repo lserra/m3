@@ -124,12 +124,12 @@ INSERT INTO `mthree`.`tExpenseDetail` (`id_expense`, `number_expense`, `dt_expen
 COMMIT;
 
 -- INSERT tWkflUserExp
-INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`) VALUES ('1', 'A', '1', '1');
-INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`) VALUES ('1', 'A', '1', '2');
-INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`) VALUES ('2', 'A', '1', '1');
-INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`) VALUES ('2', 'A', '1', '2');
-INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`) VALUES ('3', 'R', '1', '1');
-INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`) VALUES ('3', 'A', '1', '2');
-INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`) VALUES ('4', 'A', '1', '2');
-INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`) VALUES ('5', 'A', '1', '2');
+INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`, `dt_record`) VALUES ('1', 'A', '1', '1', '2014/07/31');
+INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`, `dt_record`) VALUES ('1', 'A', '1', '2', '2014/06/30');
+INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`, `dt_record`) VALUES ('2', 'A', '1', '1', '2014/07/31');
+INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`, `dt_record`) VALUES ('2', 'A', '1', '2', '2014/06/30');
+INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`, `dt_record`) VALUES ('3', 'R', '1', '1', '2014/07/31');
+INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`, `dt_record`) VALUES ('3', 'A', '1', '2', '2014/06/30');
+INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`, `dt_record`) VALUES ('4', 'A', '1', '2', '2014/06/30');
+INSERT INTO `mthree`.`tWkflUserExp` (`id_step`, `status`, `id_user`, `id_expense`, `dt_record`) VALUES ('5', 'A', '1', '2', '2014/06/30');
 COMMIT;
